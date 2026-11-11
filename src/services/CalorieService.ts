@@ -1,0 +1,212 @@
+import { Exercise, PlanService } from './PlanService';
+
+/**
+ * CalorieService
+ *
+ * OOP domain service providing scientific calorie expenditure calculations
+ * based on the Metabolic Equivalent of Task (MET) standard and biomechanical work:
+ * kcal = Base Metabolic Cost (MET × Body Weight × Time) + Mechanical Work (Load × Reps) + EPOC
+ *
+ * Factors in eccentric/concentric muscular work duration, structured set counts,
+ * reps, external lifted weights (kg), rest intervals, and exercise movement complexity.
+ */
+export class CalorieService {
+  private static instance: CalorieService;
+
+  private constructor() {}
+
+  public static getInstance(): CalorieService {
+    if (!CalorieService.instance) {
+      CalorieService.instance = new CalorieService();
+    }
+    return CalorieService.instance;
+  }
+
+  /**
+   * Exercise name pattern to MET multiplier mapping.
+   * Compounded multi-joint movements burn more energy than isolated ones.
+   */
+  private readonly MET_PATTERNS: Array<{ pattern: RegExp; met: number }> = [
+    { pattern: /burpee|thruster|clean|snatch|deadlift/i, met: 8.0 },
+    { pattern: /squat|guggolás|lunge|kitörés|leg press/i, met: 7.0 },
+    { pattern: /row|evezés|pull-up|chin-up|húzódzkodás|lat pull/i, met: 6.0 },
+    { pattern: /bench|press|nyomás|push-up|fekvőtámasz|dip|tolódzkodás/i, met: 5.5 },
+    { pattern: /curl|bicepsz|triceps|extension|nyújtás|lateral raise|oldalemelés/i, met: 4.2 },
+    { pattern: /calf|vádli|shrug|wrist/i, met: 3.8 },
+    { pattern: /plank|crunch|has|twist|ab/i, met: 4.5 },
+    { pattern: /mountain climber|high knee|jump/i, met: 7.5 },
+  ];
+
+  /**
+   * Resolves the Metabolic Equivalent of Task (MET) for an exercise.
+   * If exercise.met is populated from the database (e.g. from backend RepDB catalogue),
+   * it uses the exact database value. Otherwise it falls back to pattern matching.
+   */
+  public getMetForExercise(exercise: Exercise | string): number {
+    if (typeof exercise !== 'string' && exercise.met && exercise.met > 0) {
+      return exercise.met;
+    }
+
+    const titleOrSlug = typeof exercise === 'string' ? exercise : (exercise.slug || exercise.title || '');
+    for (const item of this.MET_PATTERNS) {
+      if (item.pattern.test(titleOrSlug)) {
+        return item.met;
+      }
+    }
+    return 5.0; // Default moderate strength training MET
+  }
+
+  /**
+   * Parses fallback sets, reps, and rest duration from details string (e.g. "4 × 8 · 90s rest")
+   */
+  public parseExerciseVolume(details?: string): { sets: number; reps: number; restSeconds: number } {
+    if (!details) {
+      return { sets: 3, reps: 10, restSeconds: 60 };
+    }
+
+    let sets = 3;
+    let reps = 10;
+    let restSeconds = 60;
+
+    // Match sets and reps: "4 × 8", "4x8", "3 x 12"
+    const volumeMatch = details.match(/(\d+)\s*[x×X]\s*(\d+)/);
+    if (volumeMatch) {
+      sets = parseInt(volumeMatch[1], 10) || 3;
+      reps = parseInt(volumeMatch[2], 10) || 10;
+    }
+
+    // Match rest seconds: "90s rest", "60s", "90 mp"
+    const restMatch = details.match(/(\d+)\s*(?:s|sec|mp)/i);
+    if (restMatch) {
+      restSeconds = parseInt(restMatch[1], 10) || 60;
+    }
+
+    return { sets, reps, restSeconds };
+  }
+
+  /**
+   * Calculates the estimated duration of an exercise in minutes,
+   * factoring in sets, reps (3.8s per rep time under tension), and inter-set rest intervals.
+   */
+  public calculateExerciseDuration(exercise: Exercise): number {
+    const setsList = PlanService.ensureExerciseSets(exercise);
+    const setCount = Math.max(1, setsList.length);
+    const totalReps = setsList.reduce((sum, s) => sum + (s.reps || 10), 0);
+    const restSeconds = exercise.restSeconds || 60;
+
+    const workSeconds = totalReps * 3.8;
+    const restSecondsTotal = Math.max(0, setCount - 1) * restSeconds;
+    return Math.max(3, Math.round((workSeconds + restSecondsTotal) / 60));
+  }
+
+  /**
+   * Calculates the total duration for an entire workout routine in minutes,
+   * factoring in exercise execution, rest periods, and equipment transitions.
+   */
+  public calculateRoutineDuration(
+    exercises: Exercise[],
+    completedMap?: Record<string, boolean>
+  ): number {
+    if (!exercises || exercises.length === 0) return 0;
+    const activeList = exercises.filter((ex) => (completedMap ? Boolean(completedMap[ex.id]) : true));
+    if (activeList.length === 0) return 0;
+
+    let totalMinutes = 0;
+    for (const ex of activeList) {
+      totalMinutes += this.calculateExerciseDuration(ex);
+    }
+    // Add realistic 1-2 min setup / transition buffer between different exercises
+    if (activeList.length > 1) {
+      totalMinutes += Math.round((activeList.length - 1) * 1.5);
+    }
+    return Math.max(totalMinutes, 10);
+  }
+
+  /**
+   * Calculates the estimated calories burned for a single exercise prescription.
+   *
+   * Accurately reflects exercise biomechanics:
+   *  1. Active lifting bodily movement (MET × body weight × work time)
+   *  2. Mechanical work against external lifted load:
+   *     Each kg lifted vertically burns energy based on physiological efficiency (~22%).
+   *     Total Volume (kg × reps) directly scales the energy cost.
+   *  3. Elevated post-exercise recovery (EPOC): heavier sets demand higher oxygen repayment.
+   *  4. Systemic muscle recruitment (compound multi-joint vs isolated single-joint).
+   *
+   * @param exercise The domain exercise item
+   * @param userWeightKg User's body weight in kg (defaults to 75kg if unknown)
+   * @returns Calorie expenditure in kcal
+   */
+  public calculateExerciseCalories(exercise: Exercise, userWeightKg: number = 75): number {
+    const weight = userWeightKg > 30 && userWeightKg < 250 ? userWeightKg : 75;
+    const met = this.getMetForExercise(exercise);
+
+    // Retrieve structured sets (reps & weightKg per set)
+    const setsList = PlanService.ensureExerciseSets(exercise);
+    const setCount = Math.max(1, setsList.length);
+    const restSeconds = exercise.restSeconds || 60;
+
+    // Calculate total repetitions and total lifted volume (kg)
+    let totalReps = 0;
+    let totalVolumeKg = 0;
+
+    for (const s of setsList) {
+      const r = typeof s.reps === 'number' && !isNaN(s.reps) && s.reps > 0 ? s.reps : 10;
+      const w = typeof s.weightKg === 'number' && !isNaN(s.weightKg) && s.weightKg > 0 ? s.weightKg : 0;
+      totalReps += r;
+      totalVolumeKg += r * w;
+    }
+
+    if (totalReps === 0) {
+      totalReps = setCount * 10;
+    }
+
+    // Multi-joint compound movements recruit larger muscle mass & induce higher systemic demand
+    const isCompound = met >= 5.5;
+    const compoundFactor = isCompound ? 1.25 : 1.0;
+
+    // Time under tension: ~3.8 seconds per repetition
+    const workSeconds = totalReps * 3.8;
+    const totalRestSeconds = Math.max(0, setCount - 1) * restSeconds;
+
+    // 1. Base active bodily expenditure (moving own body through the exercise motion)
+    const baseActiveCalories = met * weight * (workSeconds / 3600) * compoundFactor;
+
+    // 2. Mechanical work against external lifted weights
+    // Each kg lifted through ~0.6m vertical displacement at ~22% human muscular efficiency
+    // burns ~0.009 kcal per kg-rep (including eccentric lowering and core stabilization)
+    const loadEfficiencyFactor = isCompound ? 0.0095 : 0.0080;
+    const externalLoadCalories = totalVolumeKg * loadEfficiencyFactor;
+
+    // 3. Inter-set metabolic recovery (elevated heart rate & oxygen debt / EPOC repayment)
+    // Higher loads elevate EPOC demand post-set
+    const avgWeightPerRep = totalReps > 0 ? totalVolumeKg / totalReps : 0;
+    const loadEpocBoost = Math.min(0.5, (avgWeightPerRep / weight) * 0.25);
+    const recoveryMet = (isCompound ? 3.2 : 2.8) * (1.0 + loadEpocBoost);
+    const recoveryCalories = recoveryMet * weight * (totalRestSeconds / 3600);
+
+    const total = baseActiveCalories + externalLoadCalories + recoveryCalories;
+    return Math.max(8, Math.round(total));
+  }
+
+  /**
+   * Calculates total estimated calories for a list of exercises.
+   * If completedMap is provided, only completed exercises are summed.
+   */
+  public calculateRoutineCalories(
+    exercises: Exercise[],
+    completedMap?: Record<string, boolean>,
+    userWeightKg: number = 75
+  ): number {
+    if (!exercises || exercises.length === 0) return 0;
+
+    return exercises.reduce((acc, ex) => {
+      if (completedMap && !completedMap[ex.id]) {
+        return acc;
+      }
+      return acc + this.calculateExerciseCalories(ex, userWeightKg);
+    }, 0);
+  }
+}
+
+export const calorieService = CalorieService.getInstance();

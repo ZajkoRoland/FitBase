@@ -1,0 +1,62 @@
+{
+  "expo": {
+    "name": "FitBase",
+    "slug": "fitbase",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/Icon.png",
+    "scheme": "fitnessapp",
+    "userInterfaceStyle": "automatic",
+    "ios": {
+      "icon": "./assets/images/Icon.png"
+    },
+    "android": {
+      "package": "com.emperor98s.fitbase",
+      "adaptiveIcon": {
+        "backgroundColor": "#0D1528",
+        "foregroundImage": "./assets/images/android-icon-foreground.png"
+      },
+      "predictiveBackGestureEnabled": false
+    },
+    "androidNavigationBar": {
+      "visible": "always",
+      "barStyle": "light-content",
+      "backgroundColor": "#0D1528"
+    },
+    "web": {
+      "output": "static",
+      "favicon": "./assets/images/favicon.png"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#0D1528",
+          "image": "./assets/images/android-icon-foreground.png",
+          "imageWidth": 200
+        }
+      ],
+      "expo-secure-store",
+      "@react-native-google-signin/google-signin",
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/images/Icon.png",
+          "color": "#4AB8F8"
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true,
+      "reactCompiler": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "40a580ef-8829-466e-81b9-4beeadc7e0bd"
+      }
+    },
+    "owner": "emperor98s-team"
+  }
+}
