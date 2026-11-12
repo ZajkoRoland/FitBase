@@ -6,7 +6,7 @@
 
 ### 1. Opció: Fejlesztői szerver indítása (Expo Metro)
 
-Kattintson duplán a projekt gyökerében található **`start.bat`** fájlra (vagy adja ki a parancssorban az `npm install && npx expo start --dev-client` parancsot)!
+Kattintson duplán a projekt gyökerében található **`start.bat`** fájlra (vagy írja ki a parancssorban az `npm install && npx expo start --dev-client` parancsot)!
 
 A szkript automatikusan elvégzi a szükséges lépéseket:
 1. Ellenőrzi a felhős backend elérhetőségét.
