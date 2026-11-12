@@ -28,13 +28,8 @@ export interface LoggedExerciseOption {
 }
 
 export class AnalyticsRepository extends BaseRepository {
-  private static instance: AnalyticsRepository;
-
   public static getInstance(): AnalyticsRepository {
-    if (!AnalyticsRepository.instance) {
-      AnalyticsRepository.instance = new AnalyticsRepository();
-    }
-    return AnalyticsRepository.instance;
+    return analyticsRepository;
   }
 
   // Adott gyakorlat fejlődési történetének lekérése
@@ -48,5 +43,5 @@ export class AnalyticsRepository extends BaseRepository {
   }
 }
 
-export const analyticsRepository = AnalyticsRepository.getInstance();
+export const analyticsRepository = new AnalyticsRepository();
 

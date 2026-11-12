@@ -30,16 +30,10 @@ export interface DemographicMetrics {
 
 // Testtömeg-index (BMI) és célsúly előrehaladás kiszámítása a testsúly és magasság alapján
 export class BodyMetricsService {
-  private static instance: BodyMetricsService;
   private activeUserId: string | null = null;
 
-  private constructor() { }
-
   public static getInstance(): BodyMetricsService {
-    if (!BodyMetricsService.instance) {
-      BodyMetricsService.instance = new BodyMetricsService();
-    }
-    return BodyMetricsService.instance;
+    return bodyMetricsService;
   }
 
   public setActiveUserId(userId: string | null): void {
@@ -155,7 +149,7 @@ export class BodyMetricsService {
         await AsyncStorage.setItem(key, String(targetWeight));
       }
     } catch {
-      // Storage failure resilience
+      // Helyi tárhely hiba figyelmen kívül hagyása
     }
   }
 
@@ -188,9 +182,9 @@ export class BodyMetricsService {
       };
       await AsyncStorage.setItem(key, JSON.stringify(merged));
     } catch {
-      // Storage failure resilience
+      // Helyi tárhely hiba figyelmen kívül hagyása
     }
   }
 }
 
-export const bodyMetricsService = BodyMetricsService.getInstance();
+export const bodyMetricsService = new BodyMetricsService();

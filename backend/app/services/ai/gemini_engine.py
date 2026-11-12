@@ -12,7 +12,6 @@ logger = logging.getLogger(__name__)
 
 
 class GeminiAIEngine(BaseAIEngine):
-    # Google Gemini Flash integráció a hivatalos REST API-n keresztül
 
     def __init__(self, api_key: str | None = None, model: str | None = None) -> None:
         settings = get_settings()
@@ -32,7 +31,7 @@ class GeminiAIEngine(BaseAIEngine):
 
         system_prompt = self.build_system_prompt(user_context, language)
 
-        # Build clean alternating history for Gemini contents
+        # Szabályos, váltakozó szerepű előzmények felépítése a Gemini formátumához
         contents: list[dict[str, Any]] = []
         prior = list(history)
         if prior and prior[-1].role == "user" and (prior[-1].content or "").strip() == message.strip():
@@ -55,11 +54,11 @@ class GeminiAIEngine(BaseAIEngine):
                 contents.append({"role": gemini_role, "parts": [{"text": text}]})
                 last_role = gemini_role
 
-        # Ensure first element is user if contents is non-empty
+        # Gondoskodunk róla, hogy az első üzenet felhasználói legyen
         if contents and contents[0]["role"] != "user":
             contents = contents[1:]
 
-        # Append the new user message
+        # Az új felhasználói üzenet hozzáadása az előzményekhez
         if contents and contents[-1]["role"] == "user":
             contents[-1]["parts"][0]["text"] += f"\n{message}"
         else:

@@ -1,4 +1,4 @@
-# Gyakorlatkatalógus az AI edző promptjához és a gyakorlatok validálása az adatbázis alapján
+# Gyakorlatkatalógus az AI edző promptjához és a gyakorlatok validálása az adatbázzis alapján
 
 from typing import Any
 
@@ -10,7 +10,6 @@ from app.services.media import MediaUrls
 
 
 class ExerciseNotFoundError(ValueError):
-    # Kivétel, ha a gyakorlat nem található a katalógusban
 
     def __init__(self, identifier: str):
         super().__init__(f"Exercise '{identifier}' not found in the FitBase catalog.")
@@ -40,9 +39,8 @@ BODY_PART_BADGE_MAP: dict[str, str] = {
     "full_body": "Full Body",
 }
 
-# Verified RepDB exercises (100% matched to PostgreSQL Exercise table rows)
 LIBRARY_EXERCISES: list[dict[str, Any]] = [
-    # --- Chest ---
+    # --- Mellkas ---
     {
         "slug": "push-up",
         "title": "Push-Up",
@@ -123,7 +121,7 @@ LIBRARY_EXERCISES: list[dict[str, Any]] = [
         "badgeText": "Chest",
         "color": "#4AB8F8",
     },
-    # --- Back ---
+    # --- Hát ---
     {
         "slug": "pull-up",
         "title": "Pull-Up",
@@ -194,7 +192,7 @@ LIBRARY_EXERCISES: list[dict[str, Any]] = [
         "badgeText": "Back",
         "color": "#A855F7",
     },
-    # --- Shoulders ---
+    # --- Váll ---
     {
         "slug": "dumbbell-shoulder-press",
         "title": "Dumbbell Shoulder Press",
@@ -245,7 +243,7 @@ LIBRARY_EXERCISES: list[dict[str, Any]] = [
         "badgeText": "Shoulders",
         "color": "#EAB308",
     },
-    # --- Legs ---
+    # --- Láb ---
     {
         "slug": "bodyweight-squat",
         "title": "Bodyweight Squat",
@@ -346,7 +344,7 @@ LIBRARY_EXERCISES: list[dict[str, Any]] = [
         "badgeText": "Calves",
         "color": "#10B981",
     },
-    # --- Arms ---
+    # --- Kar ---
     {
         "slug": "bicep-curl",
         "title": "Bicep Curl",
@@ -407,7 +405,7 @@ LIBRARY_EXERCISES: list[dict[str, Any]] = [
         "badgeText": "Arms",
         "color": "#EC4899",
     },
-    # --- Core ---
+    # --- Törzs / Has --
     {
         "slug": "plank",
         "title": "Plank",
@@ -458,7 +456,7 @@ LIBRARY_EXERCISES: list[dict[str, Any]] = [
         "badgeText": "Core",
         "color": "#F97316",
     },
-    # --- Full Body & Cardio ---
+    # --- Teljes test és kardió ---
     {
         "slug": "burpees",
         "title": "Burpees",
@@ -499,6 +497,7 @@ LIBRARY_EXERCISES: list[dict[str, Any]] = [
         "badgeText": "Full Body",
         "color": "#14B8A6",
     },
+
 ]
 
 
@@ -520,6 +519,7 @@ COMMON_SLUG_ALIASES: dict[str, str] = {
     "biceps-curls": "bicep-curl",
     "plank-hold": "plank",
     "plank-tartas": "plank",
+
 }
 
 
@@ -551,12 +551,12 @@ def resolve_and_enrich_exercise(
     raw_slug = str(raw_ex.get("slug") or "").strip().lower()
     raw_title = str(raw_ex.get("title") or "").strip()
 
-    # Normalize via aliases
+    # Szinonimák és elgépelések normalizálása
     raw_slug = COMMON_SLUG_ALIASES.get(raw_slug, raw_slug)
 
     exercise: Exercise | None = None
 
-    # 1. Direct slug match in DB
+    #  Közvetlen slug egyezés az adatbázisban
     if raw_slug:
         stmt = (
             select(Exercise)
@@ -568,7 +568,7 @@ def resolve_and_enrich_exercise(
         except Exception:
             exercise = None
 
-    # 2. Try slugifying raw_title if no match yet
+    # Keresés a nyers címből képzett slug alapján
     if exercise is None and raw_title:
         title_slug = raw_title.lower().replace(" ", "-").replace("'", "")
         title_slug = COMMON_SLUG_ALIASES.get(title_slug, title_slug)
@@ -583,7 +583,7 @@ def resolve_and_enrich_exercise(
         except Exception:
             exercise = None
 
-    # 3. Match against English translation name
+    # Egyezés keresése az angol fordítás neve alapján
     if exercise is None and raw_title:
         clean_name = raw_title.rstrip("s") if len(raw_title) > 4 else raw_title
         stmt = (
@@ -604,7 +604,7 @@ def resolve_and_enrich_exercise(
         except Exception:
             exercise = None
 
-    # 4. In-memory verified catalog fallback (for test envs or before RepDB seeding)
+    # Memóriabeli ellenőrzött katalógus tartalék(teszt)
     library_map = {ex["slug"]: ex for ex in LIBRARY_EXERCISES}
     matched_lib = None
     target_slug_for_lib = raw_slug or (raw_title.lower().replace(" ", "-").replace("'", "") if raw_title else "")
@@ -612,19 +612,19 @@ def resolve_and_enrich_exercise(
     if exercise is None and target_slug_for_lib:
         matched_lib = library_map.get(target_slug_for_lib)
         if matched_lib is None:
-            # Check by title in library
+            # Keresés cím alapján a katalógusban
             for lib_ex in LIBRARY_EXERCISES:
                 if lib_ex["title"].lower() == raw_title.lower():
                     matched_lib = lib_ex
                     break
 
-    # 5. Handle strict non-existent check
+    # Nem létező gyakorlat szigorú ellenőrzése
     if exercise is None and matched_lib is None:
         if strict:
             identifier = raw_slug or raw_title or "unknown"
             raise ExerciseNotFoundError(identifier)
 
-        # Non-strict fallback canonical exercise by muscle group/badge
+        # Nem szigorú módban tartalék alapgyakorlat az izomcsoport alapján
         badge = str(raw_ex.get("badgeText") or "").lower()
         fallback_slug = "push-up"
         if "leg" in badge or "quad" in badge or "calf" in badge:
@@ -653,7 +653,7 @@ def resolve_and_enrich_exercise(
         if exercise is None and fallback_slug in library_map:
             matched_lib = library_map[fallback_slug]
 
-    # Resolve canonical attributes
+    # kanónikás attribútumok és megjelenítési adatok feloldása
     if exercise is not None:
         canonical_slug = exercise.slug
         en_trans = exercise.translations.get("en") if exercise.translations else None

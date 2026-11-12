@@ -27,7 +27,7 @@ from sqlalchemy.orm.collections import attribute_keyed_dict
 from app.db import Base
 
 
-# Enum típusok (kategóriák, nehézség, testrészek)
+#típusok (kategóriák, nehézség, testrészek)
 
 
 class Category(StrEnum):

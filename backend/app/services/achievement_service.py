@@ -148,7 +148,7 @@ class AchievementDomainService:
 
     @classmethod
     def _resolve_metric(cls, bp: AchievementBlueprint, stats: UserStats) -> tuple[int, int]:
-        # Visszaadja az aktuális és célértéket a jelvény feltételei alapján
+        # Visszaadja az aktuális és cél éretkeit a jelvény feltételei alapján
         total_workouts = max(stats.total_workouts or 0, stats.sessions_this_week or 0)
         best_streak = max(stats.best_streak or 0, stats.streak or 0)
         total_minutes = stats.total_minutes or ((stats.total_hours or 0) * 60)
@@ -216,7 +216,7 @@ class AchievementDomainService:
                 row.icon = bp.icon
                 row.target_value = target_val
                 row.unit = bp.unit
-                # Preserve highest achieved progress if already unlocked
+                # Ha már megszerezte a jelvényt, megőrizzük a maximális célértéket
                 row.current_value = target_val if row.is_unlocked else current_val
                 if qualified and not row.is_unlocked:
                     row.is_unlocked = True

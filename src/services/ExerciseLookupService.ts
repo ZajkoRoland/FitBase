@@ -8,7 +8,7 @@ function formatExerciseSubjectHu(localizedName: string): string {
   const trimmed = localizedName.trim();
   if (!trimmed) return 'A gyakorlat';
 
-  // Preserve capitalized proper nouns / acronyms at start of phrase
+  // Tulajdonnevek és betűszavak (pl. TRX, Arnold, EZ) nagybetűs formájának megőrzése
   const keepUpperPattern = /^(TRX|EZ|IT|L-|V-|T-|Arnold|Zercher|Zottman|Pendlay|Spoto|Nordic|Pilates|Superman|Svend|Pallof|Jefferson|Hack|Dead Bug|Muscle-Up|Battle)/;
   const displayName = keepUpperPattern.test(trimmed)
     ? trimmed
@@ -23,16 +23,12 @@ function formatExerciseSubjectHu(localizedName: string): string {
 
 // Gyakorlatok részletes adatainak és leírásainak lekérése gyorsítótárral
 export class ExerciseLookupService {
-  private static instance: ExerciseLookupService;
   private readonly cache: Map<string, ExerciseDetail> = new Map();
 
-  private constructor() { }
+  constructor() { }
 
   public static getInstance(): ExerciseLookupService {
-    if (!ExerciseLookupService.instance) {
-      ExerciseLookupService.instance = new ExerciseLookupService();
-    }
-    return ExerciseLookupService.instance;
+    return exerciseLookupService;
   }
 
   // Gyakorlat részleteinek magyarosítása
@@ -179,4 +175,4 @@ export class ExerciseLookupService {
   }
 }
 
-export const exerciseLookupService = ExerciseLookupService.getInstance();
+export const exerciseLookupService = new ExerciseLookupService();

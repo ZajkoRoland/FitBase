@@ -6,7 +6,7 @@
 cd backend
 python -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -r requirements.txt
-copy .env.example .env   # then fill in DATABASE_URL and JWT_SECRET
+copy .env.example .env   # kitölti a DATABASE_URL-t and JWT_SECRET-et
 ```
 
 ## Run

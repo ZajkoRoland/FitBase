@@ -4,7 +4,7 @@ import { ApiClient } from '@/lib/api/ApiClient';
 export abstract class BaseRepository {
   protected readonly api: ApiClient;
 
-  protected constructor(api: ApiClient = ApiClient.getInstance()) {
+  constructor(api: ApiClient = ApiClient.getInstance()) {
     this.api = api;
   }
 }

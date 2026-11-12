@@ -13,41 +13,41 @@ from app.config import get_settings
 from app.deps import CurrentUser, DbSession
 from app.errors import AppError
 from app.models import (
-    PasswordResetCode,
+PasswordResetCode,
     Profile,
-    RefreshToken,
+RefreshToken,
     User,
-    UserAchievement,
+UserAchievement,
     UserSettings,
-    UserStats,
+UserStats,
     WeeklyPlanDay,
-    WorkoutSession,
+WorkoutSession,
 )
 from app.schemas import (
     ChangePasswordRequest,
-    ForgotPasswordRequest,
+ForgotPasswordRequest,
     ForgotPasswordResponse,
-    GoogleAuthRequest,
+GoogleAuthRequest,
     LoginRequest,
-    RefreshRequest,
+RefreshRequest,
     RegisterRequest,
-    ResetPasswordRequest,
+ResetPasswordRequest,
     TokenResponse,
-    UserOut,
+UserOut,
     UsernameAvailability,
 )
 from app.security import (
-    burn_password_check,
+burn_password_check,
     create_access_token,
-    generate_refresh_token,
+generate_refresh_token,
     generate_reset_code,
-    hash_password,
+hash_password,
     hash_refresh_token,
-    hash_reset_code,
+hash_reset_code,
     password_needs_rehash,
-    refresh_token_expiry,
+refresh_token_expiry,
     reset_code_expiry,
-    verify_password,
+verify_password,
 )
 from app.services.achievement_service import AchievementDomainService
 from app.services.email_service import EmailService
@@ -117,7 +117,6 @@ def register(body: RegisterRequest, db: DbSession) -> TokenResponse:
         db.flush()
         AchievementDomainService.sync_user_achievements(db, user.id, stats)
     except IntegrityError:
-        # Lost a race against a concurrent registration with the same email/username.
         db.rollback()
         raise AppError(
             status.HTTP_409_CONFLICT, "user_already_exists", "This email or username is already taken."
@@ -138,7 +137,7 @@ def login(body: LoginRequest, db: DbSession) -> TokenResponse:
     if not user.is_active:
         raise AppError(status.HTTP_403_FORBIDDEN, "user_banned", "This account has been suspended.")
 
-    # Upgrade legacy Supabase bcrypt hashes to argon2 now that we know the plaintext.
+    # Korábbi bcrypt jelszóhashek frissítése argon2 algoritmusra a sikeres bejelentkezéskor
     if password_needs_rehash(user.password_hash):
         user.password_hash = hash_password(body.password)
 
@@ -219,7 +218,7 @@ def refresh(body: RefreshRequest, db: DbSession) -> TokenResponse:
 
     now = datetime.now(UTC)
     if token.revoked_at is not None:
-        # A rotated-out token was used again: likely stolen. Kill every session of this user.
+        
         db.execute(
             update(RefreshToken)
             .where(RefreshToken.user_id == token.user_id, RefreshToken.revoked_at.is_(None))
@@ -267,7 +266,7 @@ def forgot_password(body: ForgotPasswordRequest, db: DbSession) -> ForgotPasswor
     if user is None or not user.is_active:
         return ForgotPasswordResponse(message=generic_msg)
 
-    # Invalidate previous unexpired reset codes for this account
+    #Még le nem járt visszaállító kódok érvénytelenítése
     db.execute(
         update(PasswordResetCode)
         .where(PasswordResetCode.user_id == user.id, PasswordResetCode.used_at.is_(None))
@@ -284,7 +283,7 @@ def forgot_password(body: ForgotPasswordRequest, db: DbSession) -> ForgotPasswor
     db.add(reset_entry)
     db.commit()
 
-    # Dispatch email (or print to server logs if SMTP is unconfigured)
+    # E-mail küldése (vagy szervernaplóba írás, ha nincs beállítva SMTP)
     EmailService.send_password_reset_code(email, code)
 
     return ForgotPasswordResponse(message=generic_msg)
@@ -313,13 +312,13 @@ def reset_password(body: ResetPasswordRequest, db: DbSession) -> Response:
     if reset_code is None:
         raise AppError(status.HTTP_400_BAD_REQUEST, "invalid_reset_code", "Invalid or expired verification code.")
 
-    # Mark code as consumed
+    # A kód megjelölése felhasználtként
     reset_code.used_at = now
 
-    # Update user password
+    # Felhasználó új jelszavának frissítése
     user.password_hash = hash_password(body.new_password)
 
-    # Invalidate existing refresh tokens for security so all old sessions require re-authentication
+    # Biztonsági okból korábbi munkamenetek (refresh tokenekek) érvénytelenítése 
     db.execute(
         update(RefreshToken)
         .where(RefreshToken.user_id == user.id, RefreshToken.revoked_at.is_(None))
@@ -343,7 +342,7 @@ def change_password(body: ChangePasswordRequest, user: CurrentUser, db: DbSessio
 @router.delete("/me", status_code=status.HTTP_204_NO_CONTENT)
 def delete_account(user: CurrentUser, db: DbSession) -> Response:
     user_id = user.id
-    # Explicitly purge all account-scoped child entities in strict dependency order
+    # A fiókhoz tartozó összes kapcsolódó adat végleges törlése függőségi sorrendben
     db.execute(delete(RefreshToken).where(RefreshToken.user_id == user_id))
     db.execute(delete(WorkoutSession).where(WorkoutSession.user_id == user_id))
     db.execute(delete(UserAchievement).where(UserAchievement.user_id == user_id))

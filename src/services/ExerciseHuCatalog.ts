@@ -99,7 +99,7 @@ export function resolveHungarianExerciseTitle(title: string, slug?: string | nul
     return EXERCISE_SLUG_HU_MAP[`${derivedSlug}s`];
   }
 
-  // Strip redundant leading "barbell " / "dumbbell " when RepDB name includes equipment prefix
+  // Felesleges kezdő eszköz előtagok ("barbell-", "dumbbell-") levágása a pontosabb szótári egyezéshez
   for (const prefix of ['barbell-', 'dumbbell-', 'bodyweight-']) {
     if (derivedSlug.startsWith(prefix)) {
       const stripped = derivedSlug.slice(prefix.length);

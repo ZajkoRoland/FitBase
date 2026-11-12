@@ -37,7 +37,7 @@ class HybridAIEngine(BaseAIEngine):
         history: list[CoachChatMessage],
         language: str | None = None,
     ) -> CoachChatResponse:
-        # 1. Try Google Gemini Flash if configured
+        # Google Gemini Flash lekérdezése, ha konfigurálva van
         if self.gemini_engine and self.gemini_engine.is_configured:
             try:
                 logger.info("HybridAIEngine: querying Google Gemini Flash...")
@@ -53,7 +53,7 @@ class HybridAIEngine(BaseAIEngine):
                     gemini_err,
                 )
 
-        # 2. Seamless failover / Default: Groq LPU engine
+        #Automatikus tartalék: Groq
         logger.info("HybridAIEngine: querying Groq LPU engine...")
         return self.groq_engine.generate_coach_reply(
             user_context=user_context,

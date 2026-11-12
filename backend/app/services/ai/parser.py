@@ -73,7 +73,7 @@ def extract_quick_replies_from_text(text: str) -> tuple[str, list[str]]:
     raw_qr_block = match.group(1).strip()
     extracted: list[str] = []
 
-    # 1. Try parsing JSON array
+    # JSON tömb feldolgozásának megprobálása
     if "[" in raw_qr_block:
         bracket_start = raw_qr_block.find("[")
         bracket_end = raw_qr_block.rfind("]")
@@ -89,13 +89,13 @@ def extract_quick_replies_from_text(text: str) -> tuple[str, list[str]]:
         except Exception:
             pass
 
-    # 2. Regex fallback for quotes if JSON array was malformed
+    #  Tartalék reguláris kifejezés idézőjeles elemek kinyerésére, ha a JSON hibás
     if not extracted:
         quotes = re.findall(r'["\']([^"\'\n\r]{2,80})["\']', raw_qr_block)
         if quotes:
             extracted = [q.strip() for q in quotes if q.strip()]
 
-    # 3. Bullet points fallback (e.g. • Item 1)
+    # Felsorolásjelek kinyerése 
     if not extracted:
         bullets = re.findall(r'(?m)^\s*[\*•-]\s*([^\n\r]{2,80})', raw_qr_block)
         if bullets:
@@ -109,11 +109,11 @@ def strip_orphan_bullets(text: str) -> str:
     # Eltávolítja a félbehagyott felsorolásjeleket a szöveg végéről
     if not text:
         return ""
-    # Strip empty bullet lines
+    # Üres felsorolásjelet tartalmazó sorok törlése
     cleaned = re.sub(r"(?m)^\s*[\*•-]\s*$", "", text).strip()
-    # Strip trailing bullet symbol if text ends with one
+    # A szöveg végén maradt magányos felsorolásjel levágása
     cleaned = re.sub(r"[\*•-]\s*$", "", cleaned).strip()
-    # Normalize excessive blank lines
+    # Felesleges üres sorok összevonása
     cleaned = re.sub(r"\n{3,}", "\n\n", cleaned)
     return cleaned.strip()
 
@@ -124,11 +124,11 @@ def resolve_contextual_quick_replies(
     language: str | None = None,
     plan_structure: str | None = None,
 ) -> list[str]:
-    # Kontextushoz illő gyorsválasz gombokat generál
+    # Kontextushoz gyorsválasz gombokat generál
     combined = f"{user_message or ''} {text or ''}".lower()
     is_hu = language != "en"
 
-    # Determine plan structure (1_week, 2_week, or 4_week)
+    # Edzéstervezési ciklus meghatározása (1,2 vagy 4 hetes)
     struct = (plan_structure or "").lower()
     if not struct:
         if re.search(r"\b4\s*h[eé]t|\b4\s*hetes|\b4_week\b|négy\s*h[eé]t", combined):
@@ -157,7 +157,7 @@ def resolve_contextual_quick_replies(
             else "Show weekly breakdown: which muscle groups on which days!"
         )
 
-    # 1. Diagnostic workout plan consultation (Coach asking calibration questions)
+    # Tervezési felmérés és változást igéánylő kérdések az edzőtől
     if (
         re.search(r"hol edzel|milyen eszköz|hány napot|kérdésekre válaszolj|mielőtt összeállítanám|eszközök állnak|konditerem.*otthon", combined)
         or re.search(r"where do you train|what equipment|how many days|before building your plan", combined)
@@ -179,7 +179,7 @@ def resolve_contextual_quick_replies(
             ]
         )
 
-    # 2. Plan presented or pending confirmation
+    # Elkészült vagy megerősítésre váró edzésterv
     if (
         re.search(r"generate_full_plan|hétfő:.*kedd:|push.*pull|itt a beosztás|íme a heti|készítettem egy.*tervet", combined)
         or re.search(r"here is your weekly schedule|monday:.*tuesday:|push.*pull", combined)
@@ -198,7 +198,7 @@ def resolve_contextual_quick_replies(
             ]
         )
 
-    # 3. Plan confirmed / saved
+    #Elmentett, rögzített edzésterv
     if (
         re.search(r"rögzítettem|elmentettem|mentve|beállítottam a tervet|sikeresen frissítettem", combined)
         or re.search(r"saved your plan|plan has been recorded|updated your schedule", combined)
@@ -217,7 +217,7 @@ def resolve_contextual_quick_replies(
             ]
         )
 
-    # 4. Off-topic declined (staying on fitness persona)
+    # Témán kívüli kérdés elhárítása (fókuszban a fitnesz)
     if (
         re.search(r"kizárólag a sportban|személyes fitbase edződ|maradjunk a (céljaidnál|formába)", combined)
         or re.search(r"strictly on your training|as your fitbase personal coach", combined)
@@ -236,7 +236,7 @@ def resolve_contextual_quick_replies(
             ]
         )
 
-    # 5. Exercise technique / form execution
+    # Gyakorlat technika és szabályos végrehajtás
     if (
         re.search(r"technika|végrehajtás|szabályos|lapocká|fogás|tartás|form|technique|execution", combined)
     ):
@@ -254,7 +254,7 @@ def resolve_contextual_quick_replies(
             ]
         )
 
-    # 6. Rest day / recovery / fatigue
+    #Pihenőnap, regeneráció és izomláz
     if (
         re.search(r"pihenőnap|regeneráció|alvás|fáradtság|izomláz|rest day|recovery|soreness", combined)
     ):
@@ -272,7 +272,7 @@ def resolve_contextual_quick_replies(
             ]
         )
 
-    # 7. Nutrition / Diet / Calories
+    # Táplálkozás, étrend és kalóriák
     if (
         re.search(r"táplálkoz|kalória|fehérje|makró|étrend|nutrition|protein|calories|diet", combined)
     ):
@@ -290,7 +290,7 @@ def resolve_contextual_quick_replies(
             ]
         )
 
-    # 8. General fallback
+    # Általános alapértelmezett gombok
     return (
         [
             "Készíts nekem új edzéstervet!",
@@ -312,14 +312,14 @@ def extract_coach_json_data(
     user_message: str | None = None,
     plan_structure: str | None = None,
 ) -> dict[str, Any]:
-    # Kinyeri a szöveget, a gyorsválaszokat és az esetleges edzésterv-módosítást a modell válaszából
+    # Kinyeri a szöveget, a gyorsválaszokat és az esetleges edzésterv módosítást a modell válaszából
     raw_content = (raw_content or "").strip()
     if not raw_content:
         return {}
 
     parsed: dict[str, Any] | None = None
 
-    # 1. Direct JSON parse with strict=False (allows unescaped literal newlines in strings)
+    # Közvetlen JSON feldolgozás (strict=False engedélyezi az újsorokat a sztringekben)
     try:
         cand = json.loads(raw_content, strict=False)
         if isinstance(cand, dict):
@@ -327,7 +327,7 @@ def extract_coach_json_data(
     except Exception:
         pass
 
-    # 2. Markdown code fences: ```json ... ``` or ``` ... ```
+    # Markdown kódblokkok felismerése: ```json ... ``` vagy ``` ... ```
     if not parsed:
         match = re.search(r"```(?:json)?\s*([\s\S]*?)\s*```", raw_content, re.IGNORECASE)
         if match:
@@ -338,7 +338,7 @@ def extract_coach_json_data(
             except Exception:
                 pass
 
-    # 3. Outer bracket search { ... } with direct parse or direct action extraction
+    # Külső kapcsos zárójelek { ... } keresése és feldolgozása
     if not parsed:
         first_brace = raw_content.find("{")
         last_brace = raw_content.rfind("}")
@@ -359,13 +359,13 @@ def extract_coach_json_data(
             except Exception:
                 pass
 
-    # 4. Truncated JSON repair with stack-based auto-closing
+    # Csonkolt JSON javítása verem alapú zárójel kiegészítéssel
     if not parsed and "{" in raw_content:
         first_brace = raw_content.find("{")
         text_before = raw_content[:first_brace].strip()
         snippet = raw_content[first_brace:]
 
-        # Direct auto-close
+        # Közvetlen zárójel kiegészítés
         try:
             cand = json.loads(auto_close_json(snippet), strict=False)
             if isinstance(cand, dict):
@@ -380,7 +380,7 @@ def extract_coach_json_data(
         except Exception:
             pass
 
-        # Peel back incomplete trailing elements if needed
+        # Befejezetlen záró elemek fokozatos visszavágása szükség esetén
         if not parsed:
             cleaned = snippet
             for _ in range(40):
@@ -406,7 +406,7 @@ def extract_coach_json_data(
                 except Exception:
                     continue
 
-    # 5. Regex recovery if still unparsed
+    #Reguláris kifejezés alapú helyreállítás, ha a JSON nem értelmezhető
     if not parsed:
         reply_match = re.search(r'"reply_text"\s*:\s*"((?:[^"\\]|\\.)*)"', raw_content, re.DOTALL)
         clean_reply = None
@@ -416,7 +416,7 @@ def extract_coach_json_data(
             except Exception:
                 clean_reply = reply_match.group(1)
 
-        # Look for plan_modification block
+        # plan_modification blokk keresése
         plan_mod = None
         plan_match = re.search(r'"plan_modification"\s*:\s*(\{[\s\S]*\})', raw_content)
         if plan_match:
@@ -432,7 +432,7 @@ def extract_coach_json_data(
                 "plan_modification": plan_mod,
             }
 
-    # 6. Fallback if natural conversational prose
+    #Tartalék megoldás természetes szöveges válasz esetén
     if not parsed:
         cleaned_content, leaked_qr = extract_quick_replies_from_text(raw_content)
         cleaned_content = strip_orphan_bullets(cleaned_content)
@@ -442,7 +442,7 @@ def extract_coach_json_data(
                 cleaned_content = cleaned_content[:trailing_brace].strip()
                 cleaned_content = strip_orphan_bullets(cleaned_content)
 
-        # Check if the model dumped raw unparsed JSON code or parameter fragments
+        # Ellenőrizzük, hogy a modell nyers JSON töredékeket adott-e vissza
         is_param_fragment = bool(
             re.search(r"\d+\s*x\s*[\d/]+|\brest\b|[\"']?\w+[\"']?\s*:", cleaned_content, re.IGNORECASE)
         )
@@ -475,7 +475,7 @@ def extract_coach_json_data(
             "plan_modification": None,
         }
 
-    # Post-process parsed object: NEVER leak JSON into reply_text and rescue leaked quick_replies
+    # Feldolgozott válasz utókezelése: JSON kód kizárása a szövegből és gyorsválaszok megmentése
     reply_text = str(parsed.get("reply_text") or "")
     cleaned_reply, leaked_qr = extract_quick_replies_from_text(reply_text)
     reply_text = strip_orphan_bullets(cleaned_reply)
@@ -496,7 +496,7 @@ def extract_coach_json_data(
             else "I have created and recorded your workout plan! You can view the full schedule in the calendar."
         )
 
-    # Clean up full_plan if plan_modification action is generate_full_plan
+    # full_plan mező megtisztítása generate_full_plan művelet esetén
     plan_mod = parsed.get("plan_modification")
     if isinstance(plan_mod, dict) and plan_mod.get("action") == "generate_full_plan":
         full_plan = plan_mod.get("full_plan")

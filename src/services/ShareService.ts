@@ -4,15 +4,10 @@ import { Share } from 'react-native';
 
 // Edzés előrehaladás megosztása a rendszer natív megosztó felületén keresztül
 export class ShareService {
-  private static instance: ShareService;
-
-  private constructor() { }
+  constructor() { }
 
   public static getInstance(): ShareService {
-    if (!ShareService.instance) {
-      ShareService.instance = new ShareService();
-    }
-    return ShareService.instance;
+    return shareService;
   }
 
   // Edzésstatisztikák megosztása az aktív nyelven
@@ -42,4 +37,4 @@ export class ShareService {
   }
 }
 
-export const shareService = ShareService.getInstance();
+export const shareService = new ShareService();

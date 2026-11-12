@@ -39,19 +39,19 @@ class GroqAIEngine(BaseAIEngine):
                 {"role": "system", "content": system_prompt}
             ]
 
-            # The mobile client sends the history *including* the message being sent now.
-            # Drop that trailing duplicate so the model doesn't see the same request twice
-            # and the history window holds real prior turns.
+            # A mobil kliens az előzményekkel együtt küldi az aktuális üzenetet is.
+            # Levágjuk a duplikált záró elemet, hogy a modell ne lássa kétszer ugyanazt a kérést,
+            # És az előzményablak a valós korábbi beszélgetést tartalmazza.
             prior = list(history)
             if prior and prior[-1].role == "user" and (prior[-1].content or "").strip() == message.strip():
                 prior = prior[:-1]
 
-            # Last 6 prior turns
+            # Legfeljebb az utolsó 6 üzenetváltás megtartása
             for item in prior[-6:]:
                 content = (item.content or "").strip()
                 if not content:
                     continue
-                # If assistant message had raw leaked JSON, clean it up so the model doesn't continue generating JSON
+                # Ha az asszisztens korábbi válaszában nyers JSON maradt, megtisztítjuk a további hibák elkerülésére
                 if item.role == "assistant" and is_json_leak(content):
                     parsed_prev = extract_coach_json_data(content, language)
                     content = parsed_prev.get("reply_text") or "Összeállítottam a heti edzéstervedet."
@@ -60,16 +60,13 @@ class GroqAIEngine(BaseAIEngine):
                 messages.append({"role": item.role, "content": content})
 
             messages.append({"role": "user", "content": message})
-
-            # Models to try with automatic rate-limit backoff and failover.
-            # qwen/qwen3.8-27b is given primary preference for high speed, generous limits and multilingual stability.
             candidate_models = [self.model, "qwen/qwen3.8-27b", "openai/gpt-oss-20b", "openai/gpt-oss-120b"]
             models_to_try: list[str] = []
             for m in candidate_models:
                 if m and m not in models_to_try:
                     models_to_try.append(m)
 
-            # Ensure qwen is first candidate for immediate reliability and zero-token-exhaustion risk
+            #Qwen modell legyen az első jelölt
             if "qwen/qwen3.8-27b" in models_to_try:
                 models_to_try.remove("qwen/qwen3.8-27b")
                 models_to_try.insert(0, "qwen/qwen3.8-27b")
@@ -92,7 +89,7 @@ class GroqAIEngine(BaseAIEngine):
                             if data.get("reply_text"):
                                 break
                 except groq.BadRequestError as bad_req:
-                    # Groq 400 error carrying failed_generation (e.g. if json validation tripped)
+                    # Groq 400-as hiba esetén a failed_generation mezőből kinyerjük az elkészült szöveget
                     last_err = bad_req
                     body = getattr(bad_req, "body", None) or {}
                     err_obj = body.get("error", {}) if isinstance(body, dict) else {}

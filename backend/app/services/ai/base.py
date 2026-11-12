@@ -15,7 +15,7 @@ from app.services.ai.parser import (
 
 logger = logging.getLogger(__name__)
 
-# Re-export parser utilities for backwards compatibility
+# Parser segédfüggvények listája a visszafelé kompatibilitásért
 __all__ = [
     "BaseAIEngine",
     "auto_close_json",
@@ -106,7 +106,7 @@ class BaseAIEngine(ABC):
             )
         schedule_text = "\n".join(schedule_lines) if schedule_lines else "No schedule set."
 
-        # Achievements & Rank context
+        # Kitüntetések és szint adatok előkészítése a prompt számára
         rank_info = achievements_summary.get("player_rank") or {}
         rank_title = rank_info.get("title", "Apprentice Athlete")
         rank_level = rank_info.get("level", 1)
@@ -119,7 +119,7 @@ class BaseAIEngine(ABC):
             else "All unlocked"
         )
 
-        # Recent sessions & Recognized patterns
+        # Legutóbbi edzésnaplók és felismert szokások
         recent_lines = [
             f"- {s.get('session_date')}: {s.get('workout_title')} ({s.get('duration_minutes')} min, {s.get('calories_burned')} kcal)"
             for s in recent_sessions[:5]
@@ -155,7 +155,7 @@ class BaseAIEngine(ABC):
 
         catalog_summary = get_catalog_prompt_summary()
 
-        # Determine language directive
+        # Nyelvi nehézésgek meghatározása
         if language == "en":
             lang_instruction = (
                 "CRITICAL LANGUAGE RULE: You MUST write your entire response and quick_replies strictly in ENGLISH."

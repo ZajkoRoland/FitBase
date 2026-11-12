@@ -61,7 +61,7 @@ def _format_updated_details(
     reps: str | int | None = None,
     rest_seconds: int | None = None,
 ) -> str:
-    # Gyakorlat részletek frissítése sorozatokkal és pihenőidővel
+    # Gyakorlatok részletes frissítése sorozatokkal és pihenőidővel
     match = re.match(r"^(\d+)\s*x\s*([^·]+?)(?:\s*·\s*(\d+)s?\s*rest)?$", (old_details or "").strip(), re.IGNORECASE)
     if match:
         cur_sets, cur_reps, cur_rest = match.groups()
@@ -77,13 +77,14 @@ def _format_updated_details(
 
 
 def _sanitize_quick_replies(quick_replies: list[str] | None) -> list[str]:
-    # Gyorsválasz gombok szövegezésének ellenőrzése
+    # Gyorsválasz gombok ellenőrzése
     if not quick_replies:
         return []
 
     sanitized: list[str] = []
     replacements = [
-        # Deliberative / First person singular replacements
+        # A gyors buborék szövegek fixálása
+        # Egyes szám első személyű megfogalmazások cseréje felszólító módra
         (re.compile(r"^módosítsam\s+", re.IGNORECASE), "Módosítsd "),
         (re.compile(r"^módosítanám\s+", re.IGNORECASE), "Módosítsd "),
         (re.compile(r"^módosítom\s+", re.IGNORECASE), "Módosítsd "),
@@ -97,18 +98,18 @@ def _sanitize_quick_replies(quick_replies: list[str] | None) -> list[str]:
         (re.compile(r"^készítek\s+", re.IGNORECASE), "Készíts "),
         (re.compile(r"^elemezem\s+", re.IGNORECASE), "Elemezd "),
         (re.compile(r"^átnézem\s+", re.IGNORECASE), "Nézd át "),
-        # Coach-to-user directives transformed to athlete-to-coach requests
+        # Edzői utasítások átalakítása felhasználói kérésekké
         (re.compile(r"^kérj\s+(egy\s+)?új\s+gyakorlatot.*", re.IGNORECASE), "Adj egy új gyakorlatot mára!"),
         (re.compile(r"^kérj\s+gyakorlatot.*", re.IGNORECASE), "Adj egy új gyakorlatot mára!"),
         (re.compile(r"^kérj\s+", re.IGNORECASE), "Adj "),
         (re.compile(r"^kérdezz\s+a\s+technikáról.*", re.IGNORECASE), "Mutasd a helyes technikát!"),
         (re.compile(r"^kérdezz\s+(a\s+)?", re.IGNORECASE), "Mutasd a "),
-        # Coach questions transformed to athlete actions
+        # Edzői kérdések átalakítása felhasználói válaszokká
         (re.compile(r"^még\s+valami\s+módosítandó\??", re.IGNORECASE), "Cseréljünk még egy gyakorlatot!"),
         (re.compile(r"^segíthetek.*\??", re.IGNORECASE), "Van még kérdésem!"),
         (re.compile(r"^van\s+még\s+kérdésed\??", re.IGNORECASE), "Mutass még tippeket!"),
         (re.compile(r"^készen\s+állsz.*\??", re.IGNORECASE), "Készen állok a mai edzésre!"),
-        # English equivalents
+        # Angol nyelvű magyarról
         (re.compile(r"^shall\s+i\s+modify\s+", re.IGNORECASE), "Modify "),
         (re.compile(r"^i\s+modify\s+", re.IGNORECASE), "Modify "),
         (re.compile(r"^ask\s+for\s+a\s+new\s+exercise.*", re.IGNORECASE), "Add a new exercise for today!"),
@@ -147,9 +148,9 @@ def _clean_reply_text(text: str | None) -> str:
     # Formázási hibák és felesleges jelölők eltávolítása a válaszból
     if not text:
         return ""
-    # Strip any leaked Quick replies text block
+    # Kiszivárgott gyorsválasz szövegblokk eltávolítása
     cleaned, _ = extract_quick_replies_from_text(text)
-    # Strip any trailing leaked JSON block
+    # A szöveg végén maradt szivárgó JSON blokk levágása
     if "{" in cleaned:
         brace_idx = cleaned.find("{")
         if is_json_leak(cleaned[brace_idx:]):
@@ -164,7 +165,6 @@ def _clean_reply_text(text: str | None) -> str:
 
 router = APIRouter(prefix="/coach", tags=["coach"])
 
-# Singleton engine instance
 _engine: BaseAIEngine | None = None
 
 
@@ -193,10 +193,10 @@ def coach_chat(
     db: DbSession,
     request: Request,
 ) -> CoachChatResponse:
-    # 1. Build structured, relational account context strictly for `current_user.id`
+    #  Strukturált profil és fiókkontextus felépítése a felhasználókhoz
     day_names_hu = AccountStateService.DAY_NAMES_HU
     day_codes = AccountStateService.DAY_CODES
-    today_weekday = datetime.now().weekday()  # 0 = Monday, 6 = Sunday
+    today_weekday = datetime.now().weekday()  # 0 = hétfő, 6 = vasárnap
 
     ai_ctx = AccountStateService.build_ai_user_context(db, current_user)
     db.commit()
@@ -249,8 +249,8 @@ def coach_chat(
         language=req.language,
     )
 
-    # 2. If plan_modification was omitted by the model, but the user requested to record/save/apply
-    # a plan OR the model claimed in reply_text that it recorded it, recover the plan from history
+    #  Ha a modell kihagyta a plan_modification objektumot, de a felhasználó rögzítést/mentést kért,
+    # vagy a modell szövegesen azt állította, hogy elmentette, helyreállítjuk a tervet az előzményekből
     if not reply.plan_modification:
         is_save_request = bool(
             re.search(
@@ -276,7 +276,7 @@ def coach_chat(
                         except Exception:
                             pass
 
-    # 3. If the AI decided to execute a plan modification, apply it strictly to `current_user.id`
+    #  Ha az AI edzésterv-módosítást generált, alkalmazzuk a felhasználó edzéstervére
     if reply.plan_modification:
         try:
             media = MediaUrls.from_request(request)
@@ -331,7 +331,7 @@ def coach_chat(
                 if not mod.new_exercise:
                     raise ValueError("replace_exercise requires 'new_exercise' payload.")
 
-                # Resolve new exercise with strict validation
+                # Az új gyakorlat feloldása szigorú adatbázis ellenőrzéssel
                 enriched_new = resolve_and_enrich_exercise(
                     db, media, mod.new_exercise, fallback_index=1, strict=True
                 )
@@ -512,8 +512,7 @@ def coach_chat(
 
                     formatted_exercises = []
                     if day_type == "workout":
-                        # Only real library exercises are saved. Unknown ones are skipped and
-                        # reported instead of being silently swapped for an unrelated fallback.
+                        # Az adatbázis gyakoraltibol kell létrehozni a edzéstervet, másból nem lehet.
                         for raw_ex in day_data.get("exercises") or []:
                             if not isinstance(raw_ex, dict):
                                 continue
@@ -557,7 +556,7 @@ def coach_chat(
                     day_dict["workout_meta"] = pday.workout_meta
                     enriched_plan.append(day_dict)
 
-                # Days the model did not mention become rest days, never empty workout days.
+        # Azok a napok, amelyeket a modell nem említett, automatikusan pihenőnapok lesznek.
                 for d_idx in range(7):
                     if d_idx not in updated_day_indices:
                         pday = plan_days_by_idx[d_idx]

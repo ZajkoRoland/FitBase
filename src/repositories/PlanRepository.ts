@@ -13,13 +13,8 @@ interface PlanDayDto {
 }
 
 export class PlanRepository extends BaseRepository {
-  private static instance: PlanRepository;
-
   public static getInstance(): PlanRepository {
-    if (!PlanRepository.instance) {
-      PlanRepository.instance = new PlanRepository();
-    }
-    return PlanRepository.instance;
+    return planRepository;
   }
 
   public async getWeek(): Promise<WorkoutDay[]> {
@@ -89,4 +84,4 @@ export class PlanRepository extends BaseRepository {
   }
 }
 
-export const planRepository = PlanRepository.getInstance();
+export const planRepository = new PlanRepository();

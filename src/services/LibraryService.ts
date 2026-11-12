@@ -115,19 +115,15 @@ const DIFFICULTY_LABEL_KEYS: Record<string, string> = {
 
 // Gyakorlattár műveletek és szűrések kezelése
 export class LibraryService {
-  private static instance: LibraryService;
   private cachedCatalog: ExerciseSummary[] | null = null;
   private catalogPromise: Promise<ExerciseSummary[]> | null = null;
 
-  private constructor(
+  constructor(
     private readonly repo: ExerciseRepository = exerciseRepository
   ) { }
 
   public static getInstance(): LibraryService {
-    if (!LibraryService.instance) {
-      LibraryService.instance = new LibraryService();
-    }
-    return LibraryService.instance;
+    return libraryService;
   }
 
   public getCategories(): readonly string[] {
@@ -381,4 +377,4 @@ export class LibraryService {
   }
 }
 
-export const libraryService = LibraryService.getInstance();
+export const libraryService = new LibraryService();

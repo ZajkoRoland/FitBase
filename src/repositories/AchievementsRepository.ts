@@ -38,13 +38,8 @@ export interface AchievementsEnvelope {
 
 // Felhasználói jelvények és rang lekérése a backendről
 export class AchievementsRepository extends BaseRepository {
-  private static instance: AchievementsRepository;
-
   public static getInstance(): AchievementsRepository {
-    if (!AchievementsRepository.instance) {
-      AchievementsRepository.instance = new AchievementsRepository();
-    }
-    return AchievementsRepository.instance;
+    return achievementsRepository;
   }
 
   private mapEnvelope(dto: RawAchievementsEnvelopeDto): AchievementsEnvelope {
@@ -83,5 +78,5 @@ export class AchievementsRepository extends BaseRepository {
   }
 }
 
-export const achievementsRepository = AchievementsRepository.getInstance();
+export const achievementsRepository = new AchievementsRepository();
 

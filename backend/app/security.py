@@ -14,7 +14,7 @@ from app.config import get_settings
 
 _argon2 = PasswordHasher()
 
-# Pre-computed hash so login takes the same time whether or not the email exists.
+# Előre kiszámított hash az időzítéses támadások (timing attack) megelőzésére
 _DUMMY_HASH = _argon2.hash("timing-attack-dummy-password")
 
 
@@ -87,7 +87,7 @@ def generate_refresh_token() -> str:
 
 
 def hash_refresh_token(token: str) -> str:
-    # Refresh tokens are high-entropy random strings, so a fast hash is sufficient.
+    # A refresh tokenek nagy entrópiájú véletlen karakterláncok, így a gyors hash megfelelő
     return hashlib.sha256(token.encode()).hexdigest()
 
 

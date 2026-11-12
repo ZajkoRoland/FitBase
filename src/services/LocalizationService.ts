@@ -190,18 +190,14 @@ type LanguageChangeListener = (lang: SupportedLanguageCode) => void;
 // Nyelvkezelő szolgáltatás: többnyelvű fordítások betöltése,
 // magyar ragozások (hétfői, hétfőre, a hétfőt) és számformázás kezelése.
 export class LocalizationService {
-  private static instance: LocalizationService;
   private currentLanguage: SupportedLanguageCode = 'en';
   private listeners: Set<LanguageChangeListener> = new Set();
   private initialized = false;
 
-  private constructor() { }
+  constructor() { }
 
   public static getInstance(): LocalizationService {
-    if (!LocalizationService.instance) {
-      LocalizationService.instance = new LocalizationService();
-    }
-    return LocalizationService.instance;
+    return i18n;
   }
 
   public async init(): Promise<SupportedLanguageCode> {
@@ -655,5 +651,5 @@ export class LocalizationService {
   }
 }
 
-export const i18n = LocalizationService.getInstance();
+export const i18n = new LocalizationService();
 

@@ -16,8 +16,7 @@ class MediaUrls:
     @classmethod
     def from_request(cls, request: Request) -> "MediaUrls":
         configured = get_settings().media_base_url.strip()
-        # request.base_url already ends with '/', and follows whatever host the phone used
-        # (10.0.2.2 on the emulator, the LAN address on a real device).
+        # A request.base_url automatikusan követi az eszközt (emulátor esetén 10.0.2.2, valós telefonnál a helyi IP-cím)
         return cls(configured or f"{request.base_url}media/")
 
     def url(self, path: str | None) -> str | None:

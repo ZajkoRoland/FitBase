@@ -7,16 +7,10 @@ const STORAGE_AVATAR_PREFIX = '@fitbase_profile_avatar_uri';
 
 // Profilkép kiválasztása a telefon galériájából és elmentése a tárhelyre
 export class AvatarService {
-  private static instance: AvatarService;
   private activeUserId: string | null = null;
 
-  private constructor() { }
-
   public static getInstance(): AvatarService {
-    if (!AvatarService.instance) {
-      AvatarService.instance = new AvatarService();
-    }
-    return AvatarService.instance;
+    return avatarService;
   }
 
   public setActiveUserId(userId: string | null): void {
@@ -90,4 +84,4 @@ export class AvatarService {
   }
 }
 
-export const avatarService = AvatarService.getInstance();
+export const avatarService = new AvatarService();

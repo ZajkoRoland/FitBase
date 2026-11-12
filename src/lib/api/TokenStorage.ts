@@ -13,7 +13,7 @@ export abstract class TokenStorage {
       const raw = await this.read();
       return raw ? (JSON.parse(raw) as AuthSession) : null;
     } catch (error) {
-      // Corrupt or undecryptable entry (restored backup): start logged out.
+      // Sérült vagy visszafejthetetlen munkamenet (pl. visszaállított mentés): kijelentkezett állapot
       console.warn('[TokenStorage] Could not read session, clearing it.', error);
       await this.clear();
       return null;

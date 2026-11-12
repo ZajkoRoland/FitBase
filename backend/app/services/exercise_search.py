@@ -30,7 +30,7 @@ from app.schemas import (
 from app.services.media import MediaUrls
 
 FALLBACK_LANG = "en"
-NO_EQUIPMENT = "none"  # pseudo equipment slug: bodyweight-only exercises
+NO_EQUIPMENT = "none"  # eszköz nélküli, saját testsúlyos gyakorlatok azonosítója
 
 
 @dataclass(frozen=True)
@@ -43,9 +43,9 @@ class ExerciseFilters:
     difficulty: Difficulty | None = None
     difficulties: tuple[Difficulty, ...] = ()
     category: Category | None = None
-    equipment: str | None = None  # equipment slug, or NO_EQUIPMENT
+    equipment: str | None = None  # eszköz slug vagy NO_EQUIPMENT
     equipment_slugs: tuple[str, ...] = ()
-    muscle: str | None = None  # primary muscle slug
+    muscle: str | None = None  # elsődleges izomcsoport slug
     goal: Goal | None = None
     lang: str = FALLBACK_LANG
 
@@ -116,7 +116,7 @@ class ExerciseSearch:
         muscles = self.db.scalars(select(Muscle).order_by(Muscle.name))
         return list(equipment), list(muscles)
 
-    # ---------- internals ----------
+    # ---------- internals -------
 
     @classmethod
     def _order_clauses(cls, english_name_col):
@@ -164,7 +164,7 @@ class ExerciseSearch:
                     )
                 )
             )
-        # Body parts (support both single body_part and multi body_parts)
+        # Testrészek szűrése (egyedi és többszörös kijelölés támogatása)
         b_parts = set()
         if f.body_part:
             b_parts.add(f.body_part)
@@ -175,7 +175,7 @@ class ExerciseSearch:
         elif len(b_parts) > 1:
             conditions.append(Exercise.body_part.in_(b_parts))
 
-        # Difficulties (support both single difficulty and multi difficulties)
+        # Nehézségi szintek szűrése (egyedi és többszörös kijelölés támogatása)
         diffs = set()
         if f.difficulty:
             diffs.add(f.difficulty)
@@ -189,7 +189,7 @@ class ExerciseSearch:
         if f.category:
             conditions.append(Exercise.category == f.category)
 
-        # Equipment (support both single equipment and multi equipment_slugs)
+        # Eszközök szűrése (egyedi és többszörös kijelölés támogatása)
         eq_slugs = set()
         if f.equipment:
             eq_slugs.add(f.equipment)
@@ -277,13 +277,13 @@ class ExercisePresenter:
             muscles=[self._muscle_out(m) for m in muscles],
         )
 
-    # ---------- internals ----------
+    # --------- Belső segédmetódusok ----------
 
     def _translation(self, exercise: Exercise) -> tuple[str, ExerciseTranslation]:
         for lang in (self.lang, FALLBACK_LANG):
             if lang in exercise.translations:
                 return lang, exercise.translations[lang]
-        lang, translation = next(iter(exercise.translations.items()))  # data problem, but don't 500
+        lang, translation = next(iter(exercise.translations.items()))  # ha hiányzik a kért nyelv, az első elérhető fordítást adjuk vissza
         return lang, translation
 
     def _equipment(self, exercise: Exercise) -> EquipmentOut | None:

@@ -36,7 +36,7 @@ const FITNESS_GOALS = [
 
 const FITNESS_LEVELS = ['Beginner', 'Intermediate', 'Advanced'];
 
-// Edzési célok módosítása modál
+// Edzési célok módosítása modál ablak
 export const EditFitnessGoalsModal: React.FC<EditFitnessGoalsModalProps> = ({
   visible,
   onClose,

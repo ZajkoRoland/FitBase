@@ -16,15 +16,10 @@ const EN_MONTH_SHORT_INDEX: Record<string, number> = {
 
 // Felhasználói profil adatok és aktivitási mérföldkövek kezelése
 export class ProfileService {
-  private static instance: ProfileService;
-
-  private constructor() { }
+  constructor() { }
 
   public static getInstance(): ProfileService {
-    if (!ProfileService.instance) {
-      ProfileService.instance = new ProfileService();
-    }
-    return ProfileService.instance;
+    return profileService;
   }
 
   private localizeWeekLabel(label: string): string {
@@ -110,4 +105,4 @@ export class ProfileService {
   }
 }
 
-export const profileService = ProfileService.getInstance();
+export const profileService = new ProfileService();

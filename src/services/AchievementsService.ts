@@ -4,13 +4,8 @@ import type { Profile } from '@/types/profile';
 
 // Kitüntetések és szintlépések kezelése a profil adatai alapján
 export class AchievementsService {
-  private static instance: AchievementsService;
-
   public static getInstance(): AchievementsService {
-    if (!AchievementsService.instance) {
-      AchievementsService.instance = new AchievementsService();
-    }
-    return AchievementsService.instance;
+    return achievementsService;
   }
 
   private localizeUnit(unit?: string): string {
@@ -217,4 +212,4 @@ export class AchievementsService {
   }
 }
 
-export const achievementsService = AchievementsService.getInstance();
+export const achievementsService = new AchievementsService();

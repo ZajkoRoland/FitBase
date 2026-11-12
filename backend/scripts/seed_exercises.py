@@ -1,11 +1,11 @@
-"""Loads the RepDB exercise dataset into the catalogue tables.
+"""Betölti a RepDB gyakorlatkészletet az adatbázis katalógus tábláiba.
 
     cd backend
     python -m scripts.seed_exercises
     python -m scripts.seed_exercises --lang en,de,es
 
-Safe to run repeatedly: rows are matched by slug and synced, never duplicated.
-Exercise data by RepDB (repdb.co) - see Gyakorlatok/LICENSE-DATA.md.
+Biztonságosan többször is futtatható: az azonosító (slug) alapján szinkronizál, nem duplikál.
+Gyakorlatok forrása: RepDB (repdb.co) - lásd Gyakorlatok/LICENSE-DATA.md.
 """
 
 import argparse
@@ -13,10 +13,8 @@ import json
 import logging
 from decimal import Decimal
 from pathlib import Path
-
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session, selectinload
-
 from app.config import BACKEND_DIR
 from app.db import SessionLocal
 from app.models_catalog import (
@@ -42,7 +40,7 @@ log = logging.getLogger("seed_exercises")
 
 DEFAULT_DATASET_DIR = BACKEND_DIR.parent / "Gyakorlatok"
 
-# slug -> display name, for the few cases where str.title() gets it wrong.
+# Egyedi név változások, ha a címkezdő nagybetűsítés nem megfelelő
 NAME_OVERRIDES = {"ez_bar": "EZ Bar"}
 
 
@@ -51,7 +49,7 @@ def humanize(slug: str) -> str:
 
 
 class CatalogueSeeder:
-    """Reads exercises.json and mirrors it into the database inside one transaction."""
+    """Beolvassa az exercises.json fájlt és egyetlen adatbázis-tranzakcióban szinkronizálja."""
 
     def __init__(self, session: Session, dataset_dir: Path, languages: tuple[str, ...]) -> None:
         self.session = session
@@ -61,7 +59,7 @@ class CatalogueSeeder:
         self.equipment: dict[str, Equipment] = {}
         self.tags: dict[str, Tag] = {}
 
-    # ---------- public ----------
+    # ---------- publikus ----------
 
     def run(self) -> None:
         records = self._read_records()
@@ -105,7 +103,7 @@ class CatalogueSeeder:
             raise ValueError(f"dataset says {document.get('count')} exercises but holds {len(records)}")
         return records
 
-    # ---------- lookup tables ----------
+    # ---------- Törzsadattáblák ----------
 
     def _load_lookups(self) -> None:
         self.muscles = {m.slug: m for m in self.session.scalars(select(Muscle))}
@@ -131,10 +129,10 @@ class CatalogueSeeder:
             if slug not in self.tags:
                 self.tags[slug] = self._add(Tag(slug=slug))
 
-        self.session.flush()  # assigns the ids the exercises will point at
+        self.session.flush()  # hozzárendeli az azonosítókat, amelyekre a gyakorlatok hivatkoznak
 
     def _image_if_exists(self, folder: str, slug: str) -> str | None:
-        # Files are kebab-case ('gluteus-maximus.webp'), slugs in the data are snake_case.
+        # A képfájlok kötőjelesek ('gluteus-maximus.webp'), a forrásadatok aláhúzásosak.
         relative = f"images/{folder}/{slug.replace('_', '-')}.webp"
         return relative if (self.dataset_dir / relative).is_file() else None
 
@@ -142,7 +140,7 @@ class CatalogueSeeder:
         self.session.add(row)
         return row
 
-    # ---------- exercises ----------
+    # ---------- Gyakorlatok szinkronizálása ----------
 
     def _load_existing_exercises(self) -> dict[str, Exercise]:
         stmt = select(Exercise).options(
@@ -160,7 +158,6 @@ class CatalogueSeeder:
         return exercise
 
     def _apply_scalars(self, exercise: Exercise, raw: dict) -> None:
-        # The enum constructors raise on an unknown value, so a changed dataset fails loudly.
         exercise.category = Category(raw["category"])
         exercise.force_type = ForceType(raw["force_type"])
         exercise.mechanic = Mechanic(raw["mechanic"])
@@ -187,7 +184,7 @@ class CatalogueSeeder:
         wanted: dict[int, MuscleRole] = {}
         for slug in raw.get("secondary_muscles", []):
             wanted[self.muscles[slug].id] = MuscleRole.SECONDARY
-        for slug in raw.get("primary_muscles", []):  # primary wins if a muscle is listed twice
+        for slug in raw.get("primary_muscles", []):
             wanted[self.muscles[slug].id] = MuscleRole.PRIMARY
 
         current = {link.muscle_id: link for link in exercise.muscle_links}

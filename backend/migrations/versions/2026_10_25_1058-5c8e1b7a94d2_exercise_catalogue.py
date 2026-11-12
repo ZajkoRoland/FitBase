@@ -16,7 +16,7 @@ down_revision: str | None = "a1f3c9d27b40"
 branch_labels: str | Sequence[str] | None = None
 depends_on: str | Sequence[str] | None = None
 
-# Natív postgres enumok definíciói
+# Natív postgres definíciói
 ENUMS = {
     "exercise_category": ["strength", "stretching", "cardio", "plyometrics", "olympic"],
     "force_type": ["push", "pull", "static", "dynamic"],

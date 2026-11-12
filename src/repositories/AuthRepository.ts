@@ -5,13 +5,8 @@ import { NotificationService } from '@/services/NotificationService';
 import { BaseRepository } from './BaseRepository';
 
 export class AuthRepository extends BaseRepository {
-  private static instance: AuthRepository;
-
   public static getInstance(): AuthRepository {
-    if (!AuthRepository.instance) {
-      AuthRepository.instance = new AuthRepository();
-    }
-    return AuthRepository.instance;
+    return authRepository;
   }
 
   // Új felhasználó regisztrációja és automatikus bejelentkeztetése
@@ -58,7 +53,7 @@ export class AuthRepository extends BaseRepository {
         await this.api.post<void>('/auth/logout', { refresh_token: refreshToken }, { auth: false });
       }
     } catch (error) {
-      // Server-side revoke is best effort; the local session is cleared regardless.
+      // A szerveroldali érvénytelenítés másodlagos; a helyi munkamenet mindenképpen törlődik
       console.warn('[AuthRepository] Logout request failed.', error);
     } finally {
       await this.api.endSession();
@@ -125,4 +120,4 @@ export class AuthRepository extends BaseRepository {
   }
 }
 
-export const authRepository = AuthRepository.getInstance();
+export const authRepository = new AuthRepository();

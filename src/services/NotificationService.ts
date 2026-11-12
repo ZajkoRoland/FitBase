@@ -96,7 +96,6 @@ const STORAGE_SCHEDULED_DATE_PREFIX = '@fitbase_scheduled_notifications_date';
 const STORAGE_NOTIFICATIONS_ENABLED_PREFIX = '@fitbase_notifications_enabled';
 
 export class NotificationService {
-  private static instance: NotificationService;
   private activeUserId: string | null = null;
   private activeStreak = 0;
   private activeWeekPlan: WorkoutDay[] = [];
@@ -108,15 +107,12 @@ export class NotificationService {
   private subscribers: Set<NotificationSubscriber> = new Set();
   private initialized = false;
 
-  private constructor() {
+  constructor() {
     this.init();
   }
 
   public static getInstance(): NotificationService {
-    if (!NotificationService.instance) {
-      NotificationService.instance = new NotificationService();
-    }
-    return NotificationService.instance;
+    return notificationService;
   }
 
   private getKey(prefix: string, uid: string | null = this.activeUserId): string | null {
@@ -882,3 +878,5 @@ export class NotificationService {
     });
   }
 }
+
+export const notificationService = new NotificationService();

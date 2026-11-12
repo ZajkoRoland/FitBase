@@ -6,24 +6,9 @@ from app.services.account_state_service import AccountStateService
 
 router = APIRouter(prefix="/settings", tags=["settings"])
 
-_SETTINGS_FIELDS = {
-    "notifications_enabled",
-    "workout_reminder_enabled",
-    "workout_reminder_window",
-    "rest_day_reminder_enabled",
-    "rest_day_reminder_window",
-    "streak_reminder_enabled",
-    "streak_reminder_window",
-    "achievement_alerts_enabled",
-    "sound_enabled",
-    "vibration_enabled",
-    "language",
-    "units",
-    "plan_structure",
-    "read_notification_ids",
-    "deleted_notification_ids",
+_SETTINGS_FIELDS = {"notifications_enabled","workout_reminder_enabled","workout_reminder_window","rest_day_reminder_enabled","rest_day_reminder_window","streak_reminder_enabled",
+    "streak_reminder_window","achievement_alerts_enabled","sound_enabled","vibration_enabled","language","units","plan_structure","read_notification_ids","deleted_notification_ids",
 }
-
 
 @router.get("", response_model=UserSettingsOut)
 def get_settings(user: CurrentUser, db: DbSession) -> UserSettingsOut:

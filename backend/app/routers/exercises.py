@@ -87,8 +87,6 @@ def list_exercises(
         items=[presenter.summary(row) for row in rows], total=total, limit=limit, offset=offset
     )
 
-
-# Declared before "/{slug}" so that "filters" is not taken for an exercise slug.
 @router.get("/filters", response_model=ExerciseFilterOptions)
 def get_filter_options(_: CurrentUser, search: Search, media: Media) -> ExerciseFilterOptions:
     equipment, muscles = search.filter_options()

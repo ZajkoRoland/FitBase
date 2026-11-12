@@ -1,10 +1,9 @@
-# Analitika és edzésfejlődés követése (1RM, volumen, max súly)
+#Analitika és edzésfejlődésének követése (1RM, volúmen, max súly)
 
 from typing import Any
 
 from fastapi import APIRouter
 from sqlalchemy import select
-
 from app.deps import CurrentUser, DbSession
 from app.models import WorkoutSession
 from app.models_catalog import Exercise, ExerciseTranslation
@@ -75,7 +74,7 @@ def get_exercise_progress(
                     if total_volume <= 0.0:
                         total_volume = calculated_vol
                 else:
-                    # Fallback if exercise was logged with details string
+                    
                     w = float(ex.get("weight_kg") or 0.0)
                     reps = int(ex.get("target_reps") or 10)
                     max_weight = w
@@ -122,7 +121,7 @@ def get_logged_exercises(
                 if slug and slug not in seen_slugs:
                     seen_slugs[slug] = title or slug
 
-    # Add popular core exercises if not present yet
+    # ha még nem szerepelnek a listában, akkor alapvetők beállitása
     popular_defaults = [
         ("bench-press", "Barbell Bench Press"),
         ("squat", "Barbell Squat"),

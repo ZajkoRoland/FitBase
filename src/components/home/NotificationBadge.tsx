@@ -34,7 +34,7 @@ const badgeStyles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: 4,
     borderWidth: 2,
-    borderColor: '#0D1527', // Contrast ring against background
+    borderColor: '#0D1527', // Kontrasztos keret a háttér előtt
     elevation: 3,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },

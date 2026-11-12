@@ -43,7 +43,7 @@ app.include_router(coach.router, prefix=API_PREFIX)
 app.include_router(exercises.router, prefix=API_PREFIX)
 app.include_router(analytics.router, prefix=API_PREFIX)
 
-# Exercise images. Skipped when the folder is absent (e.g. images live in a storage bucket).
+# Gyakoralt képek, kihagyja ha ha hiányzik a mappa.
 media_dir = get_settings().media_dir
 if media_dir.is_dir():
     app.mount(MEDIA_MOUNT, CachedStaticFiles(directory=media_dir), name="media")

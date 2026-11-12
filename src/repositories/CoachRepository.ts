@@ -2,13 +2,8 @@ import { BaseRepository } from './BaseRepository';
 import type { CoachChatResponse } from '@/types/coach';
 
 export class CoachRepository extends BaseRepository {
-  private static instance: CoachRepository;
-
   public static getInstance(): CoachRepository {
-    if (!CoachRepository.instance) {
-      CoachRepository.instance = new CoachRepository();
-    }
-    return CoachRepository.instance;
+    return coachRepository;
   }
 
   public async sendMessage(
@@ -24,4 +19,4 @@ export class CoachRepository extends BaseRepository {
   }
 }
 
-export const coachRepository = CoachRepository.getInstance();
+export const coachRepository = new CoachRepository();

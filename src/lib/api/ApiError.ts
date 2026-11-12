@@ -1,4 +1,4 @@
-// Egyedi hibamegjelenítés az API nem-2xx válaszaihoz
+// Egyedi hibamegjelenítés az API válaszaihoz
 export class ApiError extends Error {
   constructor(
     public readonly status: number,

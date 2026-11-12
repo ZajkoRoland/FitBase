@@ -32,7 +32,7 @@ export const RecoveryPillarItem: React.FC<RecoveryPillarItemProps> = ({
       <View
         style={[
           styles.iconContainer,
-          { backgroundColor: `${pillar.accentColor}18` }, // 10% opacity tint
+          { backgroundColor: `${pillar.accentColor}18` }, // 10%-os áttetsző háttérszín
         ]}
       >
         <Ionicons

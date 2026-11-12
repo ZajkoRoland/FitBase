@@ -20,22 +20,17 @@ const EXPIRY_LEEWAY_MS = 30_000;
 // Kezeli a Bearer tokent, automatikusan frissíti a lejárt sessiont,
 // és értesíti az AuthProvidert a bejelentkezési állapot változásakor.
 export class ApiClient {
-  private static instance: ApiClient;
-
   private session: AuthSession | null = null;
   private refreshInFlight: Promise<AuthSession | null> | null = null;
   private readonly listeners = new Set<SessionListener>();
 
-  private constructor(
-    private readonly baseUrl: string,
-    private readonly storage: TokenStorage,
+  constructor(
+    private readonly baseUrl: string = API_BASE_URL,
+    private readonly storage: TokenStorage = createTokenStorage(),
   ) {}
 
   public static getInstance(): ApiClient {
-    if (!ApiClient.instance) {
-      ApiClient.instance = new ApiClient(API_BASE_URL, createTokenStorage());
-    }
-    return ApiClient.instance;
+    return apiClient;
   }
 
   // ---------- Session ----------
@@ -158,7 +153,7 @@ export class ApiClient {
     { body, query }: RequestOptions,
     token?: string | null,
   ): Promise<Response> {
-    // Built by hand: React Native's URL polyfill doesn't fully implement searchParams.
+    // Kézi lekérdezési sztring építés: a React Native URL polyfillje nem támogatja teljes körűen a searchParams-t
     const qs = query
       ? '?' + Object.entries(query).map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(v)}`).join('&')
       : '';
@@ -199,4 +194,4 @@ export class ApiClient {
   }
 }
 
-export const apiClient = ApiClient.getInstance();
+export const apiClient = new ApiClient();

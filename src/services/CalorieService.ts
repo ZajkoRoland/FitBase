@@ -3,15 +3,8 @@ import { Exercise, PlanService } from './PlanService';
 // Kalóriaégetést becslő szolgáltatás MET értékek, testsúly, sorozatok,
 // ismétlések és a végzett gyakorlatok típusa alapján.
 export class CalorieService {
-  private static instance: CalorieService;
-
-  private constructor() {}
-
   public static getInstance(): CalorieService {
-    if (!CalorieService.instance) {
-      CalorieService.instance = new CalorieService();
-    }
-    return CalorieService.instance;
+    return calorieService;
   }
 
   // MET szorzók kulcsszavak alapján
@@ -38,7 +31,7 @@ export class CalorieService {
         return item.met;
       }
     }
-    return 5.0; // Default moderate strength training MET
+    return 5.0; // Alapértelmezett közepes erőnléti edzés MET érték
   }
 
   // Sorozatok, ismétlések és pihenőidő kinyerése a formázott szövegből
@@ -51,14 +44,14 @@ export class CalorieService {
     let reps = 10;
     let restSeconds = 60;
 
-    // Match sets and reps: "4 × 8", "4x8", "3 x 12"
+    // Sorozatok és ismétlések felismerése: "4 × 8", "4x8", "3 x 12"
     const volumeMatch = details.match(/(\d+)\s*[x×X]\s*(\d+)/);
     if (volumeMatch) {
       sets = parseInt(volumeMatch[1], 10) || 3;
       reps = parseInt(volumeMatch[2], 10) || 10;
     }
 
-    // Match rest seconds: "90s rest", "60s", "90 mp"
+    // Pihenőidő másodpercek felismerése: "90s rest", "60s", "90 mp"
     const restMatch = details.match(/(\d+)\s*(?:s|sec|mp)/i);
     if (restMatch) {
       restSeconds = parseInt(restMatch[1], 10) || 60;
@@ -104,12 +97,12 @@ export class CalorieService {
     const weight = userWeightKg > 30 && userWeightKg < 250 ? userWeightKg : 75;
     const met = this.getMetForExercise(exercise);
 
-    // Retrieve structured sets (reps & weightKg per set)
+    // Strukturált sorozatok kiolvasása (ismétlések és súly sorozatonként)
     const setsList = PlanService.ensureExerciseSets(exercise);
     const setCount = Math.max(1, setsList.length);
     const restSeconds = exercise.restSeconds || 60;
 
-    // Calculate total repetitions and total lifted volume (kg)
+    // Összes ismétlésszám és megmozgatott összvolumen (kg) kiszámítása
     let totalReps = 0;
     let totalVolumeKg = 0;
 
@@ -124,25 +117,25 @@ export class CalorieService {
       totalReps = setCount * 10;
     }
 
-    // Multi-joint compound movements recruit larger muscle mass & induce higher systemic demand
+    // Az összetett, többízületes gyakorlatok nagyobb izomtömeget mozgatnak meg
     const isCompound = met >= 5.5;
     const compoundFactor = isCompound ? 1.25 : 1.0;
 
-    // Time under tension: ~3.8 seconds per repetition
+    // Terhelés alatti idő (TUT): átlagosan ~3.8 másodperc ismétlésenként
     const workSeconds = totalReps * 3.8;
     const totalRestSeconds = Math.max(0, setCount - 1) * restSeconds;
 
-    // 1. Base active bodily expenditure (moving own body through the exercise motion)
+    // 1. Alapvető aktív kalóriafelhasználás a mozgás elvégzéséhez
     const baseActiveCalories = met * weight * (workSeconds / 3600) * compoundFactor;
 
-    // 2. Mechanical work against external lifted weights
-    // Each kg lifted through ~0.6m vertical displacement at ~22% human muscular efficiency
-    // burns ~0.009 kcal per kg-rep (including eccentric lowering and core stabilization)
+    // 2. Mechanikai munkavégzés a megmozgatott súlyok ellenében
+    // A függőleges elmozdulás és az emberi izomhatékonyság (~22%) alapján
+    // kg-ismétlésenként ~0.009 kcal égetés történik (beleértve a stabilizációt)
     const loadEfficiencyFactor = isCompound ? 0.0095 : 0.0080;
     const externalLoadCalories = totalVolumeKg * loadEfficiencyFactor;
 
-    // 3. Inter-set metabolic recovery (elevated heart rate & oxygen debt / EPOC repayment)
-    // Higher loads elevate EPOC demand post-set
+    // 3. Sorozatok közötti metabolikus regeneráció és oxigénadósság (EPOC)
+    // A nagyobb súlyok növelik a sorozatok utáni regenerációs energiaigényt
     const avgWeightPerRep = totalReps > 0 ? totalVolumeKg / totalReps : 0;
     const loadEpocBoost = Math.min(0.5, (avgWeightPerRep / weight) * 0.25);
     const recoveryMet = (isCompound ? 3.2 : 2.8) * (1.0 + loadEpocBoost);
@@ -169,4 +162,4 @@ export class CalorieService {
   }
 }
 
-export const calorieService = CalorieService.getInstance();
+export const calorieService = new CalorieService();

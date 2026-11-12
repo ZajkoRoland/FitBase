@@ -7,13 +7,8 @@ import type {
 } from '@/types/exercise';
 
 export class ExerciseRepository extends BaseRepository {
-  private static instance: ExerciseRepository;
-
   public static getInstance(): ExerciseRepository {
-    if (!ExerciseRepository.instance) {
-      ExerciseRepository.instance = new ExerciseRepository();
-    }
-    return ExerciseRepository.instance;
+    return exerciseRepository;
   }
 
   // Gyakorlatok lapozott lekérése szűrők alapján
@@ -46,4 +41,4 @@ export class ExerciseRepository extends BaseRepository {
   }
 }
 
-export const exerciseRepository = ExerciseRepository.getInstance();
+export const exerciseRepository = new ExerciseRepository();

@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(74, 184, 248, 0.35)',
   },
   completedCircle: {
-    backgroundColor: '#10B981', // Emerald green
+    backgroundColor: '#10B981', // Smaragdzöld aktív szín
     borderWidth: 2,
     borderColor: '#10B981',
     shadowColor: '#10B981',

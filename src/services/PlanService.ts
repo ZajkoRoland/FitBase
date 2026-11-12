@@ -37,7 +37,6 @@ export interface WorkoutDay {
 }
 
 export class PlanService {
-  private static instance: PlanService;
   public static readonly DAY_NAMES: readonly string[] = [
     'Mon',
     'Tue',
@@ -49,15 +48,12 @@ export class PlanService {
   ];
   private weekPlan: WorkoutDay[];
 
-  private constructor() {
+  constructor() {
     this.weekPlan = PlanService.createEmptyWeekPlan();
   }
 
   public static getInstance(): PlanService {
-    if (!PlanService.instance) {
-      PlanService.instance = new PlanService();
-    }
-    return PlanService.instance;
+    return planService;
   }
 
   // Új üres edzésnap létrehozása (0 gyakorlattal)
@@ -224,4 +220,4 @@ export class PlanService {
   }
 }
 
-export const planService = PlanService.getInstance();
+export const planService = new PlanService();

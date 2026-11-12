@@ -9,7 +9,7 @@ import os
 
 if __name__ == "__main__":
     print("=" * 60)
-    print(" FitBase Egységtesztek Futtatása (Zajkó Roland)")
+    print(" FitBase Egységtesztek Futtatása")
     print("=" * 60)
     
     loader = unittest.TestLoader()

@@ -4,18 +4,14 @@ import type { ChatMessage, CoachChatResponse } from '@/types/coach';
 import { planService } from './PlanService';
 
 export class CoachService {
-  private static instance: CoachService;
   private readonly repository: CoachRepository;
 
-  private constructor(repository: CoachRepository = coachRepository) {
+  constructor(repository: CoachRepository = coachRepository) {
     this.repository = repository;
   }
 
   public static getInstance(): CoachService {
-    if (!CoachService.instance) {
-      CoachService.instance = new CoachService();
-    }
-    return CoachService.instance;
+    return coachService;
   }
 
   public getTodayWorkoutTitle(week?: any[]): string {
@@ -117,4 +113,4 @@ export class CoachService {
   }
 }
 
-export const coachService = CoachService.getInstance();
+export const coachService = new CoachService();

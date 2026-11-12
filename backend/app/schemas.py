@@ -20,7 +20,7 @@ class RegisterRequest(BaseModel):
 
 class LoginRequest(BaseModel):
     email: EmailStr
-    # No min length here: users migrated from Supabase may have shorter passwords.
+    # Nincs minimális hossz korlát: a migrált fiókok jelszavai rövidebbek is lehetnek
     password: str = Field(min_length=1, max_length=128)
 
 
@@ -72,7 +72,7 @@ class ChangePasswordRequest(BaseModel):
     new_password: str = Field(min_length=8, max_length=128)
 
 
-# ---------- Activity & Progress ----------
+# ---------- Aktivitás és Haladás ----------
 
 
 class ActivityWeekOut(BaseModel):
@@ -83,7 +83,7 @@ class ActivityWeekOut(BaseModel):
     target: int = 4
 
 
-# ---------- Profile & Account Stats ----------
+# ---------- Profil és Fiókstatisztikák ----------
 
 
 class ProfileOut(BaseModel):
@@ -142,7 +142,7 @@ class WorkoutCompleteRequest(BaseModel):
     session_date: str | None = Field(default=None, max_length=16)
 
 
-# ---------- Account Settings & Notification Preferences ----------
+# ---------- Fiókbeállítások és Értesítési Preferenciák ----------
 
 
 class UserSettingsOut(BaseModel):
@@ -187,7 +187,7 @@ class UserSettingsUpdate(BaseModel):
     deleted_notification_ids: list[str] | None = None
 
 
-# ---------- Achievements ----------
+# ---------- kitüntetések ---------
 
 
 class AchievementOut(BaseModel):
@@ -238,7 +238,7 @@ class WorkoutSessionOut(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 
-# ---------- Weekly plan ----------
+# ---------- Heti edzésterv ----------
 
 
 class PlanDay(BaseModel):
@@ -256,7 +256,7 @@ class PlanUpdate(BaseModel):
     days: list[PlanDay] = Field(min_length=1, max_length=7)
 
 
-# ---------- AI Coach & Structured Knowledge Context ----------
+# ---------- AI Edző és Strukturált Kontextus ---------
 
 
 class CoachChatMessage(BaseModel):
@@ -275,14 +275,10 @@ class CoachChatRequest(BaseModel):
 
 class PlanModification(BaseModel):
     action: Literal[
-        "swap_days",
-        "update_workout",
-        "set_rest_day",
-        "generate_full_plan",
-        "replace_exercise",
-        "add_exercise",
-        "remove_exercise",
-        "update_exercise_parameters",
+        "swap_days","update_workout",
+        "set_rest_day","generate_full_plan",
+        "replace_exercise","add_exercise",
+        "remove_exercise","update_exercise_parameters",
     ]
     source_day: int | None = Field(default=None, description="0=Mon, 1=Tue, 2=Wed, 3=Thu, 4=Fri, 5=Sat, 6=Sun")
     target_day: int | None = Field(default=None, description="0=Mon, 1=Tue, 2=Wed, 3=Thu, 4=Fri, 5=Sat, 6=Sun")
@@ -332,7 +328,7 @@ class AIUserContextOut(BaseModel):
     recognized_patterns: list[str]
 
 
-# ---------- Exercise catalogue ----------
+# ---------- Gyakorlatkatalógus ----------
 
 
 class MuscleOut(BaseModel):
@@ -358,7 +354,7 @@ class ExerciseSummary(BaseModel):
     equipment: EquipmentOut | None
     met: float
     primary_muscles: list[MuscleOut]
-    # Absolute URL, ready for <Image source={{ uri }} />. Thumbnail = the single/start pose.
+    # Abszolút, közvetlenül használható képkomponens. Kezdőpozíció előnézeti képe.
     image_url: str | None
 
 

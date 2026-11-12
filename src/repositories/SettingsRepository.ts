@@ -4,13 +4,8 @@ import { BaseRepository } from './BaseRepository';
 
 // Beállítások (értesítések, hangok) mentése és lekérése az API-n keresztül
 export class SettingsRepository extends BaseRepository {
-  private static instance: SettingsRepository;
-
   public static getInstance(): SettingsRepository {
-    if (!SettingsRepository.instance) {
-      SettingsRepository.instance = new SettingsRepository();
-    }
-    return SettingsRepository.instance;
+    return settingsRepository;
   }
 
   public get(): Promise<UserSettings> {
@@ -22,5 +17,5 @@ export class SettingsRepository extends BaseRepository {
   }
 }
 
-export const settingsRepository = SettingsRepository.getInstance();
+export const settingsRepository = new SettingsRepository();
 

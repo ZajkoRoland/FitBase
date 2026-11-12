@@ -156,7 +156,7 @@ class EmailService:
         subject, text_body, html_body = cls._build_reset_content(code)
 
         try:
-            # 1. Brevo HTTPS API (Recommended for Render Free Tier)
+            # 1. Brevo HTTPS API (Render környezetben javasolt)
             if settings.brevo_api_key and settings.email_from:
                 cls._send_via_brevo(
                     api_key=settings.brevo_api_key.strip(),
@@ -183,12 +183,12 @@ class EmailService:
                 )
                 return
 
-            # 3. Classic SMTP (Local dev / VPS where ports 465/587 are open)
+            # 3. Hagyományos SMTP kapcsolat (helyi teszteléshez vagy saját szerverhez)
             if settings.smtp_host and settings.smtp_user:
                 cls._send_via_smtp(to_email, subject, text_body, html_body)
                 return
 
-            # 4. Unconfigured: fail explicitly in cloud production, log code in local dev
+            # 4. Nincs konfigurálva: felhőben hiba dobása, helyi gépen a kód naplózása a konzolra
             if os.getenv("RENDER"):
                 logger.error(
                     "[EmailService] Email provider is not configured on Render! "

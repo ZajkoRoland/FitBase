@@ -10,16 +10,12 @@ try {
 }
 
 export class GoogleAuthService {
-  private static instance: GoogleAuthService;
   private isConfigured = false;
 
-  private constructor() { }
+  constructor() { }
 
   public static getInstance(): GoogleAuthService {
-    if (!GoogleAuthService.instance) {
-      GoogleAuthService.instance = new GoogleAuthService();
-    }
-    return GoogleAuthService.instance;
+    return googleAuthService;
   }
 
   public isNativeAvailable(): boolean {
@@ -95,7 +91,7 @@ export class GoogleAuthService {
         try {
           await NativeGoogleSignin.revokeAccess();
         } catch {
-          // revokeAccess may fail if already revoked or unauthorized
+          // A visszavonás figyelmen kívül hagyása, ha a hozzáférés már korábban visszavonásra került
         }
         await NativeGoogleSignin.signOut();
       }
@@ -105,4 +101,4 @@ export class GoogleAuthService {
   }
 }
 
-export const googleAuthService = GoogleAuthService.getInstance();
+export const googleAuthService = new GoogleAuthService();

@@ -1,14 +1,14 @@
 export type TranslationDictionary = Record<string, string>;
 
 export const en: TranslationDictionary = {
-  // Navigation Tabs
+  // Navigációs fülek
   'tabs.home': 'Home',
   'tabs.coach': 'AI Coach',
   'tabs.plan': 'Plan',
   'tabs.library': 'Library',
   'tabs.profile': 'Profile',
 
-  // Loading & Initialization
+  // Betöltés és inicializálás
   'loading.initializing': 'Initializing FitBase...',
   'loading.default': 'Loading...',
   'loading.connectionError': 'Could not connect to the server (10.0.2.2:8000).\nPlease check if the backend server is running!',
@@ -16,7 +16,7 @@ export const en: TranslationDictionary = {
   'loading.backToLogin': 'Back to Sign In',
   'loading.tagline': 'AI Coaching you to a healthier and more active life',
 
-  // Auth / LoginScreen
+  // Hitelesítés / Bejelentkezési képernyő
   'auth.tagline': 'AI Coaching you to a healthier and more active life',
   'auth.loginTab': 'Log In',
   'auth.signupTab': 'Sign Up',
@@ -63,7 +63,7 @@ export const en: TranslationDictionary = {
   'auth.errExpoGoGoogle': 'To use native Google Sign-In, open the installed FitBase app on your device (Expo Go does not support native modules).',
   'auth.errGoogleNoToken': 'Google did not return an ID token. Verify webClientId configuration.',
 
-  // Onboarding
+  // Onboarding / Kezdeti beállítások
   'onboarding.welcome': 'Welcome, {{name}}!',
   'onboarding.subtitle': "Registration successful! Let's start personalizing your training plan.",
   'onboarding.finishBtn': "Let's Go →",
@@ -101,7 +101,7 @@ export const en: TranslationDictionary = {
   'onboarding.errSavePlan': 'Error saving plan: ',
   'onboarding.errUpdateProfile': 'Error updating profile: ',
 
-  // Greetings & Dates
+  // Üdvözlések és dátumok
   'greeting.morning': 'Good morning',
   'greeting.afternoon': 'Good afternoon',
   'greeting.evening': 'Good evening',
@@ -113,7 +113,7 @@ export const en: TranslationDictionary = {
   'date.monthMeta': '{{days}} days · {{year}}',
   'date.weekCycle': 'Week {{letter}}',
 
-  // Home Screen - Notifications
+  // Főoldal - Értesítések
   'notifications.title': 'Notifications',
   'notifications.newCount': '{{count}} new',
   'notifications.markAllRead': 'Mark all as read',
@@ -137,7 +137,7 @@ export const en: TranslationDictionary = {
   'notifications.streakActiveBody': "Don't break your {{count}}-day streak! Keep up your daily discipline.",
   'notifications.streakReminderBody': 'Complete your workout today to ignite your fitness streak!',
 
-  // Home Screen - Stats Block
+  // Főoldal - Statisztika blokk
   'home.stats.days': 'days',
   'home.stats.streakTitle': 'Streak 🔥',
   'home.stats.sessions': 'sessions',
@@ -146,7 +146,7 @@ export const en: TranslationDictionary = {
   'home.stats.burnedToday': 'Burned Today',
   'home.stats.estimated': 'Estimated',
 
-  // Home Screen - Timer & Routine Block
+  // Főoldal - Stopper és napi rutin blokk
   'home.timer.workoutTimer': 'WORKOUT TIMER',
   'home.timer.todaysRoutine': "TODAY'S ROUTINE",
   'home.timer.dayRoutine': "{{day}}'S ROUTINE",
@@ -182,7 +182,7 @@ export const en: TranslationDictionary = {
   'home.timer.noticeCompleted': 'Workout completed! +1 Daily Streak',
   'home.timer.noticeOnlyToday': "Exercises can only be checked off on today's routine!",
 
-  // Home Screen - Weekly Goal Block
+  // Főoldal - Heti célkitűzés blokk
   'home.weeklyGoal.eyebrow': 'WEEKLY TARGET',
   'home.weeklyGoal.subtitle': 'Consistency & Routine',
   'home.weeklyGoal.sessionsDenominator': ' / {{target}} sessions',
@@ -190,7 +190,7 @@ export const en: TranslationDictionary = {
   'home.weeklyGoal.remainingMany': '{{count}} more sessions to complete your week.',
   'home.weeklyGoal.achieved': 'Target achieved! Outstanding consistency this week 🎉',
 
-  // AI Coach Screen
+  // AI Edző képernyő
   'coach.headerTitle': 'AI Coach',
   'coach.senderCoach': 'AI COACH',
   'coach.senderYou': 'You',
@@ -207,7 +207,7 @@ export const en: TranslationDictionary = {
   'coach.aiPrompt.2_week': 'I would like a 2-week alternating routine (Week A / Week B). Please assess my preferences and let us design it!',
   'coach.aiPrompt.4_week': 'I would like a 4-week periodized workout program (Foundational, Intensity, Peak Volume, Deload). Please assess my preferences and let us design it!',
 
-  // Plan Screen & Components
+  // Edzésterv képernyő és komponensek
   'plan.weeklyTitle': 'Weekly Workout Plan',
   'plan.monthlyTitle': 'Monthly Workout Plan',
   'plan.viewWeek': 'Week',
@@ -292,7 +292,7 @@ export const en: TranslationDictionary = {
   'plan.deviationBtn': 'Adjusted Sets',
   'plan.deviationTip': 'Adjusted for today\'s workout',
 
-  // Analytics & Exercise Progression
+  // Analitika és gyakorlatfejlődés
   'analytics.chart.title': 'Personal Progress',
   'analytics.chart.subtitle': 'Track 1RM, volume and weights over time',
   'analytics.chart.loading': 'Loading progress data...',
@@ -314,12 +314,12 @@ export const en: TranslationDictionary = {
   'analytics.section.selectExercise': 'Select Exercise',
   'analytics.section.emptyLogged': 'No exercise logged yet',
 
-  // Plan - Monthly Overview
+  // Edzésterv - Havi áttekintés
   'plan.month.overviewLabel': 'MONTHLY OVERVIEW',
   'plan.month.workoutsLabel': 'workouts',
   'plan.month.restLabel': 'rest',
 
-  // Plan - Recovery Pillars
+  // Edzésterv - Regenerációs pillérek
   'plan.recovery.cardTitle': 'Daily Recovery Goals',
   'plan.recovery.doneCount': '{{completed}}/{{total}} Done',
   'plan.recovery.hydrationTitle': 'Hydration',
@@ -332,7 +332,7 @@ export const en: TranslationDictionary = {
   'plan.recovery.nutritionTarget': '1.6 – 2.0g / kg',
   'plan.recovery.nutritionDesc': 'Supports continuous muscle protein synthesis on off-days.',
 
-  // Plan - Quick Action Modal
+  // Edzésterv - Gyorsműveletek modál
   'plan.quickActions.title': 'Quick Actions',
   'plan.quickActions.subtitle': 'Managing {{day}} routine',
   'plan.quickActions.buildTitle': 'Build Full Workout Plan',
@@ -346,7 +346,7 @@ export const en: TranslationDictionary = {
   'plan.quickActions.deletePlanTitle': 'Delete Entire Workout Plan',
   'plan.quickActions.deletePlanDesc': 'Remove your entire workout program completely',
 
-  // Plan - Build Plan Modal & Structures
+  // Edzésterv - Tervépítő modál és ciklusszerkezetek
   'plan.build.stepBadge': 'STEP {{step}} OF 2',
   'plan.build.step1Title': 'Select Plan Duration',
   'plan.build.step2Title': 'Choose Creation Method',
@@ -377,7 +377,7 @@ export const en: TranslationDictionary = {
   'plan.structure.4w.badge': '4 Weeks',
   'plan.structure.4w.desc': 'Full monthly cycle: Foundation ➔ Progression ➔ Peak Volume ➔ Recovery.',
 
-  // Exercise Library Screen & Modals
+  // Gyakorlattár képernyő és modálok
   'library.headerTitle': 'Exercise Library',
   'library.sectionDefault': 'EXERCISES',
   'library.sectionFiltered': 'EXERCISES',
@@ -413,7 +413,7 @@ export const en: TranslationDictionary = {
   'library.detail.restAdvanced': '1 min 30 sec',
   'library.detail.restStandard': '1 min 00 sec',
 
-  // Library Filter Options
+  // Gyakorlattár szűrési opciók
   'filter.all': 'All',
   'filter.bodyPart.chest': 'Chest',
   'filter.bodyPart.back': 'Back',
@@ -436,7 +436,7 @@ export const en: TranslationDictionary = {
   'filter.difficulty.advanced': 'Advanced',
   'filter.difficulty.expert': 'Expert',
 
-  // Profile Screen & Menu
+  // Profil képernyő és menü
   'profile.statsTitle': 'Statistics',
   'profile.statsSubtitle': 'Check your activities and progress',
   'profile.achievementsTitle': 'Achievements',
@@ -475,7 +475,7 @@ export const en: TranslationDictionary = {
   'profile.footer.version': 'Version 1.0.0',
   'profile.footer.exerciseDataBy': 'Exercise data by ',
 
-  // Profile - Avatar Picker
+  // Profil - Profilkép választó
   'profile.avatar.title': 'Profile Photo',
   'profile.avatar.subtitle': 'Choose an action to update your avatar',
   'profile.avatar.chooseLibrary': 'Choose from Library',
@@ -485,7 +485,7 @@ export const en: TranslationDictionary = {
   'profile.avatar.permTitle': 'Permission Required',
   'profile.avatar.permMsg': 'Gallery access is needed to select a profile picture.',
 
-  // Profile - Body Metrics & BMI
+  // Profil - Testméretek és BMI
   'bmi.underweight': 'Underweight',
   'bmi.normal': 'Normal',
   'bmi.normalWeight': 'Normal weight',
@@ -511,7 +511,7 @@ export const en: TranslationDictionary = {
   'modal.bodyMetrics.savedMsg': 'Your weight and height have been updated successfully.',
   'modal.bodyMetrics.errUpdate': 'Failed to update body metrics.',
 
-  // Profile - Target Weight Modal
+  // Profil - Célsúly beállítása modál
   'modal.targetWeight.title': 'Target Weight Goal',
   'modal.targetWeight.hint': 'Define your ideal body weight. FitBase uses this to track your trajectory and transformation progress.',
   'modal.targetWeight.currentWeight': 'CURRENT WEIGHT',
@@ -525,7 +525,7 @@ export const en: TranslationDictionary = {
   'modal.targetWeight.savedMsg': 'Your target weight goal has been updated in your account profile.',
   'modal.targetWeight.errUpdate': 'Failed to update target weight.',
 
-  // Profile - Fitness Goals Modal
+  // Profil - Edzéscélok beállítása modál
   'modal.fitnessGoals.title': 'Fitness Goal & Level',
   'modal.fitnessGoals.hint': 'Select your main focus area and current experience level to tailor your workout difficulty.',
   'modal.fitnessGoals.primaryGoal': 'PRIMARY GOAL',
@@ -540,7 +540,7 @@ export const en: TranslationDictionary = {
   'goal.endurance': 'Endurance',
   'goal.generalFitness': 'General Fitness',
 
-  // Profile - Edit Account Modal
+  // Profil - Fiókadatok módosítása modál
   'modal.editAccount.title': 'Edit Account & Name',
   'modal.editAccount.hint': 'This name appears on your workout logs, milestones, and community achievements.',
   'modal.editAccount.displayNameLabel': 'Full Display Name',
@@ -553,7 +553,7 @@ export const en: TranslationDictionary = {
   'modal.editAccount.savedMsg': 'Your display name and username have been updated successfully.',
   'modal.editAccount.errUpdate': 'Failed to update profile details.',
 
-  // Profile - Change Password Modal
+  // Profil - Jelszómódosítás modál
   'modal.password.title': 'Change Password',
   'modal.password.hint': 'To protect your account, your new password must be at least 8 characters long.',
   'modal.password.currentLabel': 'Current Password',
@@ -571,7 +571,7 @@ export const en: TranslationDictionary = {
   'modal.password.savedMsg': 'Your account password has been changed successfully.',
   'modal.password.errUpdate': 'Failed to update password.',
 
-  // Profile - Delete Account Modal
+  // Profil - Fióktörlés modál
   'modal.deleteAccount.title': 'Delete Account?',
   'modal.deleteAccount.subtitle': 'This action is permanent and cannot be reversed.',
   'modal.deleteAccount.desc': 'All your training statistics, workout routines, active streaks, and personal profile data will be permanently deleted from FitBase servers.',
@@ -581,7 +581,7 @@ export const en: TranslationDictionary = {
   'modal.deleteAccount.errTitle': 'Deletion Failed',
   'modal.deleteAccount.errFallback': 'Failed to delete account from server. Please try again.',
 
-  // Profile - Language Selection Modal
+  // Profil - Nyelvválasztás modál
   'modal.language.title': 'Language',
   'modal.language.hint': 'Choose your preferred language for menus, workout routines, and AI Coach responses.',
   'modal.language.selectedTitle': 'Language Updated',
@@ -592,7 +592,7 @@ export const en: TranslationDictionary = {
   'lang.es': 'Spanish',
   'lang.fr': 'French',
 
-  // Statistics Modal & Components
+  // Statisztika modál és komponensek
   'stats.headerTitle': 'Statistics',
   'stats.backProfile': 'Profile',
   'stats.overview': 'OVERVIEW',
@@ -626,7 +626,7 @@ export const en: TranslationDictionary = {
   'stats.share.hours': '⏱️ Time Trained: {{hours}} hours',
   'stats.share.footer': 'Track your fitness goals with FitBase! 💪',
 
-  // Achievements Modal & Service
+  // Kitüntetések modál és szolgáltatás
   'achievements.headerTitle': 'Achievements',
   'achievements.backProfile': 'Profile',
   'achievements.levelEyebrow': 'LEVEL {{level}} FITNESS',
@@ -673,7 +673,7 @@ export const en: TranslationDictionary = {
   'achievements.badge.century_club.title': 'Century Club',
   'achievements.badge.century_club.desc': 'Legendary status: complete 100 workouts.',
 
-  // Common Buttons & Dialogs
+  // Általános gombok és felugró ablakok
   'common.ok': 'OK',
   'common.gotIt': 'Got it',
   'common.awesome': 'Awesome',
@@ -689,7 +689,7 @@ export const en: TranslationDictionary = {
   'common.openContactLink': 'Open Contact Link',
   'common.confirmActionDefault': 'Are you sure you want to proceed with this action?',
 
-  // --- Reconciled component translation keys ---
+  // --- További komponens fordítási kulcsok ---
   'coach.senderAi': 'AI Coach',
   'library.exerciseDefault': 'Exercise',
   'library.posePreviewA11y': '{{title}} exercise execution animation',

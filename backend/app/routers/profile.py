@@ -6,13 +6,8 @@ from sqlalchemy import func, select
 from app.deps import CurrentUser, DbSession
 from app.errors import AppError
 from app.models import Profile, WorkoutSession
-from app.schemas import (
-    ActivityWeekOut,
-    ProfileOut,
-    ProfileUpdate,
-    WorkoutCompleteRequest,
-    WorkoutCompleteResponse,
-    WorkoutSessionOut,
+from app.schemas import (ActivityWeekOut,ProfileOut,ProfileUpdate,WorkoutCompleteRequest,
+WorkoutCompleteResponse,WorkoutSessionOut,
 )
 from app.services.account_state_service import AccountStateService
 from app.services.achievement_service import AchievementDomainService
@@ -20,16 +15,8 @@ from app.services.achievement_service import AchievementDomainService
 router = APIRouter(prefix="/profile", tags=["profile"])
 
 _PROFILE_FIELDS = {"username", "display_name", "avatar_url", "onboarding_completed"}
-_STATS_FIELDS = {
-    "gender",
-    "age",
-    "height",
-    "weight",
-    "target_weight",
-    "fitness_goal",
-    "fitness_level",
-    "weekly_target",
-    "completed_exercises_today",
+_STATS_FIELDS = {"gender","age","height","weight","target_weight",
+"fitness_goal","fitness_level","weekly_target","completed_exercises_today",
 }
 
 
@@ -84,7 +71,7 @@ def complete_workout(
         session_date = now.date()
     weekday = session_date.weekday()
 
-    # Log historical session row for this user
+    # Az elvégzett edzésnapló mentése a felhasználóhoz
     session_row = WorkoutSession(
         user_id=user.id,
         session_date=today_iso,
@@ -97,7 +84,7 @@ def complete_workout(
     )
     db.add(session_row)
 
-    # Update account-isolated streak and progression metrics
+    # Edzésszéria és fejlődési statisztikák frissítése
     AccountStateService.record_workout_streak(db, user.id, stats, session_date)
     stats.total_workouts = (stats.total_workouts or 0) + 1
 
@@ -111,7 +98,7 @@ def complete_workout(
     stats.total_hours = max(1 if stats.total_minutes >= 30 else 0, round(stats.total_minutes / 60))
     stats.last_workout_date = session_date.isoformat()
 
-    # Mark today's exercises finalized in database state
+    # A mai gyakorlatok véglegesített állapotba állítása
     current_daily = (
         dict(stats.completed_exercises_today)
         if isinstance(stats.completed_exercises_today, dict)
@@ -121,12 +108,11 @@ def complete_workout(
     current_daily["finalized"] = True
     stats.completed_exercises_today = current_daily
 
-    # Persist updated 5-week activity snapshot
+    # Frissített 5 hetes aktivitási áttekintés mentése
     db.flush()
     activity_5w = AccountStateService.compute_5_week_activity(db, user.id, stats)
     stats.activity_history = [item.model_dump() for item in activity_5w]
 
-    # Evaluate and persist achievements for this account
     _, newly_unlocked, _ = AchievementDomainService.sync_user_achievements(db, user.id, stats)
 
     db.commit()

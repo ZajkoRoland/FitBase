@@ -1,15 +1,15 @@
 # A felhasználói profil, edzésstatisztikák és beállítások kezelése.
 # Minden lekérdezést szigorúan a bejelentkezett user_id alapján szűrünk.
-
 import uuid
 from datetime import UTC, date, datetime, timedelta
 from typing import Any
 
 from sqlalchemy import desc, select
+
 from sqlalchemy.orm import Session
 
 from app.models import (
-    Profile,
+Profile,
     User,
     UserSettings,
     UserStats,
@@ -66,7 +66,7 @@ class AccountStateService:
     def ensure_weekly_plan_days(
         cls, db: Session, user_id: uuid.UUID
     ) -> list[WeeklyPlanDay]:
-        # Gondoskodik arról, hogy a hét mind a 7 napja létezzen az edzéstervben
+        # Gondoskodik arról,, hogy a hét mind a 7 napja létezzen az edzéstervben
         existing = {
             row.day_of_week: row
             for row in db.scalars(
@@ -126,18 +126,18 @@ class AccountStateService:
     def compute_5_week_activity(
         cls, db: Session, user_id: uuid.UUID, stats: UserStats
     ) -> list[ActivityWeekOut]:
-        # Kiszámítja az elmúlt 5 hét edzésaktivitását a naplóbejegyzésekből
+        # Kiszámítja az elmúlt 5 hét edzésaktivitását a naplóbol
         today = datetime.now(UTC).date()
         current_monday = today - timedelta(days=today.weekday())
         weekly_target = max(stats.weekly_target or 4, 1)
 
-        # Build the 5 Monday start dates (oldest to current week)
+        # Az elmúlt 5 hét hétfői kezdődátumainak kiszámítása
         week_mondays: list[date] = [
             current_monday - timedelta(weeks=w) for w in range(4, -1, -1)
         ]
         oldest_monday_iso = week_mondays[0].isoformat()
 
-        # Query completed workout sessions for this account since 5 weeks ago
+        # A fiók befejezett edzéseinek lekérdezése az elmúlt 5 hétből
         stmt = select(WorkoutSession).where(
             WorkoutSession.user_id == user_id,
             WorkoutSession.session_date >= oldest_monday_iso,
@@ -154,7 +154,7 @@ class AccountStateService:
             except ValueError:
                 continue
 
-        # Only merge legacy historical data for PAST weeks (not the current week)
+        # A korábbi előzményadatok összefésülése csak a lezárt hetekre vonatkozik
         current_monday_iso = current_monday.isoformat()
         if isinstance(stats.activity_history, list):
             for entry in stats.activity_history:
@@ -169,7 +169,7 @@ class AccountStateService:
                     ):
                         counts_by_week[wk_start] = max(counts_by_week[wk_start], cnt)
 
-        # For the current calendar week, strictly use the real workout sessions completed this week
+        # Az aktuális hétnél kizárólag a valós naplózott edzéseket vesszük figyelembe
         real_current_week_sessions = counts_by_week.get(current_monday_iso, 0)
         stats.sessions_this_week = real_current_week_sessions
         counts_by_week[current_monday_iso] = real_current_week_sessions
@@ -199,7 +199,7 @@ class AccountStateService:
         stats: UserStats,
         current_date: date | None = None,
     ) -> int:
-        # Ellenőrzi, hogy a felhasználó edzéssorozata él-e még, vagy megszakadt
+        # Ellenőrzi, hogy a felhasználó edzéssorozata él még, vagy megszakadt
         if current_date is None:
             current_date = datetime.now(UTC).date()
 
@@ -219,20 +219,20 @@ class AccountStateService:
 
         days_diff = (current_date - last_date).days
 
-        # Worked out today (or client clock ahead) -> alive
+        # Ma volt edzés (vagy a kliens órája előrébb jár)
         if days_diff <= 0:
             return current_streak
 
-        # Worked out yesterday -> alive (today is still ongoing)
+        # Tegnap volt edzés -> a széria még él (a mai nap még tart)
         if days_diff == 1:
             return current_streak
 
-        # Over a full week has passed without workouts -> definitely broken
+        # Vesztett széria mindenképp
         if days_diff > 7:
             stats.streak = 0
             return 0
 
-        # Check intermediate calendar days strictly between last_date and current_date
+        # A köztes naptári napok ellenőrzése az utolsó edzés és a mai nap között
         plan_days = cls.ensure_weekly_plan_days(db, user_id)
         plan_by_weekday = {d.day_of_week: d.type for d in plan_days}
 
@@ -241,11 +241,11 @@ class AccountStateService:
             weekday_idx = check_date.weekday()
             day_type = plan_by_weekday.get(weekday_idx, "workout")
             if day_type == "workout":
-                # Missed a scheduled workout day! Streak is broken.
+                # Tervezett edzésnap maradt ki, a széria megszakadt
                 stats.streak = 0
                 return 0
 
-        # All intermediate days were rest days -> streak preserved!
+        # Minden köztes nap pihenőnap volt a terv szerint -> a széria megmaradt!
         return current_streak
 
     @classmethod
@@ -314,6 +314,7 @@ class AccountStateService:
             onboarding_completed=bool(profile.onboarding_completed),
             gender=stats.gender,
             age=stats.age,
+            
             height=stats.height,
             weight=stats.weight,
             target_weight=stats.target_weight,
@@ -363,7 +364,7 @@ class AccountStateService:
             db, user.id, stats
         )
 
-        # Load 7-day weekly plan strictly for this account
+        # A 7 napos heti edzésterv betöltése a fiókhoz
         plan_days_by_idx: dict[int, WeeklyPlanDay] = {}
         stmt_plan = (
             select(WeeklyPlanDay)
@@ -420,7 +421,7 @@ class AccountStateService:
                     "exercises_detail": exercises_detail,
                 })
 
-        # Load recent workout sessions for this account
+        # A legutóbbi edzésnaplók betöltése a fiókhoz
         stmt_sessions = (
             select(WorkoutSession)
             .where(WorkoutSession.user_id == user.id)
@@ -438,7 +439,7 @@ class AccountStateService:
             for s in db.scalars(stmt_sessions)
         ]
 
-        # Biometrics & BMI analysis
+        # Biometrikus és BMI adatok elemzése
         bmi_info = cls.compute_bmi_info(profile_out.weight, profile_out.height)
         weight_diff = None
         weight_direction = None
@@ -452,7 +453,7 @@ class AccountStateService:
             else:
                 weight_direction = "Target weight reached"
 
-        # Achievements summary
+        # Kitüntetések és rang összefoglalása
         unlocked_badges = [
             {"key": a.achievement_key, "title": a.title, "tier": a.tier, "unlocked_date": a.unlocked_date}
             for a in achievements
@@ -464,7 +465,7 @@ class AccountStateService:
         )
         next_closest = locked_badges[0] if locked_badges else None
 
-        # Synthesize cross-domain patterns for AI reasoning
+        # Személyre szabott összefüggések és minták felépítése az AI számára
         patterns: list[str] = []
         if bmi_info["bmi"] and profile_out.fitness_goal:
             patterns.append(

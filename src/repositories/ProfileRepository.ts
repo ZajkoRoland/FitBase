@@ -29,13 +29,8 @@ export interface WorkoutCompleteApiResponse {
 }
 
 export class ProfileRepository extends BaseRepository {
-  private static instance: ProfileRepository;
-
   public static getInstance(): ProfileRepository {
-    if (!ProfileRepository.instance) {
-      ProfileRepository.instance = new ProfileRepository();
-    }
-    return ProfileRepository.instance;
+    return profileRepository;
   }
 
   private async hydrateLocalMetrics(profile: Profile): Promise<Profile> {
@@ -147,4 +142,4 @@ export class ProfileRepository extends BaseRepository {
   }
 }
 
-export const profileRepository = ProfileRepository.getInstance();
+export const profileRepository = new ProfileRepository();

@@ -41,7 +41,7 @@ export function ExercisePoseMotionPlayer({
   const activePoseRef = useRef<PoseType>(activePose);
   activePoseRef.current = activePose;
 
-  // Animációs érték: 0 = kezdő póz látható, 1 = csúcsponti póz látható
+  // Animációs érték: 0 = kezdő póz látható, 1 = csúcsponti állás
   const crossfadeAnim = useRef(new Animated.Value(0)).current;
 
   const hasBothPoses = Boolean(startImageUrl && peakImageUrl);

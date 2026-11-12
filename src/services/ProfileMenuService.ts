@@ -37,15 +37,10 @@ export interface ProfileMenuActionCallbacks {
 
 // Profil menüpontok és beállítások kezelése
 export class ProfileMenuService {
-  private static instance: ProfileMenuService;
-
-  private constructor() { }
+  constructor() { }
 
   public static getInstance(): ProfileMenuService {
-    if (!ProfileMenuService.instance) {
-      ProfileMenuService.instance = new ProfileMenuService();
-    }
-    return ProfileMenuService.instance;
+    return profileMenuService;
   }
 
   // Menüszekciók összeállítása a profil képernyőhöz
@@ -354,4 +349,4 @@ export class ProfileMenuService {
   }
 }
 
-export const profileMenuService = ProfileMenuService.getInstance();
+export const profileMenuService = new ProfileMenuService();

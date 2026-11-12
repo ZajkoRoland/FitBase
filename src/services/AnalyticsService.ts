@@ -7,19 +7,15 @@ import {
 } from '@/repositories/AnalyticsRepository';
 
 export class AnalyticsService {
-  private static instance: AnalyticsService;
   private readonly repository: AnalyticsRepository;
   private readonly progressCache: Map<string, ExerciseProgressResponse> = new Map();
 
-  private constructor(repository: AnalyticsRepository = analyticsRepository) {
+  constructor(repository: AnalyticsRepository = analyticsRepository) {
     this.repository = repository;
   }
 
   public static getInstance(): AnalyticsService {
-    if (!AnalyticsService.instance) {
-      AnalyticsService.instance = new AnalyticsService();
-    }
-    return AnalyticsService.instance;
+    return analyticsService;
   }
 
   public async getProgress(slug: string, forceRefresh = false): Promise<ExerciseProgressResponse> {
@@ -56,5 +52,5 @@ export class AnalyticsService {
   }
 }
 
-export const analyticsService = AnalyticsService.getInstance();
+export const analyticsService = new AnalyticsService();
 
