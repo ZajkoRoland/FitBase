@@ -11,10 +11,7 @@ export interface INotificationData {
   isRead?: boolean;
 }
 
-/**
- * NotificationItem Domain Model 
- * Immutable representation of an in-app fitness notification item.
- */
+// Alkalmazáson belüli értesítés modellje
 export class NotificationItem {
   public readonly id: string;
   public readonly category: NotificationCategory;
@@ -32,9 +29,7 @@ export class NotificationItem {
     this.isRead = Boolean(data.isRead);
   }
 
-  /**
-   * Produces an updated immutable copy marked as read.
-   */
+  // Olvasottnak jelölés
   public markAsRead(): NotificationItem {
     return new NotificationItem({
       id: this.id,
@@ -46,9 +41,7 @@ export class NotificationItem {
     });
   }
 
-  /**
-   * Resolves the theme accent color for each notification category.
-   */
+  // Kategóriához tartozó szín lekérése
   public getCategoryAccentColor(): string {
     switch (this.category) {
       case 'workout':
@@ -64,9 +57,7 @@ export class NotificationItem {
     }
   }
 
-  /**
-   * Friendly category display title in the active language.
-   */
+  // Kategória lefordított neve
   public getCategoryLabel(): string {
     switch (this.category) {
       case 'workout':
@@ -82,9 +73,7 @@ export class NotificationItem {
     }
   }
 
-  /**
-   * Returns localized timestamp ("Today, 09:00" -> "Ma, 09:00").
-   */
+  // Lefordított időbélyeg formázása
   public getLocalizedTimestamp(): string {
     return i18n.translateNotificationTimestamp(this.timestamp);
   }

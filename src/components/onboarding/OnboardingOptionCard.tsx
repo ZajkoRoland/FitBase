@@ -12,11 +12,7 @@ interface OnboardingOptionCardProps {
   variant?: 'default' | 'final';
 }
 
-/**
- * OnboardingOptionCard
- * Matches the FitBase reference option card proportions, dark-slate surface,
- * circular icon badge, and active cyan (or final-step emerald) outline.
- */
+// Választókártya az onboarding folyamatban
 export const OnboardingOptionCard: React.FC<OnboardingOptionCardProps> = ({
   label,
   iconName,

@@ -1,12 +1,4 @@
-"""baseline: users, refresh_tokens, profiles, user_stats, user_weekly_plan
-
-These tables were first created by hand from db/init/001_schema.sql, so on the
-existing Supabase database this revision is only *stamped*, not executed:
-
-    alembic stamp a1f3c9d27b40
-
-On an empty database `alembic upgrade head` creates them for real. The has_table
-guards make running it against a half-initialised database harmless.
+"""Alap séma: felhasználók, profilok, statisztikák és heti tervek
 
 Revision ID: a1f3c9d27b40
 Revises:
@@ -25,12 +17,16 @@ branch_labels: str | Sequence[str] | None = None
 depends_on: str | Sequence[str] | None = None
 
 
+# Segédfüggvény: megnézi, hogy a megadott tábla hiányzik-e még
 def _missing(table: str) -> bool:
     return not sa.inspect(op.get_bind()).has_table(table)
 
 
 def upgrade() -> None:
+    # Jelszóhasheléshez és uuid generáláshoz szükséges postgres kiegészítő
     op.execute("create extension if not exists pgcrypto")
+
+    # Automatikus updated_at trigger függvény az időbélyegek frissítéséhez
     op.execute(
         """
         create or replace function public.set_updated_at() returns trigger
@@ -43,6 +39,7 @@ def upgrade() -> None:
         """
     )
 
+    # Felhasználói fiókok alaptáblája (email, jelszó hash, jogosultság)
     if _missing("users"):
         op.create_table(
             "users",
@@ -60,6 +57,7 @@ def upgrade() -> None:
             "for each row execute function public.set_updated_at()"
         )
 
+    # Bejelentkezési munkamenetek (refresh tokenek) táblája
     if _missing("refresh_tokens"):
         op.create_table(
             "refresh_tokens",
@@ -72,6 +70,7 @@ def upgrade() -> None:
         )
         op.create_index("refresh_tokens_user_id_idx", "refresh_tokens", ["user_id"])
 
+    # Felhasználói profil adatok (megjelenített név, onboarding állapot)
     if _missing("profiles"):
         op.create_table(
             "profiles",
@@ -92,6 +91,7 @@ def upgrade() -> None:
             "for each row execute function public.set_updated_at()"
         )
 
+    # Alapvető testadatok és célok (súly, magasság, széria)
     if _missing("user_stats"):
         op.create_table(
             "user_stats",
@@ -106,6 +106,7 @@ def upgrade() -> None:
             sa.Column("total_hours", sa.Integer(), server_default="0"),
         )
 
+    # Heti edzésterv felosztás napokra lebontva
     if _missing("user_weekly_plan"):
         op.create_table(
             "user_weekly_plan",
@@ -124,6 +125,7 @@ def upgrade() -> None:
 
 
 def downgrade() -> None:
+    # Visszaállítási lépések fordított sorrendben
     op.drop_table("user_weekly_plan")
     op.drop_table("user_stats")
     op.drop_table("profiles")

@@ -21,10 +21,7 @@ interface DeleteAccountModalProps {
   onShowDialog?: (config: FitbaseDialogConfig) => void;
 }
 
-/**
- * DeleteAccountModal
- * Isolated modal providing a safe, compliant confirmation workflow for account deletion.
- */
+// Fióktörlési megerősítő modálablak
 export const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
   visible,
   onClose,

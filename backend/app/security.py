@@ -1,4 +1,4 @@
-"""Password hashing, JWT access tokens and opaque refresh tokens."""
+# Jelszóhashelés és JWT token kezelés
 
 import hashlib
 import secrets
@@ -23,7 +23,7 @@ def hash_password(password: str) -> str:
 
 
 def verify_password(password: str, password_hash: str | None) -> bool:
-    """Verify against argon2 (native) or bcrypt (users migrated from Supabase Auth)."""
+    # Jelszó ellenőrzése argon2 vagy bcrypt alapján
     if not password_hash:
         return False
     if password_hash.startswith("$2"):
@@ -96,7 +96,7 @@ def refresh_token_expiry() -> datetime:
 
 
 def generate_reset_code() -> str:
-    """Generates a secure cryptographically random 6-digit numeric verification code."""
+    # 6 jegyű ellenőrző kód generálása
     return f"{secrets.randbelow(1_000_000):06d}"
 
 
@@ -105,5 +105,5 @@ def hash_reset_code(code: str) -> str:
 
 
 def reset_code_expiry() -> datetime:
-    """Password reset codes expire in 15 minutes."""
+    # A visszaállító kód 15 percig érvényes
     return datetime.now(UTC) + timedelta(minutes=15)

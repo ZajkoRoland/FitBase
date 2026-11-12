@@ -10,7 +10,7 @@ router = APIRouter(prefix="/achievements", tags=["achievements"])
 
 @router.get("", response_model=AchievementsEnvelopeOut)
 def get_achievements(user: CurrentUser, db: DbSession) -> AchievementsEnvelopeOut:
-    """Loads and evaluates all achievements strictly for the authenticated user account."""
+    """Kitüntetések lekérése a bejelentkezett felhasználóhoz."""
     _, stats, _ = AccountStateService.ensure_account_entities(db, user)
     achievements, _, rank = AchievementDomainService.sync_user_achievements(db, user.id, stats)
     db.commit()
@@ -19,7 +19,7 @@ def get_achievements(user: CurrentUser, db: DbSession) -> AchievementsEnvelopeOu
 
 @router.post("/sync", response_model=AchievementsEnvelopeOut)
 def sync_achievements(user: CurrentUser, db: DbSession) -> AchievementsEnvelopeOut:
-    """Synchronizes achievement progress and unlock timestamps for the current user."""
+    """Kitüntetések szinkronizálása és feloldása a bejelentkezett felhasználónál."""
     _, stats, _ = AccountStateService.ensure_account_entities(db, user)
     achievements, _, rank = AchievementDomainService.sync_user_achievements(db, user.id, stats)
     db.commit()

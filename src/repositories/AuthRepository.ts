@@ -14,7 +14,7 @@ export class AuthRepository extends BaseRepository {
     return AuthRepository.instance;
   }
 
-  /** Creates the account and signs the user in straight away. */
+  // Új felhasználó regisztrációja és automatikus bejelentkeztetése
   public async register(email: string, password: string, username: string): Promise<void> {
     const tokens = await this.api.post<TokenResponse>(
       '/auth/register',
@@ -80,9 +80,7 @@ export class AuthRepository extends BaseRepository {
     });
   }
 
-  /**
-   * Initiates password recovery by sending a 6-digit numeric verification code to the registered email.
-   */
+  // Jelszó-visszaállító 6 jegyű kód kérése emailben
   public async requestPasswordReset(email: string): Promise<void> {
     await this.api.post<{ message: string }>(
       '/auth/forgot-password',
@@ -91,9 +89,7 @@ export class AuthRepository extends BaseRepository {
     );
   }
 
-  /**
-   * Completes password recovery using the 6-digit code and applies the new password.
-   */
+  // Új jelszó beállítása az ellenőrző kód segítségével
   public async confirmPasswordReset(email: string, code: string, newPassword: string): Promise<void> {
     await this.api.post<void>(
       '/auth/reset-password',
@@ -109,22 +105,22 @@ export class AuthRepository extends BaseRepository {
   public async deleteAccount(): Promise<void> {
     const currentUserId = this.api.getSession()?.user?.id;
 
-    // 1. Permanently remove the user from the database
+    // 1. Felhasználó törlése az adatbázisból
     await this.api.delete<void>('/auth/me');
 
-    // 2. Clean up account-scoped notification caches on device
+    // 2. Értesítési gyorsítótár ürítése az eszközön
     if (currentUserId) {
       await NotificationService.getInstance().clearAccountData(currentUserId).catch(() => {});
     }
 
-    // 3. Disconnect any active third-party provider sessions (Google)
+    // 3. Külső bejelentkezési kapcsolatok (Google) bontása
     try {
       await googleAuthService.revokeAccess();
     } catch (e) {
       console.warn('[AuthRepository] Failed to revoke Google access on account deletion:', e);
     }
 
-    // 4. Clear local tokens and end the session
+    // 4. Helyi tokenek törlése és kijelentkezés
     await this.logout();
   }
 }

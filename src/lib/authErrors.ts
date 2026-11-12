@@ -37,9 +37,11 @@ export function getAuthErrorMessage(error: unknown): string {
     }
 
     if (
-      name === 'AuthRetryableFetchError' ||
       name === 'AbortError' ||
-      message?.includes('Network request failed')
+      name === 'TypeError' ||
+      message?.includes('Network request failed') ||
+      message?.includes('Failed to fetch') ||
+      message?.includes('Network Error')
     ) {
       return i18n.t('auth.errNetwork');
     }

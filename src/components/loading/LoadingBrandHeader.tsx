@@ -4,23 +4,13 @@ import { useLanguage } from '@/context/LanguageProvider';
 import React from 'react';
 import { StyleSheet, Text, View, ViewStyle } from 'react-native';
 
-/**
- * Interface contract defining properties for the LoadingBrandHeader component.
- * Follows the Interface Segregation Principle (ISP).
- */
 export interface LoadingBrandHeaderProps {
   appName?: string;
   tagline?: string;
   style?: ViewStyle;
 }
 
-/**
- * LoadingBrandHeader
- *
- * Encapsulates the visual brand identity displayed on initial app launch.
- * Adheres to Single Responsibility Principle (SRP) by managing solely
- * the presentation of the logo, title, and brand tagline.
- */
+// Betöltő képernyő FitBase logó és szlogen fejléc
 export function LoadingBrandHeader({
   appName = 'FitBase',
   tagline,

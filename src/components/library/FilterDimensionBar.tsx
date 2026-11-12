@@ -15,13 +15,7 @@ export interface FilterDimensionBarProps {
   isDimensionFiltered: (dimension: FilterDimension) => boolean;
 }
 
-/**
- * FilterDimensionBar
- *
- * Minimalist, high-contrast tab selector allowing the user to switch
- * between different filter domains (Body Part, Equipment, Difficulty).
- * Features an active dot indicator when a dimension has a non-default filter selected.
- */
+// Szűrősáv: kategóriák (izomcsoport, eszköz, nehézség) közötti váltáshoz
 export const FilterDimensionBar: React.FC<FilterDimensionBarProps> = ({
   dimensions,
   activeDimension,

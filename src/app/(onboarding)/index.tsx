@@ -35,14 +35,7 @@ function formatFeetInches(totalInches: number): string {
   return `${feet}' ${inches}"`;
 }
 
-/**
- * OnboardingScreen
- * 7-step personalized athletic onboarding flow matching the FitBase Figma design:
- * - Full-width top progress bar & centered FitBase pulse badge
- * - Left-aligned editorial heading & subtitle anchored at the top of each step
- * - Sky-cyan (#4FC3F7) & crisp white accents on intermediate steps (1–6)
- * - Emerald green (#00E676) reserved strictly for the final completion step (7/7)
- */
+// Onboarding képernyő: 7 lépéses bevezető folyamat az alapadatok és edzéscélok megadásához
 export default function OnboardingScreen() {
   const insets = useSafeAreaInsets();
   const { profile, refreshProfile } = useProfile();
@@ -53,7 +46,7 @@ export default function OnboardingScreen() {
   const [submitting, setSubmitting] = useState<boolean>(false);
   const [dialogConfig, setDialogConfig] = useState<FitbaseDialogConfig | null>(null);
 
-  // Anthropometric & goal state
+  // Alapadatok és edzéscélok
   const [gender, setGender] = useState<GenderType>('male');
   const [age, setAge] = useState<number>(25);
 
@@ -132,7 +125,7 @@ export default function OnboardingScreen() {
     setStep((prev) => (prev > 1 ? prev - 1 : prev));
   }, []);
 
-  // Unit-aware height value & handler (preserves 1-to-1 integer mapping in ft/in mode)
+  // Magasság kezelése (cm és ft/in átváltás)
   const displayedHeight = heightUnit === 'cm' ? Math.round(heightCm) : Math.round(heightCm / 2.54);
   const handleHeightChange = useCallback(
     (val: number) => {
@@ -145,7 +138,7 @@ export default function OnboardingScreen() {
     [heightUnit]
   );
 
-  // Unit-aware current weight value & handler (preserves 1-to-1 integer mapping in lbs mode)
+  // Testsúly kezelése (kg és lbs átváltás)
   const displayedWeight = weightUnit === 'kg' ? Math.round(weightKg) : Math.round(weightKg * 2.20462);
   const handleWeightChange = useCallback(
     (val: number) => {
@@ -158,7 +151,7 @@ export default function OnboardingScreen() {
     [weightUnit]
   );
 
-  // Unit-aware target weight value & handler
+  // Cél testsúly kezelése
   const displayedTargetWeight =
     weightUnit === 'kg' ? Math.round(targetWeightKg) : Math.round(targetWeightKg * 2.20462);
   const handleTargetWeightChange = useCallback(
@@ -228,7 +221,7 @@ export default function OnboardingScreen() {
         },
       ]}
     >
-      {/* Full-width Header + Progress Bar */}
+      {/* Fejléc és folyamatjelző sáv */}
       <OnboardingHeader
         currentStep={step}
         totalSteps={TOTAL_STEPS}
@@ -236,13 +229,13 @@ export default function OnboardingScreen() {
         backLabel={t('onboarding.backBtn')}
       />
 
-      {/* Top-Anchored Left-Aligned Editorial Heading */}
+      {/* Fejléc szöveg */}
       <View style={styles.headingBlock}>
         <Text style={styles.title}>{stepMeta.title}</Text>
         <Text style={styles.subtitle}>{stepMeta.subtitle}</Text>
       </View>
 
-      {/* Step Content Area */}
+      {/* Lépés tartalma */}
       {isWheelStep ? (
         <View style={styles.wheelStepBody}>
           {step === 3 && (
@@ -410,7 +403,7 @@ export default function OnboardingScreen() {
         </ScrollView>
       )}
 
-      {/* Bottom Action Pill */}
+      {/* Alsó tovább gomb */}
       <View style={styles.bottomBar}>
         <OnboardingBottomButton
           title={isFinalStep ? t('onboarding.finishBtn') : t('onboarding.continueBtn')}
@@ -420,7 +413,7 @@ export default function OnboardingScreen() {
         />
       </View>
 
-      {/* Theme-Compliant Error Dialog */}
+      {/* Hibaüzenet párbeszédablak */}
       <FitbaseCustomDialog
         visible={Boolean(dialogConfig)}
         config={dialogConfig}

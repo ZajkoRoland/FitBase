@@ -40,10 +40,8 @@ export class GoogleAuthService {
     }
   }
 
-  /**
-   * Prompts the native Google Play Services account picker bottom sheet if available.
-   * If in Expo Go, informs the user cleanly.
-   */
+  // Megnyitja a natív Google fiókválasztó ablakot Androidon,
+  // Expo Go alatt pedig figyelmezteti a felhasználót, hogy a natív Google belépéshez dev-client build kell
   public async promptSignIn(): Promise<string | null> {
     if (!NativeGoogleSignin) {
       throw new Error(i18n.t('auth.errExpoGoGoogle'));
@@ -65,9 +63,7 @@ export class GoogleAuthService {
     return null;
   }
 
-  /**
-   * Checks if a previous Google sign-in session exists on the device.
-   */
+  // Ellenőrzi, hogy van-e korábbi Google bejelentkezés
   public async hasPreviousSignIn(): Promise<boolean> {
     try {
       if (NativeGoogleSignin) {
@@ -91,10 +87,7 @@ export class GoogleAuthService {
     }
   }
 
-  /**
-   * Completely disconnects Google account credentials from the app upon account deletion.
-   * This ensures Google Play Services will prompt account selection on subsequent logins.
-   */
+  // Google hozzáférés visszavonása fióktörléskor
   public async revokeAccess(): Promise<void> {
     try {
       if (NativeGoogleSignin) {

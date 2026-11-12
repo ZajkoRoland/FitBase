@@ -87,7 +87,7 @@ class ActivityWeekOut(BaseModel):
 
 
 class ProfileOut(BaseModel):
-    """Flattened profile + stats bound strictly to the authenticated account."""
+    # Felhasználói profil és statisztika adatok
 
     id: uuid.UUID
     username: str | None
@@ -318,7 +318,7 @@ class CoachChatResponse(BaseModel):
 
 
 class AIUserContextOut(BaseModel):
-    """Structured, relational account snapshot designed for AI pattern recognition."""
+    # Felhasználói kontextus az edző AI számára
 
     account_id: uuid.UUID
     identity: dict[str, Any]
@@ -348,7 +348,7 @@ class EquipmentOut(BaseModel):
 
 
 class ExerciseSummary(BaseModel):
-    """One card in the library list."""
+    # Gyakorlatkártya a gyakorlattár listához
 
     slug: str
     name: str

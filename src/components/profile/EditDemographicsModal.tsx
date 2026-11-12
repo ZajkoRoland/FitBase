@@ -40,10 +40,7 @@ const GENDER_OPTIONS: Array<{
   { value: 'other', labelKey: 'onboarding.genderOther', icon: 'radio-button-off' },
 ];
 
-/**
- * EditDemographicsModal
- * Dedicated profile modal for viewing and updating the user's Gender and Age.
- */
+// Nem és életkor módosító modál
 export const EditDemographicsModal: React.FC<EditDemographicsModalProps> = ({
   visible,
   onClose,

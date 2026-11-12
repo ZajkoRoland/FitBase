@@ -124,7 +124,7 @@ export function PlanExerciseCard({
     return { setsReps, restTime };
   }, [exercise.details, exercise.restSeconds, language, i18n]);
 
-  // Load rich details when expanded or when language changes while expanded
+  // Részletes gyakorlatadatok betöltése kinyitáskor vagy nyelvváltáskor
   useEffect(() => {
     if (isExpanded) {
       let isMounted = true;
@@ -161,7 +161,7 @@ export function PlanExerciseCard({
 
   return (
     <View style={[styles.card, isExpanded && styles.cardActive]}>
-      {/* 1. Card Header Row */}
+      {/* 1. Kártya fejlécsor */}
       <TouchableOpacity
         style={styles.headerPressable}
         onPress={handleToggleExpand}
@@ -213,7 +213,7 @@ export function PlanExerciseCard({
         </View>
       </TouchableOpacity>
 
-      {/* 2. Expanded Content Accordion */}
+      {/* 2. Kinyitott részletek */}
       {isExpanded && (
         <View style={styles.expandedSection}>
           <View style={styles.divider} />
@@ -225,7 +225,7 @@ export function PlanExerciseCard({
             </View>
           ) : (
             <>
-              {/* Hands-free Start/Peak Motion Player */}
+              {/* Gyakorlat fázis animáció */}
               <ExercisePoseMotionPlayer
                 startImageUrl={startImageUrl}
                 peakImageUrl={peakImageUrl}
@@ -233,7 +233,7 @@ export function PlanExerciseCard({
                 cycleDurationMs={2000}
               />
 
-              {/* Sets and Weight Summary & Edit Card */}
+              {/* Sorozatok és súlyok kártya */}
               <View style={styles.setsCardBlock}>
                 <View style={styles.setsHeaderRow}>
                   <View style={styles.setsHeaderLeft}>
@@ -250,7 +250,7 @@ export function PlanExerciseCard({
                   </TouchableOpacity>
                 </View>
 
-                {/* Badges for each set */}
+                {/* Sorozat jelvények */}
                 <View style={styles.setsBadgesGrid}>
                   {exerciseSets.map((s) => (
                     <View key={s.setNumber} style={styles.setDetailPill}>
@@ -262,7 +262,7 @@ export function PlanExerciseCard({
                   ))}
                 </View>
 
-                {/* Volume, 1RM & Calories footer stats */}
+                {/* Volumen, 1RM és kalória lábléc */}
                 <View style={styles.setsFooterStats}>
                   {exerciseVolume > 0 && (
                     <Text style={styles.setsFooterText}>
@@ -287,7 +287,7 @@ export function PlanExerciseCard({
                   </View>
                 </View>
 
-                {/* Collapsible 1RM educational explanation */}
+                {/* Lenyitható 1RM magyarázat */}
                 {show1RMHelp && (
                   <View style={styles.oneRMHelpBox}>
                     <View style={styles.oneRMHelpHeader}>
@@ -322,7 +322,7 @@ export function PlanExerciseCard({
                 </View>
               )}
 
-              {/* Remove from Routine Action Button */}
+              {/* Eltávolítás az edzésből gomb */}
               {onRemove && (
                 <TouchableOpacity
                   activeOpacity={0.7}
@@ -338,7 +338,7 @@ export function PlanExerciseCard({
         </View>
       )}
 
-      {/* 3. Edit Sets & Weights Bottom-Sheet Modal */}
+      {/* 3. Sorozatok és súlyok szerkesztése modál */}
       {showEditSetsModal && (
         <EditExerciseSetsModal
           visible={showEditSetsModal}

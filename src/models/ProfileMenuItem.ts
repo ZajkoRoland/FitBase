@@ -20,10 +20,7 @@ export interface IProfileMenuItemData {
   onToggleSwitch?: (value: boolean) => void;
 }
 
-/**
- * ProfileMenuItem
- * Encapsulates the configuration and execution behavior for each profile menu item.
- */
+// Profil menüpont modellje
 export class ProfileMenuItem {
   public readonly id: string;
   public readonly title: string;
@@ -59,9 +56,7 @@ export class ProfileMenuItem {
     this.onToggleSwitch = data.onToggleSwitch;
   }
 
-  /**
-   * Executes the item's action: either opens an external link or executes the registered handler.
-   */
+  // Menüpont műveletének végrehajtása (külső hivatkozás vagy kattintáskezelő)
   public async execute(): Promise<void> {
     if (this.isSwitch && this.onToggleSwitch) {
       this.onToggleSwitch(!this.switchValue);

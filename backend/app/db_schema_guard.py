@@ -1,9 +1,5 @@
-"""Idempotent database schema synchronizer executed on application startup.
-
-Ensures that even in environments where `alembic upgrade head` is not run manually
-prior to container start (e.g. Render web dynos), all account-isolated tables and
-columns exist in the database before handling requests.
-"""
+# Automatikusan létrehozza a hiányzó táblákat és új oszlopokat induláskor,
+# hogy a felhős szerver (Render) ne álljon le hibával akkor sem, ha a migráció nem futott le kézzel.
 
 import logging
 
@@ -16,9 +12,9 @@ logger = logging.getLogger(__name__)
 
 
 def ensure_per_account_schema(engine: Engine) -> None:
-    """Idempotently creates missing tables and adds new columns to existing tables."""
+    # Hiányzó táblák létrehozása és új oszlopok hozzáadása a meglévő táblákhoz
     try:
-        # 1. Create any brand-new tables (user_settings, user_achievements, workout_sessions)
+        # Új táblák létrehozása, ha még nem léteznek (user_settings, user_achievements, workout_sessions)
         Base.metadata.create_all(bind=engine)
 
         insp = inspect(engine)
@@ -28,13 +24,13 @@ def ensure_per_account_schema(engine: Engine) -> None:
         json_type = "JSONB" if is_pg else "JSON"
 
         with engine.begin() as conn:
-            # 2. Ensure profiles columns
+            # Profil tábla új oszlopainak ellenőrzése
             if insp.has_table("profiles"):
                 profile_cols = {c["name"] for c in insp.get_columns("profiles")}
                 if "avatar_url" not in profile_cols:
                     conn.execute(text("ALTER TABLE profiles ADD COLUMN avatar_url TEXT"))
 
-            # 3. Ensure user_stats columns
+            # Statisztika tábla új oszlopainak ellenőrzése
             if insp.has_table("user_stats"):
                 stats_cols = {c["name"] for c in insp.get_columns("user_stats")}
                 alter_statements = [

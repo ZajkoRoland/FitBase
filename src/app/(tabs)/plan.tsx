@@ -291,7 +291,7 @@ export default function PlanScreen() {
         )}
       </ScrollView>
 
-      {/* Duplicate Exercise Notice Toast */}
+      {/* Duplikált gyakorlat figyelmeztetés */}
       {duplicateNotice && (
         <View style={[styles.toastBanner, { top: insets.top + 8 }]}>
           <Ionicons name="information-circle" size={20} color="#FFB800" />
@@ -311,7 +311,7 @@ export default function PlanScreen() {
         </View>
       )}
 
-      {/* Top Header Quick Actions Modal */}
+      {/* Gyorsműveletek modál */}
       <PlanQuickActionModal
         visible={showQuickActionModal}
         dayName={activeDayName}
@@ -324,14 +324,14 @@ export default function PlanScreen() {
         onDeleteEntirePlan={handlePromptClearPlan}
       />
 
-      {/* Plan Builder Periodization Modal */}
+      {/* Edzésterv készítő modál */}
       <BuildPlanModal
         visible={showBuildPlanModal}
         onClose={() => setShowBuildPlanModal(false)}
         onSelectStructure={handleSelectPlanStructure}
       />
 
-      {/* Confirmation modal for deleting the workout plan */}
+      {/* Edzésterv törlés megerősítő modálablak */}
       <ConfirmActionModal
         visible={showResetConfirm}
         title={t('plan.deletePlanTitle')}

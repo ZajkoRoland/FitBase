@@ -61,7 +61,7 @@ export default function CoachScreen() {
   const messagesRef = useRef(messages);
   messagesRef.current = messages;
 
-  // Auto-fill or auto-send prompt passed from Plan screen (1, 2, or 4 week structure selection)
+  // Automatikus üzenetküldés a Terv képernyőről érkező paraméterek alapján (1, 2 vagy 4 hetes terv)
   useEffect(() => {
     if (params.initialPrompt && handledPromptRef.current !== params.initialPrompt) {
       handledPromptRef.current = params.initialPrompt;
@@ -77,7 +77,7 @@ export default function CoachScreen() {
     }
   }, [params.initialPrompt, params.autoSend]);
 
-  // Keep welcome message and initial quick replies synced when profile, plan, or language changes
+  // Üdvözlő üzenet és gombok frissítése profil-, terv- vagy nyelvváltáskor
   useEffect(() => {
     setMessages((prev) => {
       if (prev.length === 1 && prev[0].id === 'welcome-1') {

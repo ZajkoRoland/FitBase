@@ -1,12 +1,7 @@
 import { i18n } from '@/services/LocalizationService';
 import { DateHelper } from './DateHelper';
 
-/**
- * RestDayContentHelper
- *
- * OOP utility class providing diverse, situationally aware titles and descriptions
- * for rest days across today, future, and past dates in English and Hungarian.
- */
+// Pihenőnapokra megjelenített motivációs és regenerációs üzenetek generálása
 export class RestDayContentHelper {
   private static readonly TODAY_HU = [
     'Pihenj egyet, megérdemelted! A tested ma építi újjá és erősíti meg az izomrostokat.',
@@ -58,9 +53,7 @@ export class RestDayContentHelper {
     'Rest and muscle recovery were successfully completed on this day.',
   ];
 
-  /**
-   * Compares the target date to current calendar date (ignoring time).
-   */
+  // Dátum állapotának meghatározása (ma, jövőbeli vagy múltbeli)
   public static getDayStatus(targetDate?: Date): 'today' | 'future' | 'past' {
     if (!targetDate) return 'today';
 
@@ -94,9 +87,7 @@ export class RestDayContentHelper {
     return this.getDayStatus(targetDate) === 'past';
   }
 
-  /**
-   * Returns a localized, situational title for the rest day card.
-   */
+  // Pihenőnap kártya címe az állapot alapján
   public static getTitle(targetDate?: Date): string {
     const status = this.getDayStatus(targetDate);
     if (status === 'today') {
@@ -108,9 +99,7 @@ export class RestDayContentHelper {
     return i18n.t('plan.restCardTitlePast');
   }
 
-  /**
-   * Returns a situational, varied, deterministic description for the rest day.
-   */
+  // Változatos leírás a pihenőnaphoz
   public static getDescription(targetDate?: Date, dayIndex?: number): string {
     const status = this.getDayStatus(targetDate);
     const isHu = i18n.isHungarian();

@@ -29,13 +29,7 @@ export interface FilterPickerModalProps {
   onClose: () => void;
 }
 
-/**
- * FilterPickerModal
- *
- * Compact, high-performance Bottom Sheet picker for selecting an option
- * within a specific filter dimension (Body Part, Equipment, Difficulty).
- * Built with native-driver animations and pull-down-to-dismiss gesture.
- */
+// Szűrőválasztó felugró panel
 export const FilterPickerModal: React.FC<FilterPickerModalProps> = ({
   visible,
   dimension,
@@ -149,7 +143,7 @@ export const FilterPickerModal: React.FC<FilterPickerModalProps> = ({
       onRequestClose={handleDismiss}
     >
       <View style={styles.modalRoot}>
-        {/* Backdrop */}
+        {/* Sötétített háttér */}
         <Animated.View
           style={[
             styles.backdrop,
@@ -161,7 +155,7 @@ export const FilterPickerModal: React.FC<FilterPickerModalProps> = ({
           <Pressable style={styles.backdropPressable} onPress={handleDismiss} />
         </Animated.View>
 
-        {/* Sliding Sheet */}
+        {/* Felcsúszó panel */}
         <Animated.View
           style={[
             styles.sheetContainer,
@@ -173,12 +167,12 @@ export const FilterPickerModal: React.FC<FilterPickerModalProps> = ({
             sheetHeightRef.current = e.nativeEvent.layout.height;
           }}
         >
-          {/* Drag Handle */}
+          {/* Húzóka */}
           <View style={styles.handleContainer} {...panResponder.panHandlers}>
             <View style={styles.handleBar} />
           </View>
 
-          {/* Header Row */}
+          {/* Fejlécsor */}
           <View style={styles.headerRow}>
             <Text style={styles.headerTitle}>{getTitle()}</Text>
             <TouchableOpacity
@@ -190,7 +184,7 @@ export const FilterPickerModal: React.FC<FilterPickerModalProps> = ({
             </TouchableOpacity>
           </View>
 
-          {/* Options List */}
+          {/* Opciók listája */}
           <ScrollView
             showsVerticalScrollIndicator={false}
             contentContainerStyle={styles.scrollContent}

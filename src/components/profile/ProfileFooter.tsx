@@ -6,10 +6,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 const REPDB_URL = 'https://repdb.co';
 
-/**
- * ProfileFooter
- * Discrete app branding, version identifier, and unobtrusive required RepDB credit link.
- */
+// Profil képernyő lábléce (verziószám és RepDB megjelölés)
 export const ProfileFooter: React.FC = () => {
   const { t } = useLanguage();
 
@@ -24,7 +21,7 @@ export const ProfileFooter: React.FC = () => {
         {t('profile.footer.version', { version: '1.0.0' })}
       </Text>
 
-      {/* Discrete, compliant single-line credit link */}
+      {/* RepDB forrásmegjelölés link */}
       <TouchableOpacity
         onPress={handleOpenRepDb}
         activeOpacity={0.6}

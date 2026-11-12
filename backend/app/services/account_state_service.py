@@ -1,8 +1,5 @@
-"""OOP Domain Service for managing per-account state, activity history, and AI relational context.
-
-Strictly scopes every database query by `user.id` so that no data is ever shared
-or leaked across accounts, and no user metrics or activity histories are hardcoded.
-"""
+# A felhasználói profil, edzésstatisztikák és beállítások kezelése.
+# Minden lekérdezést szigorúan a bejelentkezett user_id alapján szűrünk.
 
 import uuid
 from datetime import UTC, date, datetime, timedelta
@@ -29,7 +26,7 @@ from app.services.achievement_service import AchievementDomainService
 
 
 class AccountStateService:
-    """Centralized OOP service for reading, initializing, and analyzing per-account state."""
+    # Felhasználói adatok betöltése és edzéselőzmények kiszámítása
 
     DAY_NAMES_HU = ["Hétfő", "Kedd", "Szerda", "Csütörtök", "Péntek", "Szombat", "Vasárnap"]
     DAY_CODES = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
@@ -38,7 +35,7 @@ class AccountStateService:
     def ensure_account_entities(
         cls, db: Session, user: User
     ) -> tuple[Profile, UserStats, UserSettings]:
-        """Ensures Profile, UserStats, and UserSettings exist for `user.id`."""
+        # Gondoskodik arról, hogy a Profile, UserStats és UserSettings létezzen a felhasználóhoz
         profile = db.get(Profile, user.id)
         if profile is None:
             fallback_name = user.email.split("@")[0] if user.email else "Athlete"
@@ -69,11 +66,7 @@ class AccountStateService:
     def ensure_weekly_plan_days(
         cls, db: Session, user_id: uuid.UUID
     ) -> list[WeeklyPlanDay]:
-        """
-        Ensures all 7 days (0..6, Mon..Sun) exist for `user_id` in `user_weekly_plan`.
-        Any missing day is initialized as an empty workout day ('workout', 0 exercises),
-        never as a hardcoded rest day.
-        """
+        # Gondoskodik arról, hogy a hét mind a 7 napja létezzen az edzéstervben
         existing = {
             row.day_of_week: row
             for row in db.scalars(
@@ -115,10 +108,7 @@ class AccountStateService:
     def sync_weekly_target_from_plan(
         cls, db: Session, user_id: uuid.UUID
     ) -> int:
-        """
-        Recalculates and persists `user_stats.weekly_target` based on the number
-        of scheduled workout days (`type == 'workout'`) in the user's 7-day plan.
-        """
+        # Újraszámolja a heti edzéscélt a betervezett napok alapján
         days = cls.ensure_weekly_plan_days(db, user_id)
         workout_days_count = sum(1 for d in days if d.type == "workout")
         new_target = max(1, workout_days_count)
@@ -136,7 +126,7 @@ class AccountStateService:
     def compute_5_week_activity(
         cls, db: Session, user_id: uuid.UUID, stats: UserStats
     ) -> list[ActivityWeekOut]:
-        """Computes the user's real 5-week workout volume strictly from their database records."""
+        # Kiszámítja az elmúlt 5 hét edzésaktivitását a naplóbejegyzésekből
         today = datetime.now(UTC).date()
         current_monday = today - timedelta(days=today.weekday())
         weekly_target = max(stats.weekly_target or 4, 1)
@@ -209,17 +199,7 @@ class AccountStateService:
         stats: UserStats,
         current_date: date | None = None,
     ) -> int:
-        """Evaluates whether the user's active workout streak is still alive or broken by a missed workout day.
-
-        - If no workout was ever completed (or streak is 0), streak remains 0.
-        - If last workout was today or yesterday, streak is currently alive.
-        - If last workout was >= 2 days ago:
-          Checks all calendar days strictly between last_workout_date and current_date.
-          If any intermediate day was a scheduled 'workout' day in the user's weekly plan,
-          that workout day was missed, so streak is broken and reset to 0 in UserStats.
-          If all intermediate days were scheduled 'rest' days, the streak is protected and preserved.
-        - If > 7 days have passed, streak is guaranteed broken.
-        """
+        # Ellenőrzi, hogy a felhasználó edzéssorozata él-e még, vagy megszakadt
         if current_date is None:
             current_date = datetime.now(UTC).date()
 
@@ -276,13 +256,7 @@ class AccountStateService:
         stats: UserStats,
         current_date: date | None = None,
     ) -> tuple[int, int]:
-        """Calculates and updates streak and best_streak upon completing a workout session.
-
-        - Multiple workouts completed on the same date do NOT increment streak repeatedly.
-        - If the prior streak was alive (e.g. yesterday worked out or rest days in between), increments by +1.
-        - If the prior streak was broken (missed a workout day), resets and starts a fresh streak of 1.
-        - Updates best_streak = max(best_streak, streak) and last_workout_date = current_date.
-        """
+        # Frissíti az edzéssorozatot egy edzés elvégzése után
         if current_date is None:
             current_date = datetime.now(UTC).date()
 
@@ -315,7 +289,7 @@ class AccountStateService:
     def to_profile_out(
         cls, db: Session, profile: Profile, stats: UserStats
     ) -> ProfileOut:
-        """Converts Profile + UserStats ORM entities into a complete ProfileOut response."""
+        # Összefésüli a profil és statisztika adatokat a kimeneti modellbe
         cls.evaluate_active_streak(db, profile.id, stats)
         activity_5_weeks = cls.compute_5_week_activity(db, profile.id, stats)
         stats.activity_history = [item.model_dump() for item in activity_5_weeks]
@@ -365,7 +339,7 @@ class AccountStateService:
 
     @staticmethod
     def compute_bmi_info(weight: float | None, height: float | None) -> dict[str, Any]:
-        """Computes WHO BMI value and classification from account weight and height."""
+        # Kiszámítja a BMI értéket a WHO szabvány szerint
         if not weight or not height or weight <= 0 or height <= 0:
             return {"bmi": None, "category": None}
         h_m = height / 100.0
@@ -382,7 +356,7 @@ class AccountStateService:
 
     @classmethod
     def build_ai_user_context(cls, db: Session, user: User) -> AIUserContextOut:
-        """Constructs a structured, relational account snapshot for the AI Coach."""
+        # Összeállítja a felhasználói kontextust a személyi edző AI számára
         profile, stats, settings = cls.ensure_account_entities(db, user)
         profile_out = cls.to_profile_out(db, profile, stats)
         achievements, _, player_rank = AchievementDomainService.sync_user_achievements(

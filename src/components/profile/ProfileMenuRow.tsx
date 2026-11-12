@@ -9,11 +9,7 @@ interface ProfileMenuRowProps {
   isLast?: boolean;
 }
 
-/**
- * ProfileMenuRow
- * Renders an isolated, interactive row item inside a profile menu section card.
- * Supports standard click items, chevron arrows, badge indicators, and toggle switches.
- */
+// Profil menüsor komponens
 export const ProfileMenuRow: React.FC<ProfileMenuRowProps> = ({ item, isLast = false }) => {
   const iconColor = item.isDestructive
     ? Colors.status.error

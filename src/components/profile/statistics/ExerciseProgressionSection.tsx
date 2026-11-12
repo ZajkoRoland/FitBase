@@ -30,7 +30,7 @@ export const ExerciseProgressionSection: React.FC = () => {
         if (!isMounted) return;
         setExercises(list);
         if (list.length > 0) {
-          // If the currently selected slug isn't in the list, default to first item
+          // Ha a kiválasztott gyakorlat nincs a listában, az első elemet választjuk ki
           if (!list.some((item) => item.slug === selectedSlug)) {
             setSelectedSlug(list[0].slug);
           }
@@ -71,7 +71,7 @@ export const ExerciseProgressionSection: React.FC = () => {
         </View>
       </View>
 
-      {/* Horizontal Scrollable Exercise Selector Chips */}
+      {/* Görgethető gyakorlatválasztó címkék */}
       {loading ? (
         <View style={styles.loaderBox}>
           <ActivityIndicator size="small" color={Colors.accent.blue} />
@@ -110,7 +110,7 @@ export const ExerciseProgressionSection: React.FC = () => {
         </ScrollView>
       ) : null}
 
-      {/* Main Interactive Progression Timeline Chart */}
+      {/* Idővonal diagram */}
       <View style={styles.chartWrapper}>
         <ExerciseProgressChart
           slug={selectedSlug}

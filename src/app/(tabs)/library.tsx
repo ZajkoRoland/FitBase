@@ -178,7 +178,7 @@ export default function LibraryScreen() {
 
   return (
     <View key={language} style={styles.root}>
-      {/* Top Header & Search Area */}
+      {/* Fejléc és keresőmező */}
       <View style={[styles.topSection, { paddingTop: insets.top + 8 }]}>
         <LibraryHeader
           title={t('library.headerTitle')}
@@ -203,7 +203,7 @@ export default function LibraryScreen() {
         />
       </View>
 
-      {/* Grid Content */}
+      {/* Rács tartalom */}
       <View style={styles.listContainer}>
         <SectionSelectorHeader
           title={getSectionTitle()}
@@ -260,7 +260,7 @@ export default function LibraryScreen() {
         )}
       </View>
 
-      {/* Exercise Detail Modal Sheet */}
+      {/* Gyakorlat részletei modál */}
       <ExerciseDetailModal
         visible={Boolean(selectedExercise)}
         exerciseSummary={selectedExercise}
@@ -269,7 +269,7 @@ export default function LibraryScreen() {
         targetDayName={targetDayLabel}
       />
 
-      {/* Dedicated Filter Bottom Sheet Modal */}
+      {/* Szűrő alsó panel modál */}
       <ExerciseFilterModal
         visible={showFilterModal}
         filters={filterState}

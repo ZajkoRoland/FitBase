@@ -1,4 +1,4 @@
-"""exercise catalogue: muscles, equipment, tags, exercises and their relations
+"""Gyakorlatkatalógus: izomcsoportok, eszközök, címkék és gyakorlatok
 
 Revision ID: 5c8e1b7a94d2
 Revises: a1f3c9d27b40
@@ -16,7 +16,7 @@ down_revision: str | None = "a1f3c9d27b40"
 branch_labels: str | Sequence[str] | None = None
 depends_on: str | Sequence[str] | None = None
 
-# Native enums. create_type=False because they are created explicitly below.
+# Natív postgres enumok definíciói
 ENUMS = {
     "exercise_category": ["strength", "stretching", "cardio", "plyometrics", "olympic"],
     "force_type": ["push", "pull", "static", "dynamic"],
@@ -35,15 +35,18 @@ ENUMS = {
 }
 
 
+# Segédfüggvény: egyedi enum típus leíró létrehozása
 def _enum(name: str) -> postgresql.ENUM:
     return postgresql.ENUM(*ENUMS[name], name=name, create_type=False)
 
 
 def upgrade() -> None:
     bind = op.get_bind()
+    # Egyedi enum típusok felvétele az adatbázisba
     for name in ENUMS:
         _enum(name).create(bind, checkfirst=True)
 
+    # Izomcsoportok táblája
     op.create_table(
         "muscles",
         sa.Column("id", sa.Integer(), sa.Identity(), primary_key=True),
@@ -51,6 +54,7 @@ def upgrade() -> None:
         sa.Column("name", sa.Text(), nullable=False),
         sa.Column("image_path", sa.Text()),
     )
+    # Edzőtermi felszerelések és eszközök
     op.create_table(
         "equipment",
         sa.Column("id", sa.Integer(), sa.Identity(), primary_key=True),
@@ -58,12 +62,14 @@ def upgrade() -> None:
         sa.Column("name", sa.Text(), nullable=False),
         sa.Column("image_path", sa.Text()),
     )
+    # Gyakorlat címkék (pl. kezdőbarát, funkcionális)
     op.create_table(
         "tags",
         sa.Column("id", sa.Integer(), sa.Identity(), primary_key=True),
         sa.Column("slug", sa.String(40), nullable=False, unique=True),
     )
 
+    # Gyakorlatok fő adattáblája
     op.create_table(
         "exercises",
         sa.Column("id", sa.Integer(), sa.Identity(), primary_key=True),
@@ -87,6 +93,7 @@ def upgrade() -> None:
     op.create_index("ix_exercises_equipment_id", "exercises", ["equipment_id"])
     op.create_index("ix_exercises_variation_group", "exercises", ["variation_group"])
 
+    # Többnyelvű leírások és instrukciók (magyar és angol nevek)
     op.create_table(
         "exercise_translations",
         sa.Column("exercise_id", sa.Integer(), sa.ForeignKey("exercises.id", ondelete="CASCADE"), primary_key=True),
@@ -103,6 +110,7 @@ def upgrade() -> None:
         ["lang", sa.text("lower(name)")],
     )
 
+    # Gyakorlat és megdolgozott izmok kapcsolótáblája
     op.create_table(
         "exercise_muscles",
         sa.Column("exercise_id", sa.Integer(), sa.ForeignKey("exercises.id", ondelete="CASCADE"), primary_key=True),
@@ -111,6 +119,7 @@ def upgrade() -> None:
     )
     op.create_index("ix_exercise_muscles_muscle_id", "exercise_muscles", ["muscle_id"])
 
+    # Fázisképek és bemutató ábrák elérési útjai
     op.create_table(
         "exercise_images",
         sa.Column("exercise_id", sa.Integer(), sa.ForeignKey("exercises.id", ondelete="CASCADE"), primary_key=True),
@@ -118,6 +127,7 @@ def upgrade() -> None:
         sa.Column("path", sa.Text(), nullable=False),
     )
 
+    # Célok szerinti besorolások (izomtömeg növelés, erő, mobilitás)
     op.create_table(
         "exercise_goals",
         sa.Column("exercise_id", sa.Integer(), sa.ForeignKey("exercises.id", ondelete="CASCADE"), primary_key=True),
@@ -125,6 +135,7 @@ def upgrade() -> None:
     )
     op.create_index("ix_exercise_goals_goal", "exercise_goals", ["goal"])
 
+    # Gyakorlatok és címkék kapcsolata
     op.create_table(
         "exercise_tags",
         sa.Column("exercise_id", sa.Integer(), sa.ForeignKey("exercises.id", ondelete="CASCADE"), primary_key=True),
@@ -133,6 +144,7 @@ def upgrade() -> None:
 
 
 def downgrade() -> None:
+    # Táblák törlése
     for table in (
         "exercise_tags",
         "exercise_goals",
@@ -146,6 +158,7 @@ def downgrade() -> None:
     ):
         op.drop_table(table)
 
+    # Enum típusok törlése
     bind = op.get_bind()
     for name in ENUMS:
         _enum(name).drop(bind, checkfirst=True)

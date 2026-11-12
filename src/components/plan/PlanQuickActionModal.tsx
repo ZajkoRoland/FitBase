@@ -98,12 +98,12 @@ export const PlanQuickActionModal: React.FC<PlanQuickActionModalProps> = ({
       onRequestClose={() => handleDismiss(onClose)}
     >
       <View style={styles.overlay}>
-        {/* Soft Dimmed Backdrop */}
+        {/* Sötétített háttér */}
         <Animated.View style={[styles.backdrop, { opacity: backdropOpacity }]}>
           <Pressable style={StyleSheet.absoluteFill} onPress={() => handleDismiss(onClose)} />
         </Animated.View>
 
-        {/* Action Sheet Card */}
+        {/* Műveleti panel kártya */}
         <Animated.View
           style={[
             styles.card,
@@ -113,7 +113,7 @@ export const PlanQuickActionModal: React.FC<PlanQuickActionModalProps> = ({
             },
           ]}
         >
-          {/* Header Row */}
+          {/* Fejlécsor */}
           <View style={styles.headerRow}>
             <View style={styles.headerTextGroup}>
               <Text style={styles.title}>{t('plan.quickActions.title')}</Text>
@@ -132,9 +132,9 @@ export const PlanQuickActionModal: React.FC<PlanQuickActionModalProps> = ({
             </TouchableOpacity>
           </View>
 
-          {/* Action List */}
+          {/* Műveletek listája */}
           <View style={styles.actionsContainer}>
-            {/* 1. Build Full Workout Plan */}
+            {/* 1. Teljes edzésterv készítése */}
             <TouchableOpacity
               activeOpacity={0.75}
               style={[styles.actionItem, styles.actionItemHighlight]}
@@ -154,7 +154,7 @@ export const PlanQuickActionModal: React.FC<PlanQuickActionModalProps> = ({
               <Ionicons name="chevron-forward" size={18} color="#B57CFF" />
             </TouchableOpacity>
 
-            {/* 2. Add Exercise */}
+            {/* 2. Gyakorlat hozzáadása */}
             <TouchableOpacity
               activeOpacity={0.75}
               style={styles.actionItem}
@@ -174,7 +174,7 @@ export const PlanQuickActionModal: React.FC<PlanQuickActionModalProps> = ({
               <Ionicons name="chevron-forward" size={18} color="rgba(255, 255, 255, 0.3)" />
             </TouchableOpacity>
 
-            {/* 3. Switch Day Type (Workout <-> Rest) */}
+            {/* 3. Naptípus váltása (edzés / pihenőnap) */}
             <TouchableOpacity
               activeOpacity={0.75}
               style={styles.actionItem}
@@ -211,7 +211,7 @@ export const PlanQuickActionModal: React.FC<PlanQuickActionModalProps> = ({
               <Ionicons name="chevron-forward" size={18} color="rgba(255, 255, 255, 0.3)" />
             </TouchableOpacity>
 
-            {/* 4. Delete Entire Workout Plan */}
+            {/* 4. Teljes edzésterv törlése */}
             <TouchableOpacity
               activeOpacity={0.75}
               style={styles.actionItem}
@@ -232,7 +232,7 @@ export const PlanQuickActionModal: React.FC<PlanQuickActionModalProps> = ({
             </TouchableOpacity>
           </View>
 
-          {/* Cancel Button */}
+          {/* Mégse gomb */}
           <TouchableOpacity
             activeOpacity={0.75}
             style={styles.cancelButton}

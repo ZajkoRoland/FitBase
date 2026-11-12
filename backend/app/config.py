@@ -24,12 +24,13 @@ class Settings(BaseSettings):
         "137401623780-j7r0vep09glhjbmg23766ah8hloust41.apps.googleusercontent.com"
     )
     cors_origins: str = "http://localhost:8081,http://127.0.0.1:8081,*"
+    # Groq API beállítások (tartalék modell)
     groq_api_key: str = ""
     groq_model: str = "qwen/qwen3.8-27b"
-    # Google Gemini AI configuration (Primary high-availability engine)
+    # Google Gemini beállítások (elsődleges modell)
     gemini_api_key: str = ""
     gemini_model: str = "gemini-2.0-flash"
-    # Transactional Email configuration (HTTPS API recommended on Render Free Tier; SMTP for local/VPS)
+    # E-mail küldés beállításai (Renderen HTTPS API javasolt, helyileg SMTP)
     brevo_api_key: str = ""
     resend_api_key: str = ""
     email_from: str = "fitbase.support@gmail.com"
@@ -40,8 +41,7 @@ class Settings(BaseSettings):
     smtp_password: str = ""
     smtp_from: str = ""
     smtp_tls: bool = True
-    # Exercise images. The database only stores relative paths ('images/flat/x.webp').
-    # Empty media_base_url = this server serves them under /media/; set it to a full URL
+    # Gyakorlatok képei (ha nincs beállítva külső URL, a helyi mappából szolgálja ki)
     media_dir: Path = (
         BACKEND_DIR / "images"
         if (BACKEND_DIR / "images").is_dir()

@@ -35,11 +35,7 @@ export interface ProfileMenuActionCallbacks {
   onShowDialog?: (config: FitbaseDialogConfig) => void;
 }
 
-/**
- * ProfileMenuService 
- * Encapsulates the instantiation and business logic of profile menu items and sections.
- * Clean, minimalistic UI matching modern athletic mobile design guidelines.
- */
+// Profil menüpontok és beállítások kezelése
 export class ProfileMenuService {
   private static instance: ProfileMenuService;
 
@@ -52,9 +48,7 @@ export class ProfileMenuService {
     return ProfileMenuService.instance;
   }
 
-  /**
-   * Generates all menu sections configured with callbacks and deep links.
-   */
+  // Menüszekciók összeállítása a profil képernyőhöz
   public getMenuSections(callbacks: ProfileMenuActionCallbacks): IProfileMenuSections {
     return {
       bodyMetrics: this.getBodyMetricsItems(callbacks),
@@ -66,9 +60,7 @@ export class ProfileMenuService {
     };
   }
 
-  /**
-   * Body Metrics & Fitness Goals section with live user metrics.
-   */
+  // Testméretek és edzéscélok menüpontjainak összeállítása
   private getBodyMetricsItems(callbacks: ProfileMenuActionCallbacks): ProfileMenuItem[] {
     const p = callbacks.profile;
     const genderStr = i18n.translateGender(p?.gender);
@@ -82,13 +74,13 @@ export class ProfileMenuService {
     const goalStr = i18n.translateFitnessGoal(p?.fitness_goal);
     const levelStr = i18n.translateFitnessLevel(p?.fitness_level);
 
-    // Calculate real-time WHO BMI
+    // BMI érték kiszámítása a testsúly és magasság alapján
     const bmiData = bodyMetricsService.calculateBmi(p?.weight, p?.height);
     const bmiSub = bmiData
       ? ` • BMI ${i18n.formatNumber(bmiData.bmi)} (${bmiData.localizedCategory})`
       : '';
 
-    // Calculate Target Weight progress
+    // Célsúly felé haladás kiszámítása
     const targetProgress = bodyMetricsService.calculateProgress(
       p?.weight,
       callbacks.targetWeight
@@ -137,9 +129,7 @@ export class ProfileMenuService {
     ];
   }
 
-  /**
-   * Account Identity & Security section.
-   */
+  // Fiók és biztonság menüpontok
   private getSecurityItems(callbacks: ProfileMenuActionCallbacks): ProfileMenuItem[] {
     const items: ProfileMenuItem[] = [
       new ProfileMenuItem({

@@ -27,10 +27,7 @@ interface ChangePasswordModalProps {
   onShowDialog?: (config: FitbaseDialogConfig) => void;
 }
 
-/**
- * ChangePasswordModal
- * Isolated modal dedicated to password updates in the Account & Security section.
- */
+// Jelszómódosító modálablak
 export const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
   visible,
   onClose,

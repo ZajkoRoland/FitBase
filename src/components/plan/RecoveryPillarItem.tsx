@@ -6,20 +6,11 @@ import { RecoveryPillar } from '@/models/RecoveryPillar';
 import { ExerciseCheckButton } from './ExerciseCheckButton';
 
 export interface RecoveryPillarItemProps {
-  /** The recovery pillar entity instance */
   readonly pillar: RecoveryPillar;
-  /** Callback triggered when completion state is toggled */
   readonly onToggle: (pillarId: string) => void;
 }
 
-/**
- * RecoveryPillarItem
- *
- * Isolated card row representing a single recovery habit/pillar:
- * - Left: Category tint icon container with Ionicons
- * - Center: Title, target metric badge, and physiological benefit note
- * - Right: Interactive toggle button using ExerciseCheckButton
- */
+// Regenerációs pillér elem kártya
 export const RecoveryPillarItem: React.FC<RecoveryPillarItemProps> = ({
   pillar,
   onToggle,
@@ -37,7 +28,7 @@ export const RecoveryPillarItem: React.FC<RecoveryPillarItemProps> = ({
         pillar.isCompleted && styles.containerCompleted,
       ]}
     >
-      {/* 1. Left Icon with category tint */}
+      {/* 1. Kategória ikon */}
       <View
         style={[
           styles.iconContainer,
@@ -51,7 +42,7 @@ export const RecoveryPillarItem: React.FC<RecoveryPillarItemProps> = ({
         />
       </View>
 
-      {/* 2. Middle Content info */}
+      {/* 2. Középső információs rész */}
       <View style={styles.content}>
         <View style={styles.titleRow}>
           <Text
@@ -74,7 +65,7 @@ export const RecoveryPillarItem: React.FC<RecoveryPillarItemProps> = ({
         </Text>
       </View>
 
-      {/* 3. Right Interactive Check Button */}
+      {/* 3. Pipa gomb */}
       <View style={styles.checkWrapper}>
         <ExerciseCheckButton
           size={24}

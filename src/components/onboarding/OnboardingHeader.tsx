@@ -11,13 +11,7 @@ interface OnboardingHeaderProps {
   backLabel?: string;
 }
 
-/**
- * OnboardingHeader
- * Matches the FitBase onboarding reference layout:
- * - Centered circular pulse badge + FitBase wordmark (with optional left-anchored back button)
- * - Uppercase tracked step counter
- * - Full-width slim progress bar aligned with screen content margins
- */
+// Onboarding képernyők fejléce
 export const OnboardingHeader: React.FC<OnboardingHeaderProps> = ({
   currentStep,
   totalSteps,

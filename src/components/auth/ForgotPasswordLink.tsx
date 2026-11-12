@@ -8,11 +8,7 @@ interface ForgotPasswordLinkProps {
   disabled?: boolean;
 }
 
-/**
- * ForgotPasswordLink
- * Isolated, reusable touchable link presenting the 'Forgot password?' action
- * positioned beneath the password input on the login view.
- */
+// Elfelejtett jelszó hivatkozás gomb
 export const ForgotPasswordLink: React.FC<ForgotPasswordLinkProps> = ({
   onPress,
   disabled = false,

@@ -27,7 +27,7 @@ export function WeeklyGoalBlock(): React.JSX.Element {
   const percentage = Math.min(100, Math.round((currentSessions / targetSessions) * 100));
   const remaining = Math.max(0, targetSessions - currentSessions);
 
-  // Today's day index: Monday is 0, Sunday is 6
+  // Mai nap sorszáma a héten (hétfő = 0, vasárnap = 6)
   const todayDayIndex = useMemo(() => {
     const d = new Date().getDay();
     return d === 0 ? 6 : d - 1;
@@ -107,7 +107,7 @@ export function WeeklyGoalBlock(): React.JSX.Element {
         />
       </View>
 
-      {/* Daily consistency indicators */}
+      {/* Napi edzésjelzők */}
       <View style={styles.daysRow}>
         {daysMeta.map((day) => {
           return (

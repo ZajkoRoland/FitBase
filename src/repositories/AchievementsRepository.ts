@@ -36,10 +36,7 @@ export interface AchievementsEnvelope {
   rank: PlayerRank;
 }
 
-/**
- * AchievementsRepository
- * Fetches and synchronizes per-account achievements and player rank from `/api/v1/achievements`.
- */
+// Felhasználói jelvények és rang lekérése a backendről
 export class AchievementsRepository extends BaseRepository {
   private static instance: AchievementsRepository;
 

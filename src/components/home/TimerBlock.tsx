@@ -79,7 +79,7 @@ function HomeExerciseCard({
         !canInteract && timerStyle.exerciseItemLocked,
       ]}
     >
-      {/* Clickable Header Row: Tapping expands / collapses */}
+      {/* Kattintható fejlécsor: lenyitás és összecsukás */}
       <Pressable
         style={timerStyle.exerciseCardHeader}
         onPress={() => setIsExpanded((prev) => !prev)}
@@ -121,9 +121,9 @@ function HomeExerciseCard({
           </View>
         </View>
 
-        {/* Right side actions */}
+        {/* Jobb oldali gombok */}
         <View style={timerStyle.exerciseRightActions}>
-          {/* Completion checkbox: ONLY THIS toggles completion */}
+          {/* Befejezést jelölő pipa */}
           <TouchableOpacity
             disabled={!canInteract}
             style={[
@@ -142,7 +142,7 @@ function HomeExerciseCard({
             ) : null}
           </TouchableOpacity>
 
-          {/* Subtle chevron */}
+          {/* Nyíl ikon */}
           <View style={timerStyle.chevronWrapper}>
             <Ionicons
               name={isExpanded ? 'chevron-up' : 'chevron-down'}
@@ -153,12 +153,12 @@ function HomeExerciseCard({
         </View>
       </Pressable>
 
-      {/* Expanded Content (shortened / compact) */}
+      {/* Kinyitott részletek */}
       {isExpanded && (
         <View style={timerStyle.expandedContent}>
           <View style={timerStyle.expandedDivider} />
 
-          {/* 1. Motion Player if images available */}
+          {/* 1. Gyakorlat animáció */}
           {(startImageUrl || peakImageUrl) ? (
             <View style={timerStyle.motionPlayerWrapper}>
               <ExercisePoseMotionPlayer
@@ -171,7 +171,7 @@ function HomeExerciseCard({
             </View>
           ) : null}
 
-          {/* 2. Sets and weights breakdown */}
+          {/* 2. Sorozatok és súlyok részletezése */}
           <View style={timerStyle.setsBlock}>
             <View style={timerStyle.setsBlockHeader}>
               <View style={timerStyle.setsBlockTitleRow}>
@@ -191,7 +191,7 @@ function HomeExerciseCard({
               )}
             </View>
 
-            {/* Set pills */}
+            {/* Sorozat címkék */}
             <View style={timerStyle.setBadgesRow}>
               {exerciseSets.map((s) => (
                 <View key={s.setNumber} style={timerStyle.setPill}>
@@ -205,7 +205,7 @@ function HomeExerciseCard({
               ))}
             </View>
 
-            {/* Rest time + Calories + Volume */}
+            {/* Pihenőidő, kalória és volumen */}
             <View style={timerStyle.setsMetaRow}>
               <View style={timerStyle.setsMetaLeft}>
                 <View style={timerStyle.restBadge}>
@@ -230,7 +230,7 @@ function HomeExerciseCard({
             </View>
           </View>
 
-          {/* 3. Short description */}
+          {/* 3. Rövid leírás */}
           {detail?.description ? (
             <View style={timerStyle.shortDescBox}>
               <Text style={timerStyle.shortDescText} numberOfLines={3}>
@@ -261,7 +261,7 @@ export function TimerBlock(): React.JSX.Element {
     updateExerciseInDay,
   } = usePlan();
 
-  // Mode: Workout Timer vs Routine (defaults to 'exercises' for immediate workout overview)
+  // Nézetmód: edzésstopper vagy gyakorlatlista áttekintés
   const [activeMode, setActiveMode] = useState<TimerBlockMode>('exercises');
   const [editingExercise, setEditingExercise] = useState<Exercise | null>(null);
 
@@ -369,7 +369,7 @@ export function TimerBlock(): React.JSX.Element {
 
   return (
     <View key={language} style={timerStyle.container}>
-      {/* Top Header Row with Title and Clean Mode Switch */}
+      {/* Fejlécsor címmel és nézetváltóval */}
       <View style={timerStyle.headerRow}>
         <Text style={timerStyle.headerText}>
           {routineHeaderText}
@@ -414,7 +414,7 @@ export function TimerBlock(): React.JSX.Element {
         </View>
       </View>
 
-      {/* Timer view */}
+      {/* Időzítő nézet */}
       {activeMode === 'timer' ? (
         <View style={timerStyle.timerBody}>
           <TouchableOpacity
@@ -520,7 +520,7 @@ export function TimerBlock(): React.JSX.Element {
         </View>
       ) : (
         /* ================================================================ */
-        /* View 2: Today's Routine / Exercises                              */
+        /* 2. nézet: Mai edzés gyakorlatai */
         /* ================================================================ */
         <View style={timerStyle.exercisesBody}>
           {isRestDay ? (
@@ -633,7 +633,7 @@ export function TimerBlock(): React.JSX.Element {
                 </Text>
               </View>
 
-              {/* Exercise list */}
+              {/* Gyakorlatok listája */}
               <View style={[timerStyle.exerciseList, !isViewingToday && timerStyle.previewDimmed]}>
                 {exercises.map((ex, index) => {
                   const isChecked = isViewingToday && Boolean(completedExerciseIds[ex.id]);
@@ -659,7 +659,7 @@ export function TimerBlock(): React.JSX.Element {
                 })}
               </View>
 
-              {/* Finish workout button */}
+              {/* Edzés befejezése gomb */}
               <View style={timerStyle.routineFooter}>
                 {doneNotice && (
                   <View style={timerStyle.doneNoticeBox}>
@@ -726,7 +726,7 @@ export function TimerBlock(): React.JSX.Element {
         </View>
       )}
 
-      {/* Edit Sets & Weights Deviation Modal */}
+      {/* Sorozatok és súlyok szerkesztése modál */}
       {Boolean(editingExercise) && (
         <EditExerciseSetsModal
           visible={Boolean(editingExercise)}

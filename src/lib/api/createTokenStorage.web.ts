@@ -1,9 +1,6 @@
 import { TokenStorage } from './TokenStorage';
 
-/**
- * expo-secure-store has no web implementation, so Metro picks this file on web.
- * localStorage is not encrypted; acceptable for local Expo web testing only.
- */
+// Webes felületen a localStorage-t használjuk tárolásra
 class WebTokenStorage extends TokenStorage {
   private get store(): Storage | null {
     // `typeof window` guard: app.json uses static web output, which renders without a DOM.

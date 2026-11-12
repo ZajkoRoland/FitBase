@@ -3,24 +3,13 @@ import { StyleSheet, Text, View } from 'react-native';
 import { Colors } from '@/constants/Colors';
 
 export interface WeeklyPerformanceCardProps {
-  /** Completed workouts count out of total (e.g. 5) */
   readonly completedWorkouts?: number;
-  /** Target workouts for the week (e.g. 6) */
   readonly targetWorkouts?: number;
-  /** Active minutes recorded this week (e.g. 215) */
   readonly activeMinutes?: number;
-  /** Target progress percentage (0 - 100, default 90) */
   readonly progressPercent?: number;
 }
 
-/**
- * WeeklyPerformanceCard
- *
- * Isolated bottom card visualizing weekly performance:
- * - "HETI TELJESÍTMÉNY" badge & Motivational status ("Jó úton haladsz")
- * - Two KPI metrics: Completed workouts (e.g. 5/6) and Active minutes (215 p)
- * - Weekly target progress bar in FitBase brand blue palette.
- */
+// Heti edzésteljesítmény összefoglaló kártya
 export const WeeklyPerformanceCard: React.FC<WeeklyPerformanceCardProps> = ({
   completedWorkouts = 5,
   targetWorkouts = 6,
@@ -31,15 +20,15 @@ export const WeeklyPerformanceCard: React.FC<WeeklyPerformanceCardProps> = ({
 
   return (
     <View style={styles.card}>
-      {/* 1. Header */}
+      {/* 1. Fejléc */}
       <View style={styles.header}>
         <Text style={styles.badgeLabel}>WEEKLY PERFORMANCE</Text>
         <Text style={styles.headline}>You're on track</Text>
       </View>
 
-      {/* 2. KPI Metrics Row */}
+      {/* 2. Teljesítménymutatók sora */}
       <View style={styles.metricsRow}>
-        {/* Workouts KPI */}
+        {/* Edzések száma mutató */}
         <View style={styles.kpiItem}>
           <View style={styles.kpiValueRow}>
             <Text style={styles.kpiLargeNum}>{completedWorkouts}</Text>
@@ -48,10 +37,10 @@ export const WeeklyPerformanceCard: React.FC<WeeklyPerformanceCardProps> = ({
           <Text style={styles.kpiLabel}>Workouts</Text>
         </View>
 
-        {/* Divider */}
+        {/* Elválasztó vonal */}
         <View style={styles.kpiDivider} />
 
-        {/* Active Minutes KPI */}
+        {/* Aktív percek mutató */}
         <View style={styles.kpiItem}>
           <View style={styles.kpiValueRow}>
             <Text style={styles.kpiLargeNum}>{activeMinutes}</Text>
@@ -61,7 +50,7 @@ export const WeeklyPerformanceCard: React.FC<WeeklyPerformanceCardProps> = ({
         </View>
       </View>
 
-      {/* 3. Progress Bar */}
+      {/* 3. Haladási sáv */}
       <View style={styles.progressSection}>
         <View style={styles.progressHeader}>
           <Text style={styles.progressLabel}>Weekly goal</Text>

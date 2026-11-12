@@ -2,7 +2,7 @@ import { PlanService, type Exercise, type WorkoutDay } from '@/services/PlanServ
 
 import { BaseRepository } from './BaseRepository';
 
-/** Row shape of GET/PUT /plan (mirrors the user_weekly_plan table). */
+// A heti edzésterv formátuma a szerverrel való kommunikációhoz (GET/PUT /plan)
 interface PlanDayDto {
   day_of_week: number;
   day_name: string;
@@ -30,7 +30,7 @@ export class PlanRepository extends BaseRepository {
     return PlanRepository.normalizeDtoRowsToWeek(rows);
   }
 
-  /** Upserts the given days; array index becomes day_of_week (0 = Monday). */
+  // A hét napjainak mentése (az index felel meg a hét napjának, 0 = hétfő)
   public async saveWeek(days: WorkoutDay[]): Promise<WorkoutDay[]> {
     const normalizedDays = PlanService.normalizeWeekPlan(days);
     const rows = await this.api.put<PlanDayDto[]>('/plan', {

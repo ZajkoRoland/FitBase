@@ -13,10 +13,7 @@ export interface IRecoveryPillarData {
   isCompleted?: boolean;
 }
 
-/**
- * RecoveryPillar Domain Model
- * Encapsulates recovery habit business logic, immutability, and localized getters.
- */
+// Pihenőnapi regenerációs szokások modellje
 export class RecoveryPillar {
   public readonly id: string;
   public readonly category: RecoveryCategory;
@@ -77,9 +74,7 @@ export class RecoveryPillar {
     }
   }
 
-  /**
-   * Produces a new immutable RecoveryPillar with inverted completion state.
-   */
+  // Befejezett állapot váltása
   public toggle(): RecoveryPillar {
     return new RecoveryPillar({
       id: this.id,
@@ -93,9 +88,7 @@ export class RecoveryPillar {
     });
   }
 
-  /**
-   * Factory method returning default curated recovery pillars for rest days.
-   */
+  // Alapértelmezett regenerációs szokások listája
   public static createDefaultPillars(): RecoveryPillar[] {
     return [
       new RecoveryPillar({

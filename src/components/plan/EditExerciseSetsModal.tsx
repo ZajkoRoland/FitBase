@@ -161,7 +161,7 @@ export const EditExerciseSetsModal: React.FC<EditExerciseSetsModalProps> = ({
           behavior={Platform.OS === 'ios' ? 'padding' : undefined}
           style={styles.sheetContainer}
         >
-          {/* Header */}
+          {/* Fejléc */}
           <View style={styles.sheetHeader}>
             <View style={styles.headerInfo}>
               <Text style={styles.sheetTitle} numberOfLines={1}>
@@ -181,7 +181,7 @@ export const EditExerciseSetsModal: React.FC<EditExerciseSetsModalProps> = ({
             showsVerticalScrollIndicator={false}
             keyboardShouldPersistTaps="handled"
           >
-            {/* 1. Quick "Apply to all sets" Section */}
+            {/* 1. Értékek másolása az összes sorozatra */}
             <View style={styles.sectionCard}>
               <View style={styles.sectionHeaderRow}>
                 <Ionicons name="flash" size={14} color={Colors.accent.blue} />
@@ -189,7 +189,7 @@ export const EditExerciseSetsModal: React.FC<EditExerciseSetsModalProps> = ({
               </View>
 
               <View style={styles.uniformInputsRow}>
-                {/* Uniform Reps */}
+                {/* Egységes ismétlésszám */}
                 <View style={styles.uniformInputBlock}>
                   <Text style={styles.miniLabel}>{i18n.t('plan.editSetsModal.repsLabel')}</Text>
                   <View style={styles.stepperBox}>
@@ -220,7 +220,7 @@ export const EditExerciseSetsModal: React.FC<EditExerciseSetsModalProps> = ({
                   </View>
                 </View>
 
-                {/* Uniform Weight */}
+                {/* Egységes súly */}
                 <View style={styles.uniformInputBlock}>
                   <Text style={styles.miniLabel}>{i18n.t('plan.editSetsModal.weightLabel')}</Text>
                   <View style={styles.stepperBox}>
@@ -263,7 +263,7 @@ export const EditExerciseSetsModal: React.FC<EditExerciseSetsModalProps> = ({
               </TouchableOpacity>
             </View>
 
-            {/* 2. Sets List */}
+            {/* 2. Sorozatok listája */}
             <View style={styles.sectionCard}>
               <View style={styles.setsHeaderRow}>
                 <View style={styles.setsHeaderLeft}>
@@ -291,7 +291,7 @@ export const EditExerciseSetsModal: React.FC<EditExerciseSetsModalProps> = ({
                       <Text style={styles.setIndexText}>{set.setNumber}.</Text>
                     </View>
 
-                    {/* Reps */}
+                    {/* Ismétlésszám */}
                     <View style={styles.setCell}>
                       <Text style={styles.cellSub}>{i18n.t('plan.editSetsModal.repsShort')}</Text>
                       <View style={styles.miniStepper}>
@@ -319,7 +319,7 @@ export const EditExerciseSetsModal: React.FC<EditExerciseSetsModalProps> = ({
                       </View>
                     </View>
 
-                    {/* Weight */}
+                    {/* Súly */}
                     <View style={styles.setCell}>
                       <Text style={styles.cellSub}>{i18n.t('plan.editSetsModal.weightShort')}</Text>
                       <View style={styles.miniStepper}>
@@ -347,7 +347,7 @@ export const EditExerciseSetsModal: React.FC<EditExerciseSetsModalProps> = ({
                       </View>
                     </View>
 
-                    {/* Delete Set */}
+                    {/* Sorozat törlése */}
                     {sets.length > 1 && (
                       <TouchableOpacity
                         onPress={() => handleRemoveSet(idx)}
@@ -362,7 +362,7 @@ export const EditExerciseSetsModal: React.FC<EditExerciseSetsModalProps> = ({
               </View>
             </View>
 
-            {/* 3. Rest Time Picker */}
+            {/* 3. Pihenőidő választó */}
             <View style={styles.sectionCard}>
               <View style={styles.sectionHeaderRow}>
                 <Ionicons name="time-outline" size={15} color={Colors.accent.blue} />
@@ -387,7 +387,7 @@ export const EditExerciseSetsModal: React.FC<EditExerciseSetsModalProps> = ({
               </View>
             </View>
 
-            {/* 4. Live Summary Card */}
+            {/* 4. Összegző kártya */}
             <View style={styles.summaryCard}>
               <View style={styles.summaryItem}>
                 <Text style={styles.summaryLabel}>{i18n.t('plan.editSetsModal.totalVolume')}</Text>
@@ -411,7 +411,7 @@ export const EditExerciseSetsModal: React.FC<EditExerciseSetsModalProps> = ({
               </View>
             </View>
 
-            {/* Collapsible 1RM educational explanation */}
+            {/* Lenyitható 1RM magyarázat */}
             {show1RMInfo && (
               <View style={styles.oneRMInfoBox}>
                 <View style={styles.oneRMInfoHeader}>
@@ -423,7 +423,7 @@ export const EditExerciseSetsModal: React.FC<EditExerciseSetsModalProps> = ({
             )}
           </ScrollView>
 
-          {/* Bottom Action Buttons (safe from Android navigation bar) */}
+          {/* Alsó műveleti gombok */}
           <View
             style={[
               styles.sheetFooter,

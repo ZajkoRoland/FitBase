@@ -5,11 +5,7 @@ import { useProfile } from '@/context/ProfileProvider';
 import { useRouter } from 'expo-router';
 import React, { useEffect } from 'react';
 
-/**
- * Root Index Route ("/")
- *
- * Serves as the application's entry gateway and loading screen.
- */
+// Belépési pont: átirányítás a bejelentkezésre, az onboardingra vagy a főoldalra
 export default function Index(): React.JSX.Element {
   const { session, loading: authLoading, signOut } = useAuth();
   const { profile, loading: profileLoading, error: profileError, refreshProfile } = useProfile();

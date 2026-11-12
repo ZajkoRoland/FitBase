@@ -39,7 +39,7 @@ export interface Profile {
   activity_history?: ActivityWeek[];
 }
 
-/** Fields the user may change via PATCH /profile. */
+// Profil módosításkor frissíthető mezők
 export type ProfileUpdate = Partial<
   Pick<
     Profile,

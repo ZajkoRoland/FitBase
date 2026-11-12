@@ -1,8 +1,4 @@
-"""Read side of the exercise catalogue: querying and shaping rows for the API.
-
-`ExerciseSearch` owns every SQL query, `ExercisePresenter` turns ORM rows into the
-response schemas. The router only wires HTTP parameters to these two classes.
-"""
+# Gyakorlatok szűrése, keresése és formázása az API végpontok számára
 
 from dataclasses import dataclass
 
@@ -39,7 +35,7 @@ NO_EQUIPMENT = "none"  # pseudo equipment slug: bodyweight-only exercises
 
 @dataclass(frozen=True)
 class ExerciseFilters:
-    """Every field is optional; the ones that are set are combined with AND."""
+    # Opcionális szűrőmezők a gyakorlatok kereséséhez
 
     query: str | None = None
     body_part: BodyPart | None = None
@@ -55,7 +51,7 @@ class ExerciseFilters:
 
 
 def _escape_like(text: str) -> str:
-    """Stops user input from acting as LIKE wildcards."""
+    # Keresési kulcsszavak tisztítása (LIKE helyettesítők kizárása)
     return text.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_")
 
 
@@ -124,17 +120,7 @@ class ExerciseSearch:
 
     @classmethod
     def _order_clauses(cls, english_name_col):
-        """Tiered ranking for natural gym app sorting:
-        Tier 0: Iconic foundational gym exercises (Bench, Squat, Deadlift, etc.) in curated sequence.
-        Tier 1: Strength Compound exercises (e.g., Rows, Presses, Lunges).
-        Tier 2: Strength Isolation exercises (e.g., Curls, Flyes, Raises).
-        Tier 3: Olympic lifts and Plyometrics.
-        Tier 4: Cardio exercises.
-        Tier 5: Stretching and Mobility.
-        Tier 6: Other / uncategorized.
-
-        Within each tier, entries are sorted alphabetically by English name, with ID as tie-breaker.
-        """
+        # Relevancia szerinti rangsorolás a keresési találatokhoz
         tier_case = case(
             (Exercise.slug.in_(cls.ICONIC_SLUGS), 0),
             (and_(Exercise.category == Category.STRENGTH, Exercise.mechanic == Mechanic.COMPOUND), 1),
@@ -243,7 +229,7 @@ class ExerciseSearch:
 
 
 class ExercisePresenter:
-    """Shapes ORM rows for one requested language."""
+    # Eredmények formázása a kért nyelven
 
     def __init__(self, media: MediaUrls, lang: str = FALLBACK_LANG) -> None:
         self.media = media

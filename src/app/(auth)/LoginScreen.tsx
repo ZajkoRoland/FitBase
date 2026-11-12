@@ -114,7 +114,7 @@ export default function LoginScreen() {
     const nextHeight = event.nativeEvent.layout.height;
     scrollViewHeightRef.current = nextHeight;
 
-    // When the keyboard opens and shrinks the ScrollView viewport, keep the focused field in view
+    // Billentyűzet megnyitásakor görgetés a fókuszban lévő beviteli mezőhöz
     if (focusedFieldRef.current && prevHeight > 0 && nextHeight < prevHeight - 40) {
       const activeField = focusedFieldRef.current;
       requestAnimationFrame(() => ensureFieldVisible(activeField));

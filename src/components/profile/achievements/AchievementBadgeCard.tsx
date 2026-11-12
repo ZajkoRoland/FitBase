@@ -35,10 +35,7 @@ const TIER_STYLES: Record<
   },
 };
 
-/**
- * AchievementBadgeCard
- * Renders an isolated achievement card with distinct unlocked glow vs. locked progress states.
- */
+// Kitüntetés jelvény kártya
 export const AchievementBadgeCard: React.FC<AchievementBadgeCardProps> = ({
   achievement,
 }) => {
@@ -59,7 +56,7 @@ export const AchievementBadgeCard: React.FC<AchievementBadgeCardProps> = ({
       ]}
     >
       <View style={styles.topRow}>
-        {/* Badge Icon Halo */}
+        {/* Ikon háttér */}
         <View
           style={[
             styles.iconHalo,
@@ -79,7 +76,7 @@ export const AchievementBadgeCard: React.FC<AchievementBadgeCardProps> = ({
           />
         </View>
 
-        {/* Title & Description */}
+        {/* Cím és leírás */}
         <View style={styles.content}>
           <View style={styles.titleRow}>
             <Text
@@ -108,7 +105,7 @@ export const AchievementBadgeCard: React.FC<AchievementBadgeCardProps> = ({
         </View>
       </View>
 
-      {/* Status Bar / Progress Bar */}
+      {/* Folyamatjelző sáv */}
       {achievement.isUnlocked ? (
         <View style={styles.unlockedFooter}>
           <Ionicons name="checkmark-circle" size={14} color={Colors.accent.green} />

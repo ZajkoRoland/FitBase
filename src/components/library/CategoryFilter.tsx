@@ -9,13 +9,7 @@ export interface CategoryFilterProps {
   onSelectOption: (value: string) => void;
 }
 
-/**
- * CategoryFilter
- *
- * Horizontal scrolling pill row for selecting filter values within
- * the currently active dimension (Chest, Dumbbell, Beginner).
- * Uses high-contrast minimalist white outlines for selected pills.
- */
+// Vízszintes kategóriaválasztó sáv
 export const CategoryFilter: React.FC<CategoryFilterProps> = ({
   options,
   selectedValue,

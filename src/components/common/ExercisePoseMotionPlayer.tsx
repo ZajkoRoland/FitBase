@@ -16,27 +16,16 @@ import { useLanguage } from '@/context/LanguageProvider';
 export type PoseType = 'start' | 'peak';
 
 export interface ExercisePoseMotionPlayerProps {
-  /** URL for the starting pose image */
   readonly startImageUrl?: string | null;
-  /** URL for the peak contraction pose image */
   readonly peakImageUrl?: string | null;
-  /** Display title for accessibility / fallback */
   readonly exerciseTitle?: string;
-  /** Cycle duration in milliseconds (default: 2000ms = 2s) */
   readonly cycleDurationMs?: number;
-  /** Optional container height in pixels (default: 200) */
   readonly height?: number;
-  /** Optional outer container style override */
   readonly containerStyle?: StyleProp<ViewStyle>;
 }
 
-/**
- * ExercisePoseMotionPlayer
- *
- * Reusable, OOP-designed exercise visualizer component shared between:
- * - Plan tab workout routines (PlanExerciseCard)
- * - Library exercise inspection modal (ExerciseDetailModal)
- */
+// Gyakorlat mozgás animáló komponens: folyamatos áttűnéssel váltogat
+// a gyakorlat kiinduló és csúcsponti képe között (Plan kártyán és a Könyvtárban).
 export function ExercisePoseMotionPlayer({
   startImageUrl,
   peakImageUrl,
@@ -52,7 +41,7 @@ export function ExercisePoseMotionPlayer({
   const activePoseRef = useRef<PoseType>(activePose);
   activePoseRef.current = activePose;
 
-  // Animation value: 0 = start pose visible, 1 = peak pose visible
+  // Animációs érték: 0 = kezdő póz látható, 1 = csúcsponti póz látható
   const crossfadeAnim = useRef(new Animated.Value(0)).current;
 
   const hasBothPoses = Boolean(startImageUrl && peakImageUrl);
@@ -97,7 +86,7 @@ export function ExercisePoseMotionPlayer({
     }).start();
   };
 
-  // 1. Fallback if no images exist
+  // Tartalék nézet, ha nem érhető el kép a gyakorlathoz
   if (!startImageUrl && !peakImageUrl) {
     return (
       <View style={[styles.container, { height }, containerStyle]}>
@@ -108,7 +97,7 @@ export function ExercisePoseMotionPlayer({
     );
   }
 
-  // 2. Single static pose fallback
+  // Statikus nézet egyetlen elérhető kép esetén
   if (!hasBothPoses && singleImageUrl) {
     return (
       <View style={[styles.container, { height }, containerStyle]}>
@@ -126,7 +115,7 @@ export function ExercisePoseMotionPlayer({
     );
   }
 
-  // Interpolated opacities for seamless crossfade
+  // Áttűnés átlátszóságának számítása
   const startOpacity = crossfadeAnim.interpolate({
     inputRange: [0, 1],
     outputRange: [1, 0],
@@ -139,7 +128,7 @@ export function ExercisePoseMotionPlayer({
 
   return (
     <View style={[styles.container, { height }, containerStyle]}>
-      {/* Motion Frame: Overlapping crossfading images on matching #DAF1FD canvas */}
+      {/* Gyakorlat képek áttűnése */}
       <View style={[styles.imageWrapper, { height }]}>
         {startImageUrl && (
           <Animated.View style={[styles.imageLayer, { opacity: startOpacity }]}>
@@ -166,7 +155,7 @@ export function ExercisePoseMotionPlayer({
         )}
       </View>
 
-      {/* Sleek Capsule Pill [ Start ] [ Peak ] */}
+      {/* Kezdő és csúcspont váltó gombok */}
       {hasBothPoses && (
         <View style={styles.poseSelectorRow}>
           <Pressable

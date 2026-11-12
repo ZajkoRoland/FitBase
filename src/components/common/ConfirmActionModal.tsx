@@ -15,46 +15,23 @@ import { useLanguage } from '@/context/LanguageProvider';
 import { HoldToDeleteButton } from '@/components/profile/HoldToDeleteButton';
 
 export interface ConfirmActionModalProps {
-  /** Visibility state of the modal */
   readonly visible: boolean;
-  /** Modal headline (e.g. "Remove Exercise?") */
   readonly title: string;
-  /** Explanatory description */
   readonly description?: string;
-  /** Item name highlighted in a central pill */
   readonly highlightItemName?: string;
-  /** Text for confirmation action button (default: "Remove") */
   readonly confirmText?: string;
-  /** Text for cancel action button (default: "Keep Exercise") */
   readonly cancelText?: string;
-  /** Is this a destructive action (renders in danger red) */
   readonly isDestructive?: boolean;
-  /** Requires holding the button for 3 seconds to confirm high-stakes deletion */
   readonly requireHoldToConfirm?: boolean;
-  /** Duration in ms to hold when requireHoldToConfirm is true (default: 3000) */
   readonly holdDurationMs?: number;
-  /** Optional icon name from Ionicons (default: "trash-outline") */
   readonly iconName?: keyof typeof Ionicons.glyphMap;
-  /** Optional custom backdrop background color (default: 'rgba(0, 0, 0, 0.45)') */
   readonly backdropColor?: string;
-  /** Optional custom card background color (default: '#152038') */
   readonly cardBackgroundColor?: string;
-  /** Confirm callback */
   readonly onConfirm: () => void;
-  /** Cancel / dismiss callback */
   readonly onCancel: () => void;
 }
 
-/**
- * ConfirmActionModal
- *
- * Fully styled, theme-compliant confirmation dialog replacing ugly native OS Alert.alert.
- * - Glassmorphic dark card (`#152038`) matching Fitbase design
- * - Smooth cubic ease-out entrance and exit animation without flickering
- * - Soft tinted warning icon pill
- * - Clear action hierarchy: secondary dismiss & prominent primary confirmation
- * - Configurable backdrop overlay color and opacity
- */
+// Megerősítő modálablak (törlés vagy fontos művelet megerősítéséhez)
 export const ConfirmActionModal: React.FC<ConfirmActionModalProps> = ({
   visible,
   title,
@@ -135,7 +112,7 @@ export const ConfirmActionModal: React.FC<ConfirmActionModalProps> = ({
       onRequestClose={() => handleDismiss(onCancel)}
     >
       <View style={styles.overlay}>
-        {/* Animated backdrop */}
+        {/* Animált háttér */}
         <Animated.View
           style={[
             styles.backdrop,
@@ -149,7 +126,7 @@ export const ConfirmActionModal: React.FC<ConfirmActionModalProps> = ({
           />
         </Animated.View>
 
-        {/* Animated dialog card */}
+        {/* Animált párbeszédablak */}
         <Animated.View
           style={[
             styles.card,
@@ -177,7 +154,7 @@ export const ConfirmActionModal: React.FC<ConfirmActionModalProps> = ({
 
           {displayDescription ? <Text style={styles.description}>{displayDescription}</Text> : null}
 
-          {/* Highlighted item pill */}
+          {/* Kiemelt elem */}
           {highlightItemName ? (
             <View style={styles.itemPill}>
               <Text style={styles.itemPillText} numberOfLines={1}>
@@ -195,7 +172,7 @@ export const ConfirmActionModal: React.FC<ConfirmActionModalProps> = ({
               <Text style={styles.cancelButtonText}>{displayCancelText}</Text>
             </TouchableOpacity>
 
-            {/* Confirm button */}
+            {/* Megerősítés gomb */}
             {requireHoldToConfirm ? (
               <HoldToDeleteButton
                 onTriggerDelete={() => handleDismiss(onConfirm)}

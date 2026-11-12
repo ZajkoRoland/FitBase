@@ -11,7 +11,7 @@ import { i18n } from '@/services/LocalizationService';
 import { PlanService, WorkoutDay } from '@/services/PlanService';
 import type { UserSettings } from '@/types/profile';
 
-// Safe fallback mock when running in Expo Go or without native topic subscription module
+// Expo Go környezetben nincs natív értesítési modul, ezért ilyenkor mock objektumot használunk, hogy ne szálljon el az app
 const MockNotifications = {
   AndroidNotificationPriority: {
     HIGH: 'high',
@@ -56,11 +56,11 @@ try {
     Notifications = nativeModule;
   }
 } catch {
-  // Expo Go on Android does not include native ExpoTopicSubscriptionModule
+  // Androidos Expo Go környezetben a natív modul nem érhető el
   Notifications = MockNotifications;
 }
 
-// Configure notification presentation when app is foregrounded
+// Értesítések megjelenítési beállítása előtérben lévő alkalmazás esetén
 try {
   Notifications.setNotificationHandler({
     handleNotification: async () => ({
@@ -73,7 +73,7 @@ try {
     }),
   });
 } catch {
-  // Gracefully ignored if setNotificationHandler is unavailable in the environment
+  // Hiba figyelmen kívül hagyása, ha a kezelő nem támogatott
 }
 
 export type NotificationSubscriber = () => void;
@@ -132,10 +132,7 @@ export class NotificationService {
     this.setupNotificationListeners();
   }
 
-  /**
-   * Updates the active user's workout plan in NotificationService so phone reminders
-   * reflect real scheduled exercises rather than static templates.
-   */
+  // Értesítések frissítése az aktuális heti terv alapján
   public async updateWeekPlan(weekPlan: WorkoutDay[]): Promise<void> {
     this.activeWeekPlan = PlanService.normalizeWeekPlan(weekPlan);
     if (this.activeUserId) {
@@ -143,10 +140,7 @@ export class NotificationService {
     }
   }
 
-  /**
-   * Synchronizes notification state with the currently authenticated user account and DB settings.
-   * Merges local and remote read/deleted IDs so "Mark as read" never resets on re-login.
-   */
+  // Értesítések szinkronizálása a bejelentkezett fiókkal és beállításokkal
   public async syncWithAccount(
     userId: string | null,
     dbSettings?: UserSettings | null,
@@ -168,10 +162,10 @@ export class NotificationService {
     this.activeUserId = userId;
     this.activeStreak = streak;
 
-    // 1. Always load the account-scoped local state first so local read/deleted actions are never lost
+    // Helyi gyorsítótár betöltése az olvasott és törölt állapotok megőrzéséhez
     await this.loadLocalCacheForActiveUser();
 
-    // 2. Union-merge database settings with local read/deleted sets
+    // Adatbázisban tárolt és helyi állapotok összefésülése
     if (dbSettings) {
       this.notificationsEnabledState = dbSettings.notifications_enabled;
 
@@ -208,21 +202,18 @@ export class NotificationService {
       }
     }
 
-    // 3. Promote any scheduled phone notifications whose trigger time has actually passed,
-    //    and check the OS notification tray for delivered notifications belonging to this user
+    // Lejárt idejű és kézbesített értesítések ellenőrzése
     await this.reconcileDeliveredNotifications();
 
-    // 4. Persist merged state and notify UI subscribers
+    // Összefésült állapot mentése és a felület frissítése
     await this.persistLocalCache();
     this.notifySubscribers();
 
-    // 5. Schedule future phone notifications if applicable
+    // Új értesítések ütemezése, ha engedélyezve vannak
     this.schedulePhoneNotificationsIfApplicable().catch(() => { });
   }
 
-  /**
-   * Permanently removes all local notification storage for a deleted account.
-   */
+  // Felhasználó értesítési adatainak törlése fióktörléskor
   public async clearAccountData(userId: string): Promise<void> {
     const prefixes = [
       STORAGE_DELIVERED_PREFIX,
@@ -306,7 +297,7 @@ export class NotificationService {
         }
       }
     } catch {
-      // Ignore storage read errors
+      // Helyi tárhely olvasási hiba elnyelése
     }
   }
 
@@ -348,13 +339,11 @@ export class NotificationService {
           : Promise.resolve(),
       ]);
     } catch {
-      // Ignore cache write errors
+      // Helyi tárhely írási hiba elnyelése
     }
   }
 
-  /**
-   * Checks for notifications that were actually delivered to the phone
-   */
+  // Kézbesített értesítések ellenőrzése és egyeztetése
   private async reconcileDeliveredNotifications(): Promise<void> {
     if (!this.activeUserId) return;
 
@@ -370,7 +359,7 @@ export class NotificationService {
       }
     }
 
-    // 1. Check scheduled records whose trigger time has arrived
+    // 1. Ütemezett értesítések ellenőrzése, amelyeknek lejárt az ideje
     const remainingScheduled: ScheduledNotificationRecord[] = [];
     for (const rec of this.scheduledRecords) {
       if (rec.userId !== this.activeUserId) continue;
@@ -394,7 +383,7 @@ export class NotificationService {
     }
     this.scheduledRecords = remainingScheduled;
 
-    // 2. Check notifications currently in the phone's notification tray
+    // 2. Kézbesített értesítések ellenőrzése az értesítési sávban
     try {
       const presented = await Notifications.getPresentedNotificationsAsync();
       for (const notif of presented) {
@@ -424,7 +413,7 @@ export class NotificationService {
         }
       }
     } catch {
-      // Ignore if not supported on platform
+      // Platform támogatási hiba figyelmen kívül hagyása
     }
 
     this.notifications = Array.from(existingById.values());
@@ -448,7 +437,7 @@ export class NotificationService {
       this.notifications = [item, ...this.notifications];
     }
 
-    // Remove from pending scheduled records once delivered
+    // Kézbesített értesítés törlése a függő rekordok közül
     this.scheduledRecords = this.scheduledRecords.filter((r) => r.id !== data.id);
     this.persistLocalCache();
     this.notifySubscribers();
@@ -517,7 +506,7 @@ export class NotificationService {
         (d) => d.type === 'workout' && (d.exercises?.length ?? 0) > 0
       );
 
-      // Do not schedule notifications for a brand-new empty account with 0 exercises and 0 streak
+      // Üres új fiók esetén nem ütemezünk értesítést (0 gyakorlat és 0 széria)
       if (!hasAnyPlannedExercises && this.activeStreak <= 0 && !isRestDay) {
         return;
       }
@@ -713,7 +702,7 @@ export class NotificationService {
 
   private setupNotificationListeners(): void {
     try {
-      // Fired when a notification is actually delivered to the phone while the app is running
+      // Értesítés beérkezésekor lefutó eseménykezelő az app futása közben
       Notifications.addNotificationReceivedListener((notification: Notification) => {
         const content = notification.request.content;
         const data = content.data as Record<string, unknown> | undefined;
@@ -743,7 +732,7 @@ export class NotificationService {
         );
       });
 
-      // Fired when the user taps a delivered notification on their phone
+      // Felhasználói kattintás kezelése az értesítésre
       const handleResponse = (response: NotificationResponse | null) => {
         if (!response) return;
         const content = response.notification.request.content;

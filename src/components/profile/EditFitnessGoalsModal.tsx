@@ -36,10 +36,7 @@ const FITNESS_GOALS = [
 
 const FITNESS_LEVELS = ['Beginner', 'Intermediate', 'Advanced'];
 
-/**
- * EditFitnessGoalsModal
- * Dedicated modal for updating the user's primary fitness objective and experience tier.
- */
+// Edzési célok módosítása modál
 export const EditFitnessGoalsModal: React.FC<EditFitnessGoalsModalProps> = ({
   visible,
   onClose,
@@ -117,7 +114,7 @@ export const EditFitnessGoalsModal: React.FC<EditFitnessGoalsModalProps> = ({
           >
             <Text style={styles.hint}>{t('profile.fitnessGoals.hint')}</Text>
 
-            {/* Primary Goal Selector */}
+            {/* Fő célkitűzés választó */}
             <Text style={styles.sectionLabel}>{t('profile.fitnessGoals.primaryGoalLabel')}</Text>
             <View style={styles.chipsRow}>
               {FITNESS_GOALS.map((g) => {
@@ -137,7 +134,7 @@ export const EditFitnessGoalsModal: React.FC<EditFitnessGoalsModalProps> = ({
               })}
             </View>
 
-            {/* Experience Level Selector */}
+            {/* Tapasztalati szint választó */}
             <Text style={styles.sectionLabel}>{t('profile.fitnessGoals.experienceLevelLabel')}</Text>
             <View style={styles.chipsRow}>
               {FITNESS_LEVELS.map((lvl) => {

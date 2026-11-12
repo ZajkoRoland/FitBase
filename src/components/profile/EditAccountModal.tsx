@@ -27,10 +27,7 @@ interface EditAccountModalProps {
   onShowDialog?: (config: FitbaseDialogConfig) => void;
 }
 
-/**
- * EditAccountModal
- * Isolated modal dedicated to user account identity: Display Name and Username.
- */
+// Név és felhasználónév módosító modál
 export const EditAccountModal: React.FC<EditAccountModalProps> = ({
   visible,
   onClose,

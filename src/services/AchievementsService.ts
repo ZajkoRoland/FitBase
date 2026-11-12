@@ -2,10 +2,7 @@ import { Achievement, PlayerRank } from '@/models/Achievement';
 import { i18n } from '@/services/LocalizationService';
 import type { Profile } from '@/types/profile';
 
-/**
- * AchievementsService
- * badge progress, and user fitness ranking from database state.
- */
+// Kitüntetések és szintlépések kezelése a profil adatai alapján
 export class AchievementsService {
   private static instance: AchievementsService;
 
@@ -36,9 +33,7 @@ export class AchievementsService {
     };
   }
 
-  /**
-   * Resolves achievements for the current account.
-   */
+  // Kitüntetések lekérése és lokalizálása az adott profilhoz
   public getAchievements(
     profile: Profile | null,
     dbAchievements?: Achievement[] | null
@@ -191,9 +186,7 @@ export class AchievementsService {
     return rawList.map((a) => this.localizeAchievement(a));
   }
 
-  /**
-   * Computes player level rank from unlocked achievements count.
-   */
+  // Játékos szint kiszámítása a feloldott kitüntetések száma alapján
   public calculatePlayerRank(achievements: Achievement[]): PlayerRank {
     const totalCount = achievements.length;
     const unlockedCount = achievements.filter((a) => a.isUnlocked).length;

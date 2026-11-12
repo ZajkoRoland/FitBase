@@ -4,20 +4,12 @@ import { Colors } from '@/constants/Colors';
 import { Ionicons } from '@expo/vector-icons';
 
 export interface WeekPhaseSelectorProps {
-  /** Total number of weeks in the current plan structure (e.g., 2 or 4) */
   readonly totalWeeks: number;
-  /** Active week index (0-indexed: 0, 1, 2, 3) */
   readonly currentWeekIndex: number;
-  /** Callback fired when user selects a week */
   readonly onSelectWeek: (weekIndex: number) => void;
 }
 
-/**
- * WeekPhaseSelector
- *
- * Isolated component providing an elegant, interactive week/phase switch bar.
- * Replaces hardcoded "Week A:" or "Phase 1:" prefixes with a clean dedicated UI selector.
- */
+// Hét / fázis választó komponens
 export const WeekPhaseSelector: React.FC<WeekPhaseSelectorProps> = ({
   totalWeeks,
   currentWeekIndex,

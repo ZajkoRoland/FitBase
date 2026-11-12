@@ -73,7 +73,7 @@ def complete_workout(
     user: CurrentUser,
     db: DbSession,
 ) -> WorkoutCompleteResponse:
-    """Records a completed workout session strictly for the authenticated user account."""
+    """Befejezett edzés naplózása az adatbázisban."""
     profile, stats, _ = AccountStateService.ensure_account_entities(db, user)
 
     now = datetime.now(UTC)
@@ -139,7 +139,7 @@ def complete_workout(
 
 @router.post("/reset-stats", response_model=ProfileOut)
 def reset_profile_stats(user: CurrentUser, db: DbSession) -> ProfileOut:
-    """Resets workout progression counters strictly for the authenticated user account."""
+    """Edzés számlálók és heti statisztikák nullázása."""
     profile, stats, _ = AccountStateService.ensure_account_entities(db, user)
     stats.streak = 0
     stats.last_workout_date = None
@@ -154,7 +154,7 @@ def reset_profile_stats(user: CurrentUser, db: DbSession) -> ProfileOut:
 
 @router.get("/activity", response_model=list[ActivityWeekOut])
 def get_activity_history(user: CurrentUser, db: DbSession) -> list[ActivityWeekOut]:
-    """Returns the authenticated user's 5-week workout activity history from the database."""
+    """5 hetes edzésaktivitás lekérése a profilon lévő hisztogramhoz."""
     _, stats, _ = AccountStateService.ensure_account_entities(db, user)
     db.commit()
     return AccountStateService.compute_5_week_activity(db, user.id, stats)
@@ -166,7 +166,7 @@ def get_workout_sessions(
     db: DbSession,
     limit: int = 60,
 ) -> list[WorkoutSession]:
-    """Returns the authenticated user's historical workout sessions, newest first."""
+    """Korábbi edzésnaplók listája időrendben."""
     stmt = (
         select(WorkoutSession)
         .where(WorkoutSession.user_id == current_user.id)

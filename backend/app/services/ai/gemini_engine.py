@@ -12,11 +12,7 @@ logger = logging.getLogger(__name__)
 
 
 class GeminiAIEngine(BaseAIEngine):
-    """Google Gemini Flash implementation of the FitBase AI Engine.
-
-    Features 1,000,000 token context window, native JSON schema support,
-    and a massive 1,500 daily requests free quota with 1M TPM.
-    """
+    # Google Gemini Flash integráció a hivatalos REST API-n keresztül
 
     def __init__(self, api_key: str | None = None, model: str | None = None) -> None:
         settings = get_settings()

@@ -21,12 +21,7 @@ export interface AvatarPickerModalProps {
   readonly onClose: () => void;
 }
 
-/**
- * AvatarPickerModal
- *
- * Isolated action modal for picking or removing profile avatar.
- * Replaces native OS Alert.alert with consistent FitBase design tokens.
- */
+// Profilkép választó és törlő modál
 export const AvatarPickerModal: React.FC<AvatarPickerModalProps> = ({
   visible,
   hasAvatar,
@@ -98,12 +93,12 @@ export const AvatarPickerModal: React.FC<AvatarPickerModalProps> = ({
       onRequestClose={() => handleDismiss()}
     >
       <View style={styles.overlay}>
-        {/* Animated backdrop */}
+        {/* Animált háttér */}
         <Animated.View style={[styles.backdrop, { opacity: backdropOpacity }]}>
           <Pressable style={StyleSheet.absoluteFill} onPress={() => handleDismiss()} />
         </Animated.View>
 
-        {/* Dialog card */}
+        {/* Dialógus kártya */}
         <Animated.View
           style={[
             styles.card,
@@ -135,7 +130,7 @@ export const AvatarPickerModal: React.FC<AvatarPickerModalProps> = ({
             <Ionicons name="chevron-forward" size={18} color={Colors.text.ghost} />
           </TouchableOpacity>
 
-          {/* Remove photo (if avatar exists) */}
+          {/* Fotó eltávolítása */}
           {hasAvatar && (
             <TouchableOpacity
               activeOpacity={0.7}

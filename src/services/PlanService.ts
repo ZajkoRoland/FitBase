@@ -60,9 +60,7 @@ export class PlanService {
     return PlanService.instance;
   }
 
-  /**
-   * Creates a fresh empty workout day (0 exercises, never a rest day by default).
-   */
+  // Új üres edzésnap létrehozása (0 gyakorlattal)
   public static createEmptyWorkoutDay(dayName: string): WorkoutDay {
     return {
       day: dayName,
@@ -74,20 +72,14 @@ export class PlanService {
     };
   }
 
-  /**
-   * Generates a fresh 7-day plan where all 7 days (Mon..Sun) are initialized
-   * as empty workout days without any pre-assigned rest days.
-   */
+  // Új üres heti edzésterv generálása mind a 7 napra
   public static createEmptyWeekPlan(): WorkoutDay[] {
     return PlanService.DAY_NAMES.map((dayName) =>
       PlanService.createEmptyWorkoutDay(dayName)
     );
   }
 
-  /**
-   * Deep-clones and normalizes a weekly plan array so all 7 days (Mon..Sun)
-   * are guaranteed to exist and no object references are shared across weeks.
-   */
+  // Heti edzésterv normalizálása és másolása a hét napjaira
   public static normalizeWeekPlan(days?: WorkoutDay[] | null): WorkoutDay[] {
     if (!days || days.length === 0) {
       return PlanService.createEmptyWeekPlan();
@@ -123,9 +115,7 @@ export class PlanService {
     });
   }
 
-  /**
-   * Computes the weekly workout target dynamically from the active 7-day plan.
-   */
+  // Heti célzott edzésnapok számának kiszámítása a tervből
   public static computeWeeklyTarget(days?: WorkoutDay[] | null, fallback = 7): number {
     if (!days || days.length === 0) {
       return Math.max(1, fallback);
@@ -135,10 +125,7 @@ export class PlanService {
     return Math.max(1, workoutDaysCount);
   }
 
-  /**
-   * Ensures an exercise has an initialized sets array,
-   * parsing the fallback details string if sets is missing.
-   */
+  // Gyakorlat sorozatainak ellenőrzése és inicializálása
   public static ensureExerciseSets(exercise: Exercise): ExerciseSet[] {
     if (Array.isArray(exercise.sets) && exercise.sets.length > 0) {
       return exercise.sets.map((s, idx) => ({
@@ -165,9 +152,7 @@ export class PlanService {
     }));
   }
 
-  /**
-   * Formats the user-facing details string from structured sets and restSeconds.
-   */
+  // Gyakorlat részleteinek formázása sorozatok és pihenőidő alapján
   public static formatExerciseDetails(sets: ExerciseSet[], restSeconds: number = 60): string {
     if (!sets || sets.length === 0) return `3 × 10 · ${restSeconds} mp`;
 
@@ -195,9 +180,7 @@ export class PlanService {
     return `${repsWeightText} · ${restSeconds} mp`;
   }
 
-  /**
-   * Calculates total volume (kg) from a list of sets.
-   */
+  // Összes megmozgatott súly (volumen) kiszámítása a sorozatokból
   public static calculateTotalVolume(sets: ExerciseSet[]): number {
     if (!Array.isArray(sets)) return 0;
     return sets.reduce((acc, s) => {
@@ -207,9 +190,7 @@ export class PlanService {
     }, 0);
   }
 
-  /**
-   * Calculates estimated 1RM using standard Epley formula.
-   */
+  // Becsült 1RM (egyismétléses maximum) számítása Epley-képlettel
   public static calculateEstimated1RM(weightKg: number, reps: number): number {
     if (typeof weightKg !== 'number' || isNaN(weightKg) || weightKg <= 0) return 0;
     if (typeof reps !== 'number' || isNaN(reps) || reps <= 0) return 0;

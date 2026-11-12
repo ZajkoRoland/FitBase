@@ -69,7 +69,6 @@ scratch/
 builds/
 tests_local/
 backend/tests_local/
-backend/tests/
 docs/
 *.bak
 *.tmp

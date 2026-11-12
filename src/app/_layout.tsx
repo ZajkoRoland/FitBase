@@ -8,7 +8,7 @@ import { useEffect } from "react";
 
 import { NotificationService } from "@/services/NotificationService";
 
-// Prevent native splash screen from auto-hiding until initial check is done
+// Az indítóképernyő megjelenítése, amíg az inicializálás be nem fejeződik
 SplashScreen.preventAutoHideAsync().catch(() => {});
 
 function RootNavigation() {

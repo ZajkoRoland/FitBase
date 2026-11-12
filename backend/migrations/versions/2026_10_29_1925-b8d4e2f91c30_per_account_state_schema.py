@@ -1,4 +1,4 @@
-"""per-account state schema: user_settings, user_achievements, workout_sessions, and extended user_stats/profiles
+"""Felhasználói állapotok: beállítások, jelvények, edzésnapló és statisztikák
 
 Revision ID: b8d4e2f91c30
 Revises: 5c8e1b7a94d2
@@ -17,10 +17,12 @@ branch_labels: str | Sequence[str] | None = None
 depends_on: str | Sequence[str] | None = None
 
 
+# Segédfüggvény: megnézi, hogy a tábla létezik-e
 def _has_table(table: str) -> bool:
     return sa.inspect(op.get_bind()).has_table(table)
 
 
+# Segédfüggvény: ellenőrzi, hogy egy adott oszlop már szerepel-e a táblában
 def _has_column(table: str, column: str) -> bool:
     insp = sa.inspect(op.get_bind())
     if not insp.has_table(table):
@@ -29,11 +31,11 @@ def _has_column(table: str, column: str) -> bool:
 
 
 def upgrade() -> None:
-    # 1. Extend profiles with avatar_url
+    # Profil tábla kiegészítése avatar kép hivatkozással
     if not _has_column("profiles", "avatar_url"):
         op.add_column("profiles", sa.Column("avatar_url", sa.Text(), nullable=True))
 
-    # 2. Extend user_stats with per-account metrics & progression fields
+    # Felhasználói statisztikák bővítése (célok, rekordok, kalóriák, aktivitástörténet)
     stats_columns = [
         ("target_weight", sa.Column("target_weight", sa.Float(), nullable=True)),
         ("best_streak", sa.Column("best_streak", sa.Integer(), nullable=False, server_default="0")),
@@ -65,7 +67,7 @@ def upgrade() -> None:
         if not _has_column("user_stats", col_name):
             op.add_column("user_stats", col_def)
 
-    # 3. Create user_settings table
+    # Felhasználói beállítások tábla (értesítések, emlékeztetők, hangok, nyelv)
     if not _has_table("user_settings"):
         op.create_table(
             "user_settings",
@@ -98,7 +100,7 @@ def upgrade() -> None:
             sa.Column("updated_at", sa.DateTime(timezone=True), nullable=False, server_default=sa.func.now()),
         )
 
-    # 4. Create user_achievements table
+    # Feloldott mérföldkövek és kitüntetések táblája
     if not _has_table("user_achievements"):
         op.create_table(
             "user_achievements",
@@ -120,7 +122,7 @@ def upgrade() -> None:
         )
         op.create_index("ix_user_achievements_user_id", "user_achievements", ["user_id"])
 
-    # 5. Create workout_sessions table
+    # Befejezett edzések naplózása (időtartam, kalóriák, gyakorlatok listája)
     if not _has_table("workout_sessions"):
         op.create_table(
             "workout_sessions",
@@ -144,12 +146,14 @@ def upgrade() -> None:
 
 
 def downgrade() -> None:
+    # Létrehozott táblák törlése
     if _has_table("workout_sessions"):
         op.drop_table("workout_sessions")
     if _has_table("user_achievements"):
         op.drop_table("user_achievements")
     if _has_table("user_settings"):
         op.drop_table("user_settings")
+    # Hozzáadott oszlopok törlése
     for col in [
         "activity_history",
         "completed_exercises_today",

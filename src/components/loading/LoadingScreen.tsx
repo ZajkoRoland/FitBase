@@ -6,9 +6,6 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { LoadingBrandHeader } from './LoadingBrandHeader';
 import { LoadingIndicator } from './LoadingIndicator';
 
-/**
- * Interface contract defining props for the full-screen LoadingScreen.
- */
 export interface LoadingScreenProps {
   statusMessage?: string;
   hideIndicator?: boolean;
@@ -17,13 +14,7 @@ export interface LoadingScreenProps {
   onSignOut?: () => void;
 }
 
-/**
- * LoadingScreen
- *
- * Full-screen loading presentation displayed during initial session verification
- * and state transitions. Composes LoadingBrandHeader, LoadingIndicator,
- * and an optional error/recovery interface if backend connection fails.
- */
+// Teljes képernyős betöltő nézet
 export function LoadingScreen({
   statusMessage,
   hideIndicator = false,

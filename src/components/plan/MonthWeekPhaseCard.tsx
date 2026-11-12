@@ -12,12 +12,7 @@ export interface MonthWeekPhaseCardProps {
   readonly onOpenWeek: (weekIndex: number) => void;
 }
 
-/**
- * MonthWeekPhaseCard
- *
- * An isolated card representing one weekly phase within the monthly training cycle.
- * Provides high-level volume metrics and a CTA to switch into that week's daily schedule.
- */
+// Heti fázis kártya a havi edzéstervben
 export const MonthWeekPhaseCard: React.FC<MonthWeekPhaseCardProps> = ({
   weekIndex,
   title,
@@ -31,7 +26,7 @@ export const MonthWeekPhaseCard: React.FC<MonthWeekPhaseCardProps> = ({
 
   return (
     <View style={[styles.card, isCurrentActiveWeek && styles.cardActive]}>
-      {/* Top Header Row */}
+      {/* Fejlécsor */}
       <View style={styles.headerRow}>
         <View style={styles.titleContainer}>
           <View style={styles.badgeRow}>
@@ -52,7 +47,7 @@ export const MonthWeekPhaseCard: React.FC<MonthWeekPhaseCardProps> = ({
         </View>
       </View>
 
-      {/* Metrics Row */}
+      {/* Mérőszámok sora */}
       <View style={styles.metricsRow}>
         <View style={styles.metricItem}>
           <View style={styles.workoutIndicator} />
@@ -65,7 +60,7 @@ export const MonthWeekPhaseCard: React.FC<MonthWeekPhaseCardProps> = ({
         </View>
       </View>
 
-      {/* Action CTA: Open/Edit this week */}
+      {/* Hét megnyitása / szerkesztése gomb */}
       <TouchableOpacity
         style={[styles.actionButton, isCurrentActiveWeek && styles.actionButtonActive]}
         onPress={() => onOpenWeek(weekIndex)}

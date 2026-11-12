@@ -1,11 +1,6 @@
 import { i18n } from '@/services/LocalizationService';
 
-/**
- * DateHelper
- *
- * OOP utility class providing calendar calculations, ISO week numbers,
- * localized date ranges (English & Hungarian), and 7-day week schedule generation.
- */
+// Naptár és dátum segédfüggvények (ISO hétszámok, hétfői nap meghatározása, napok rövidítései)
 export class DateHelper {
   public static readonly ENGLISH_DAYS = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
 
@@ -19,24 +14,17 @@ export class DateHelper {
     'Sunday',
   ];
 
-  /**
-   * Returns localized uppercase 3-letter weekday abbreviations ( ['MON'...'SUN'] or ['HÉT'...'VAS']).
-   */
+  // Lokalizált rövid napnevek (HÉT..VAS vagy MON..SUN)
   public static getLocalizedShortDays(): readonly string[] {
     return i18n.getShortUpperDays();
   }
 
-  /**
-   * Converts day abbreviations or indices ('Mon', 'Tue', 0) to localized full day names
-   * ('Monday' or 'Hétfő').
-   */
+  // Teljes napnév lekérése (pl. Hétfő / Monday)
   public static getFullDayName(day: string | number): string {
     return i18n.getDayForms(day).full;
   }
 
-  /**
-   * Returns Monday of the week containing the given date.
-   */
+  // Az adott hét hétfői napjának meghatározása
   public static getMonday(date: Date): Date {
     const d = new Date(date);
     const day = d.getDay();
@@ -46,9 +34,7 @@ export class DateHelper {
     return d;
   }
 
-  /**
-   * Returns the ISO 8601 week number (1-53).
-   */
+  // ISO 8601 szerinti hétszám (1-53)
   public static getWeekNumber(date: Date): number {
     const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
     const dayNum = d.getUTCDay() || 7;
@@ -57,42 +43,32 @@ export class DateHelper {
     return Math.ceil(((d.getTime() - yearStart.getTime()) / 86400000 + 1) / 7);
   }
 
-  /**
-   * Formats a week range in the active language, e.g. "Oct 26 – Nov 1" or "okt. 26. – nov. 1."
-   */
+  // Hét intervallum formázása az aktív nyelven
   public static formatWeekRange(monday: Date): string {
     const sunday = new Date(monday);
     sunday.setDate(monday.getDate() + 6);
     return i18n.formatWeekRange(monday, sunday);
   }
 
-  /**
-   * Formats week metadata, e.g. "2026 · Week 44" or "2026 · 44. hét"
-   */
+  // Év és hétszám kiírása
   public static formatWeekMeta(date: Date): string {
     const year = date.getFullYear();
     const week = DateHelper.getWeekNumber(date);
     return i18n.t('date.weekMeta', { year, week });
   }
 
-  /**
-   * Formats month and year in the active language, e.g. "October 2026" or "2026. október"
-   */
+  // Hónap és év formázása
   public static formatMonthYear(date: Date): string {
     return i18n.formatMonthYear(date);
   }
 
-  /**
-   * Formats short month metadata, e.g. "31 days · 2026" or "31 nap · 2026"
-   */
+  // Rövid havi metaadatok kiírása (napok száma és év)
   public static formatMonthMeta(date: Date): string {
     const days = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
     return i18n.t('date.monthMeta', { days, year: date.getFullYear() });
   }
 
-  /**
-   * Checks if two dates represent the same calendar day.
-   */
+  // Két dátum összehasonlítása napra pontosan
   public static isSameDay(a: Date, b: Date): boolean {
     return (
       a.getFullYear() === b.getFullYear() &&
@@ -101,9 +77,7 @@ export class DateHelper {
     );
   }
 
-  /**
-   * Generates the 7 calendar days for the week starting at Monday.
-   */
+  // A hét 7 napjának generálása hétfőtől kezdődően
   public static getWeekDays(monday: Date): Array<{
     dayName: string;
     dayNum: number;
@@ -126,10 +100,7 @@ export class DateHelper {
     });
   }
 
-  /**
-   * Returns a localized time-appropriate greeting ('Good morning' / 'Jó reggelt')
-   * based on the current local hour of the user's device.
-   */
+  // Időszaknak megfelelő köszöntés az eszköz órája alapján
   public static getTimeBasedGreeting(date: Date = new Date()): string {
     const hour = date.getHours();
     if (hour >= 5 && hour < 12) {
@@ -141,9 +112,7 @@ export class DateHelper {
     }
   }
 
-  /**
-   * Returns the device's local timezone identifier ('Europe/Budapest').
-   */
+  // Eszköz időzónájának lekérése
   public static getDeviceTimezone(): string {
     try {
       return Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';

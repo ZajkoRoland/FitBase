@@ -1,4 +1,5 @@
-"""Transactional email service supporting HTTPS APIs (Brevo / Resend) and SMTP."""
+# E-mail küldő szolgáltatás a jelszó-visszaállító kódok kiküldéséhez.
+# Renderen a 443-as porton HTTPS-en (Brevo / Resend) küld, helyi gépen pedig SMTP-n.
 
 import json
 import logging
@@ -17,15 +18,7 @@ logger = logging.getLogger(__name__)
 
 
 class EmailService:
-    """Dispatches transactional emails (6-digit password reset verification codes).
-
-    Transport priority:
-      1. Brevo HTTPS API (`BREVO_API_KEY` + `EMAIL_FROM`) — works on Render Free Tier (port 443)
-         and delivers to any recipient address after verifying a single sender email.
-      2. Resend HTTPS API (`RESEND_API_KEY` + `EMAIL_FROM`) — works on Render Free Tier (port 443).
-      3. SMTP (`SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD`) — for local dev or VPS.
-      4. Console mock logger — strictly for local development when unconfigured.
-    """
+    # E-mail küldő szolgáltatás jelszó-visszaállító kódokhoz
 
     @staticmethod
     def _build_reset_content(code: str) -> tuple[str, str, str]:
@@ -158,7 +151,7 @@ class EmailService:
 
     @classmethod
     def send_password_reset_code(cls, to_email: str, code: str) -> None:
-        """Dispatches a 6-digit numeric reset code to the user's registered email address."""
+        # Kiküldi a 6 jegyű visszaállító kódot a felhasználó e-mail címére
         settings = get_settings()
         subject, text_body, html_body = cls._build_reset_content(code)
 

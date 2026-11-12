@@ -2,12 +2,7 @@ import React from 'react';
 import { Path } from 'react-native-svg';
 import { BaseIcon, type IconProps } from './BaseIcon';
 
-/**
- * ChevronDownIcon
- *
- * Icon component extending BaseIcon.
- * Renders a clean down chevron for dropdowns and pickers.
- */
+// Lefelé mutató nyíl ikon
 export class ChevronDownIcon extends BaseIcon<IconProps> {
   protected override renderShape(color: string, strokeWidth: number): React.ReactNode {
     return (

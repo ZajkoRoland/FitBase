@@ -1,8 +1,5 @@
-"""ORM models mirroring the Postgres schema in supabase/migrations and alembic revisions.
-
-Every user-owned entity is strictly bound to the account's UUID (`users.id` or `profiles.id`)
-with `ON DELETE CASCADE` to guarantee strict multi-tenant account isolation.
-"""
+# PostgreSQL adatbázis táblák és kapcsolatok leképezése (SQLAlchemy ORM).
+# Minden felhasználói adat a felhasználó egyedi UUID azonosítójához kapcsolódik.
 
 import uuid
 from datetime import datetime
@@ -111,7 +108,7 @@ class UserStats(Base):
 
 
 class UserSettings(Base):
-    """Account-bound notification preferences and application settings."""
+    # Felhasználói beállítások (értesítések, hangok) táblája
 
     __tablename__ = "user_settings"
 
@@ -147,7 +144,7 @@ class UserSettings(Base):
 
 
 class UserAchievement(Base):
-    """Per-account achievement progression and unlock state stored in the database."""
+    # Felhasználói kitüntetések és haladás táblája
 
     __tablename__ = "user_achievements"
     __table_args__ = (
@@ -178,7 +175,7 @@ class UserAchievement(Base):
 
 
 class WorkoutSession(Base):
-    """Historical log of completed workouts bound to a user account."""
+    # Befejezett edzések naplózási táblája
 
     __tablename__ = "workout_sessions"
     __table_args__ = (Index("ix_workout_sessions_user_date", "user_id", "session_date"),)
@@ -233,8 +230,7 @@ class RefreshToken(Base):
 
 
 class PasswordResetCode(Base):
-    """Account-bound 6-digit numeric verification code for secure password reset."""
-
+    # 6 jegyű ellenőrző kód a biztonságos jelszó-visszaállításhoz
     __tablename__ = "password_reset_codes"
 
     id: Mapped[uuid.UUID] = mapped_column(Uuid, primary_key=True, default=uuid.uuid4)

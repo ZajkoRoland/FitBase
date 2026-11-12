@@ -22,11 +22,7 @@ interface StatisticsModalProps {
   onClose: () => void;
 }
 
-/**
- * StatisticsModal
- * Full-view modal presenting detailed fitness metrics, activity histogram,
- * weekly consistency tracker, and body composition journey.
- */
+// Részletes statisztikai modálablak
 export const StatisticsModal: React.FC<StatisticsModalProps> = ({
   visible,
   onClose,
@@ -49,7 +45,7 @@ export const StatisticsModal: React.FC<StatisticsModalProps> = ({
           },
         ]}
       >
-        {/* Header Bar */}
+        {/* Fejléc sáv */}
         <View style={styles.header}>
           <TouchableOpacity
             style={styles.backButton}
@@ -67,7 +63,7 @@ export const StatisticsModal: React.FC<StatisticsModalProps> = ({
           <View style={styles.headerPlaceholder} />
         </View>
 
-        {/* Scrollable Content */}
+        {/* Görgethető tartalom */}
         <ScrollView
           showsVerticalScrollIndicator={false}
           contentContainerStyle={[
@@ -77,19 +73,19 @@ export const StatisticsModal: React.FC<StatisticsModalProps> = ({
             },
           ]}
         >
-          {/* 1. Key Performance Grid (with Share) */}
+          {/* 1. Főbb teljesítménymutatók rácsa */}
           <StatsMetricsGrid />
 
-          {/* 2. Weekly Target & Mon-Sun Day Tracker */}
+          {/* 2. Heti cél és napi követő */}
           <WeeklyConsistencyTracker />
 
-          {/* 3. 5-Week Activity Volume Chart with Target Line */}
+          {/* 3. 5 hetes aktivitási diagram */}
           <ActivityVolumeChart />
 
-          {/* 4. Exercise Progression Timeline (1RM, Volume, Max Weight) */}
+          {/* 4. Gyakorlat fejlődési diagram */}
           <ExerciseProgressionSection />
 
-          {/* 5. Body & Weight Journey connected to BodyMetrics */}
+          {/* 5. Testsúly alakulása */}
           <BodyProgressCard />
         </ScrollView>
       </View>

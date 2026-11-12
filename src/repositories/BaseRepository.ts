@@ -1,6 +1,6 @@
 import { ApiClient } from '@/lib/api/ApiClient';
 
-/** Base for classes that talk to one backend resource through the shared ApiClient. */
+// Alaposztály a backend végpontokat elérő repository réteghez
 export abstract class BaseRepository {
   protected readonly api: ApiClient;
 

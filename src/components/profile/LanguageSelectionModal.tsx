@@ -42,11 +42,7 @@ interface LanguageSelectionModalProps {
   onShowDialog?: (config: FitbaseDialogConfig) => void;
 }
 
-/**
- * LanguageSelectionModal (OOP Modal Component)
- * Clean, modern selection interface allowing users to pick their application language.
- * Switches all UI strings dynamically via LanguageProvider & LocalizationService.
- */
+// Nyelvválasztó felugró ablak a felhasználói felület nyelvének átállításához
 export const LanguageSelectionModal: React.FC<LanguageSelectionModalProps> = ({
   visible,
   onClose,
@@ -60,6 +56,24 @@ export const LanguageSelectionModal: React.FC<LanguageSelectionModalProps> = ({
   const [localDialog, setLocalDialog] = useState<FitbaseDialogConfig | null>(null);
 
   const handleChoose = async (lang: LanguageOption) => {
+    const isFullySupported = lang.code === 'en' || lang.code === 'hu';
+    if (!isFullySupported) {
+      const localizedLangName =
+        i18n.t(`profile.language.langName.${lang.code}`) ||
+        i18n.t(`lang.${lang.code}`) ||
+        lang.name;
+      const infoConfig = FitbaseDialogConfig.info(
+        t('profile.language.comingSoon') || t('profile.menu.comingSoon'),
+        i18n.t('profile.language.comingSoonMsg', { name: localizedLangName, nativeName: lang.nativeName })
+      );
+      if (onShowDialog) {
+        onShowDialog(infoConfig);
+      } else {
+        setLocalDialog(infoConfig);
+      }
+      return;
+    }
+
     try {
       await setLanguage(lang.code);
       onSelectLanguage?.(lang.code);
@@ -69,14 +83,10 @@ export const LanguageSelectionModal: React.FC<LanguageSelectionModalProps> = ({
         i18n.t(`profile.language.langName.${lang.code}`) ||
         i18n.t(`lang.${lang.code}`) ||
         lang.name;
-      const isFullySupported = lang.code === 'en' || lang.code === 'hu';
-      const msgKey = isFullySupported
-        ? 'profile.language.selectedFullMsg'
-        : 'profile.language.selectedUpcomingMsg';
 
       const successConfig = FitbaseDialogConfig.success(
         i18n.t('profile.language.selectedTitle'),
-        i18n.t(msgKey, { name: localizedLangName, nativeName: lang.nativeName })
+        i18n.t('profile.language.selectedFullMsg', { name: localizedLangName, nativeName: lang.nativeName })
       );
 
       if (onShowDialog) {
@@ -97,7 +107,7 @@ export const LanguageSelectionModal: React.FC<LanguageSelectionModalProps> = ({
       >
         <Pressable style={styles.backdropOverlay} onPress={onClose} />
         <View style={[styles.card, { paddingBottom: bottomInset + 16 }]}>
-          {/* Header */}
+          {/* Fejléc */}
           <View style={styles.header}>
             <View style={styles.headerTitleRow}>
               <View style={[styles.iconCircle, { backgroundColor: 'rgba(74, 184, 248, 0.15)' }]}>
@@ -117,10 +127,11 @@ export const LanguageSelectionModal: React.FC<LanguageSelectionModalProps> = ({
           >
             <Text style={styles.hint}>{t('profile.language.hint')}</Text>
 
-            {/* Languages List */}
+            {/* Nyelvek listája */}
             <View style={styles.list}>
               {SUPPORTED_LANGUAGES.map((lang) => {
                 const active = language === lang.code;
+                const isFullySupported = lang.code === 'en' || lang.code === 'hu';
                 const localizedName =
                   t(`profile.language.langName.${lang.code}`) ||
                   t(`lang.${lang.code}`) ||
@@ -142,13 +153,22 @@ export const LanguageSelectionModal: React.FC<LanguageSelectionModalProps> = ({
                       </View>
                     </View>
 
-                    <View
-                      style={[
-                        styles.radioCircle,
-                        active && styles.radioCircleActive,
-                      ]}
-                    >
-                      {active && <View style={styles.radioDot} />}
+                    <View style={styles.langRightCol}>
+                      {!isFullySupported && (
+                        <View style={styles.badge}>
+                          <Text style={styles.badgeText}>
+                            {t('profile.language.comingSoon') || t('profile.menu.comingSoon')}
+                          </Text>
+                        </View>
+                      )}
+                      <View
+                        style={[
+                          styles.radioCircle,
+                          active && styles.radioCircleActive,
+                        ]}
+                      >
+                        {active && <View style={styles.radioDot} />}
+                      </View>
                     </View>
                   </TouchableOpacity>
                 );
@@ -259,6 +279,25 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: Colors.text.secondary,
     marginTop: 2,
+  },
+  langRightCol: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+  },
+  badge: {
+    paddingHorizontal: 9,
+    paddingVertical: 3,
+    backgroundColor: 'rgba(0, 188, 212, 0.12)',
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: 'rgba(0, 188, 212, 0.28)',
+  },
+  badgeText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: Colors.accent.teal,
+    letterSpacing: 0.3,
   },
   radioCircle: {
     width: 22,

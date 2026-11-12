@@ -69,13 +69,13 @@ export function NotificationItemCard({
       accessibilityRole="button"
       accessibilityLabel={`${item.title}, ${localizedTimestamp}`}
     >
-      {/* Category badge */}
+      {/* Kategória jelvény */}
       <View style={cardStyles.iconCircle}>
         {renderMutedIcon(item.category)}
       </View>
 
       <View style={cardStyles.contentColumn}>
-        {/* Metadata row */}
+        {/* Metaadatok sora */}
         <View style={cardStyles.headerRow}>
           <View style={cardStyles.titleWrapper}>
             <Text style={cardStyles.appNameText}>

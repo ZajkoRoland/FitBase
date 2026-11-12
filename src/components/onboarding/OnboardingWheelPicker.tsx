@@ -10,8 +10,7 @@ import {
   View,
 } from 'react-native';
 
-// 56dp (= 8 * 7) multiplies to an exact integer physical pixel on all standard
-// Android/iOS densities (1.5x, 2x, 2.5x, 2.625x, 2.75x, 3x, 3.5x, 4x).
+// Görgős választó komponens magassági és térközei
 const ITEM_HEIGHT = 56;
 const VISIBLE_COUNT = 5;
 const CONTAINER_HEIGHT = ITEM_HEIGHT * VISIBLE_COUNT;
@@ -128,13 +127,7 @@ function findClosestIndex(items: number[], target: number): number {
   return bestIdx;
 }
 
-/**
- * OnboardingWheelPicker
- * High-precision native-driver vertical drum wheel picker:
- * - Physical-pixel-aligned row height eliminates Android OverScroller snap drift.
- * - Single native `snapToInterval` physics (no competing JS `scrollToOffset` loops)
- *   prevents bounce/jitter on both subtle drags and direct item taps.
- */
+// Görgethető értékválasztó kerék
 export const OnboardingWheelPicker: React.FC<OnboardingWheelPickerProps> = ({
   min,
   max,
@@ -180,7 +173,7 @@ export const OnboardingWheelPicker: React.FC<OnboardingWheelPickerProps> = ({
 
   const scrollY = useRef(new Animated.Value(initialIndex * ITEM_HEIGHT)).current;
 
-  // Track live native scroll offset silently in a ref without triggering React re-renders mid-gesture
+  // Görgetési pozíció követése ref-ben az újrarenderelés elkerülésére
   useEffect(() => {
     const listenerId = scrollY.addListener(({ value: offsetY }) => {
       liveOffsetRef.current = offsetY;
@@ -193,7 +186,7 @@ export const OnboardingWheelPicker: React.FC<OnboardingWheelPickerProps> = ({
     };
   }, [scrollY]);
 
-  // Lock initial scroll offset on mount
+  // Kezdeti görgetési pozíció beállítása az első betöltéskor
   useEffect(() => {
     const targetOffset = initialIndexRef.current * ITEM_HEIGHT;
     liveOffsetRef.current = targetOffset;
@@ -204,7 +197,7 @@ export const OnboardingWheelPicker: React.FC<OnboardingWheelPickerProps> = ({
     return () => clearTimeout(timer);
   }, [scrollY]);
 
-  // Only reposition programmatically if min/max/step changed or an external caller reset `value`
+  // Pozíció igazítása, ha a külső érték megváltozik
   useEffect(() => {
     if (!hasLaidOutRef.current || data.length === 0) return;
 
@@ -289,7 +282,7 @@ export const OnboardingWheelPicker: React.FC<OnboardingWheelPickerProps> = ({
       if (settleTimerRef.current) clearTimeout(settleTimerRef.current);
 
       const fallbackOffset = e.nativeEvent.contentOffset.y;
-      // If native momentum/snap does not trigger onMomentumScrollBegin, commit cleanly after 90ms
+      // Kiválasztott elem érvényesítése a görgetés megállása után
       settleTimerRef.current = setTimeout(() => {
         commitAtOffset(liveOffsetRef.current ?? fallbackOffset);
         releaseDragFlagAfterCooldown();
@@ -385,7 +378,7 @@ export const OnboardingWheelPicker: React.FC<OnboardingWheelPickerProps> = ({
   return (
     <View style={styles.wrapper}>
       <View style={styles.wheelViewport} onLayout={handleLayout}>
-        {/* Top center selection line */}
+        {/* Felső kijelölő vonal */}
         <View pointerEvents="none" style={[styles.divider, styles.topDivider]} />
 
         <Animated.FlatList
@@ -413,7 +406,7 @@ export const OnboardingWheelPicker: React.FC<OnboardingWheelPickerProps> = ({
           style={styles.list}
         />
 
-        {/* Bottom center selection line */}
+        {/* Alsó kijelölő vonal */}
         <View pointerEvents="none" style={[styles.divider, styles.bottomDivider]} />
       </View>
 

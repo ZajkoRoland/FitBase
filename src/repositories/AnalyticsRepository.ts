@@ -37,16 +37,12 @@ export class AnalyticsRepository extends BaseRepository {
     return AnalyticsRepository.instance;
   }
 
-  /**
-   * Fetches the historical progression timeline for a specific exercise.
-   */
+  // Adott gyakorlat fejlődési történetének lekérése
   public async getExerciseProgress(slug: string): Promise<ExerciseProgressResponse> {
     return this.api.get<ExerciseProgressResponse>(`/analytics/progress/${encodeURIComponent(slug)}`);
   }
 
-  /**
-   * Fetches the list of exercises that have recorded history.
-   */
+  // Naplózott gyakorlatok listájának lekérése
   public async getLoggedExercises(): Promise<LoggedExerciseOption[]> {
     return this.api.get<LoggedExerciseOption[]>('/analytics/progress-exercises');
   }

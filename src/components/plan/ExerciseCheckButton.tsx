@@ -3,24 +3,13 @@ import { StyleSheet, TouchableOpacity } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 
 export interface ExerciseCheckButtonProps {
-  /** Whether the exercise is marked as completed */
   readonly isCompleted?: boolean;
-  /** Optional callback triggered on press */
   readonly onToggle?: (newState: boolean) => void;
-  /** Size in pixels (default 24) */
   readonly size?: number;
-  /** Whether the checkbox is read-only / disabled */
   readonly disabled?: boolean;
 }
 
-/**
- * ExerciseCheckButton
- *
- * Isolated completion indicator button:
- * - Uncompleted: Subtle translucent circle with glowing border
- * - Completed: Filled with vibrant emerald green (#10B981) + sharp white checkmark
- * - Disabled: Read-only display of completion status (toggling restricted)
- */
+// Gyakorlat befejezését jelölő pipa gomb
 export const ExerciseCheckButton: React.FC<ExerciseCheckButtonProps> = ({
   isCompleted = false,
   onToggle,

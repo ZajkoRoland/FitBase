@@ -68,7 +68,7 @@ export const ActiveFilterChips: React.FC<ActiveFilterChipsProps> = ({
 
   return (
     <View style={styles.container}>
-      {/* Scrollable Chips Strip */}
+      {/* Görgethető szűrőcímkék */}
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
@@ -91,7 +91,7 @@ export const ActiveFilterChips: React.FC<ActiveFilterChipsProps> = ({
         ))}
       </ScrollView>
 
-      {/* Right Edge: Soft Fade Gradient + Fixed Clear All Button */}
+      {/* Összes szűrő törlése gomb */}
       <View style={styles.rightOverlayContainer} pointerEvents="box-none">
         <LinearGradient
           colors={['rgba(21, 32, 56, 0)', '#152038']}

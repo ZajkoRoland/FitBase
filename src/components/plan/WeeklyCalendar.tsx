@@ -127,13 +127,13 @@ export function WeeklyCalendar({
 
   return (
     <View style={[styles.topSection, { paddingTop: topInset + 16 }]}>
-      {/* 1. Top Bar: Screen Title & (+) Action FAB */}
+      {/* 1. Felső sáv: cím és hozzáadás gomb */}
       <View style={styles.headerRow}>
         <Text style={styles.mainTitle}>
           {viewMode === 'month' ? t('plan.monthlyTitle') : t('plan.weeklyTitle')}
         </Text>
 
-        {/* Brand Blue Round Action FAB */}
+        {/* Hozzáadás lebegő gomb */}
         <TouchableOpacity style={styles.fabButton} onPress={onAddPress} activeOpacity={0.8}>
           <Svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke="#0D1528" strokeWidth={3}>
             <Path d="M12 5v14M5 12h14" />
@@ -141,17 +141,17 @@ export function WeeklyCalendar({
         </TouchableOpacity>
       </View>
 
-      {/* 2. Navigation Row: < DateRange > | Today | [ Week / Month ] */}
+      {/* 2. Navigációs sáv: dátumválasztó és nézetváltó */}
       <View style={styles.navRow}>
         <View style={styles.navLeft}>
-          {/* Prev Button */}
+          {/* Előző gomb */}
           <TouchableOpacity style={styles.navArrowButton} onPress={handlePrev} activeOpacity={0.7}>
             <Svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke={Colors.text.primary} strokeWidth={2.4}>
               <Path d="M15 18l-6-6 6-6" />
             </Svg>
           </TouchableOpacity>
 
-          {/* Date Range / Month Box */}
+          {/* Dátum és hónap mező */}
           <View style={styles.dateRangeBox}>
             <Text style={styles.dateRangeText} numberOfLines={1}>
               {viewMode === 'month' ? monthRangeText : weekRangeText}
@@ -170,24 +170,24 @@ export function WeeklyCalendar({
             </View>
           </View>
 
-          {/* Next Button */}
+          {/* Következő gomb */}
           <TouchableOpacity style={styles.navArrowButton} onPress={handleNext} activeOpacity={0.7}>
             <Svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke={Colors.text.primary} strokeWidth={2.4}>
               <Path d="M9 18l6-6-6-6" />
             </Svg>
           </TouchableOpacity>
 
-          {/* Today Button */}
+          {/* Ma gomb */}
           <TouchableOpacity style={styles.todayButton} onPress={handleTodayPress} activeOpacity={0.7}>
             <Text style={styles.todayButtonText}>{t('date.today')}</Text>
           </TouchableOpacity>
         </View>
 
-        {/* View Switcher: Week / Month */}
+        {/* Nézetváltó: Hét / Hónap */}
         <PlanViewSwitcher mode={viewMode} onChange={onViewModeChange} />
       </View>
 
-      {/* 3. Circular 3D Cylindrical Wheel Carousel */}
+      {/* 3. Görgethető napi kártyák sora */}
       {viewMode === 'week' && (
         <WeeklyCarouselWheel
           weekPlan={weekPlan}

@@ -29,10 +29,7 @@ interface EditBodyMetricsModalProps {
   onShowDialog?: (config: FitbaseDialogConfig) => void;
 }
 
-/**
- * EditBodyMetricsModal
- * Dedicated modal for updating user Weight and Height with real-time WHO BMI calculation.
- */
+// Súly és magasság módosító modál
 export const EditBodyMetricsModal: React.FC<EditBodyMetricsModalProps> = ({
   visible,
   onClose,
@@ -172,7 +169,7 @@ export const EditBodyMetricsModal: React.FC<EditBodyMetricsModalProps> = ({
               </View>
             </View>
 
-            {/* Live WHO BMI card */}
+            {/* BMI kártya */}
             {liveBmi && (
               <View style={styles.bmiCard}>
                 <View style={styles.bmiHeader}>

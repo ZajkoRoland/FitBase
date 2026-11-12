@@ -3,9 +3,6 @@ import { useLanguage } from '@/context/LanguageProvider';
 import React from 'react';
 import { ActivityIndicator, StyleSheet, Text, View, ViewStyle } from 'react-native';
 
-/**
- * Interface contract defining properties for the LoadingIndicator component.
- */
 export interface LoadingIndicatorProps {
   label?: string;
   size?: 'small' | 'large';
@@ -13,12 +10,7 @@ export interface LoadingIndicatorProps {
   style?: ViewStyle;
 }
 
-/**
- * LoadingIndicator
- *
- * Dedicated component responsible for displaying an animated activity indicator
- * and an optional contextual loading label.
- */
+// Betöltésjelző animáció és szöveg
 export function LoadingIndicator({
   label,
   size = 'large',

@@ -1,8 +1,4 @@
-/**
- * Error thrown for every non-2xx response from the FitBase API.
- * `code` matches the backend's `{"code": "...", "message": "..."}` body,
- * which is what getAuthErrorMessage() in authErrors.ts switches on.
- */
+// Egyedi hibamegjelenítés az API nem-2xx válaszaihoz
 export class ApiError extends Error {
   constructor(
     public readonly status: number,

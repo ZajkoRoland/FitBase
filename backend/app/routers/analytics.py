@@ -1,8 +1,4 @@
-"""Analytics and progressive overload progress tracking router.
-
-Provides endpoints for tracking exercise performance over time (1RM, volume, max weight)
-aggregated from account-isolated WorkoutSession records.
-"""
+# Analitika és edzésfejlődés követése (1RM, volumen, max súly)
 
 from typing import Any
 
@@ -17,7 +13,7 @@ router = APIRouter(prefix="/analytics", tags=["analytics"])
 
 
 def _calculate_epley_1rm(weight_kg: float, reps: int) -> float:
-    """Calculates estimated 1RM using the standard Epley formula."""
+    # Becsült 1RM számítása Epley-képlettel
     if weight_kg <= 0 or reps <= 0:
         return 0.0
     if reps == 1:
@@ -31,10 +27,7 @@ def get_exercise_progress(
     current_user: CurrentUser,
     db: DbSession,
 ) -> dict[str, Any]:
-    """Returns the progression timeline (1RM, volume, max weight) for an exercise.
-
-    Aggregated strictly from the authenticated user's historical workout sessions.
-    """
+    """Edzésfejlődési adatok lekérése egy gyakorlathoz."""
     clean_slug = slug.strip().lower()
 
     stmt = (
@@ -111,10 +104,7 @@ def get_logged_exercises(
     current_user: CurrentUser,
     db: DbSession,
 ) -> list[dict[str, str]]:
-    """Returns the list of exercises that the authenticated user has logged,
-
-    plus default popular exercises so the user can inspect charts right away.
-    """
+    """A felhasználó által végzett gyakorlatok listája."""
     stmt = (
         select(WorkoutSession)
         .where(WorkoutSession.user_id == current_user.id)

@@ -1,10 +1,4 @@
-/*
- * FitBase — Colors
- * Usage:
- *   import { Colors } from '@/constants/Colors';
- *   backgroundColor: Colors.background.primary
- */
-
+// Alkalmazás színpalettája és stílustémája
 export const Colors = {
   background: {
     primary: '#0D1528',

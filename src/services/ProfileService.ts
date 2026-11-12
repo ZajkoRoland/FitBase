@@ -14,11 +14,7 @@ const EN_MONTH_SHORT_INDEX: Record<string, number> = {
   jul: 6, aug: 7, sep: 8, oct: 9, nov: 10, dec: 11,
 };
 
-/**
- * ProfileService 
- * Generates dynamic, account-specific activity histories and milestones
- * from the authenticated user's `Profile` without any hardcoded user metrics.
- */
+// Felhasználói profil adatok és aktivitási mérföldkövek kezelése
 export class ProfileService {
   private static instance: ProfileService;
 

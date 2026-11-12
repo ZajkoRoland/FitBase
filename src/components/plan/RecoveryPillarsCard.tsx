@@ -69,7 +69,7 @@ export const RecoveryPillarsCard: React.FC<RecoveryPillarsCardProps> = ({
 
   return (
     <View style={styles.card}>
-      {/* 1. Header with Title & Counter */}
+      {/* 1. Fejléc címmel és számlálóval */}
       <View style={styles.header}>
         <Text style={styles.headline}>{headline}</Text>
 
@@ -78,7 +78,7 @@ export const RecoveryPillarsCard: React.FC<RecoveryPillarsCardProps> = ({
         </View>
       </View>
 
-      {/* 2. Mini Progress Track */}
+      {/* 2. Haladási sáv */}
       <View style={styles.progressTrack}>
         <View
           style={[
@@ -88,7 +88,7 @@ export const RecoveryPillarsCard: React.FC<RecoveryPillarsCardProps> = ({
         />
       </View>
 
-      {/* 3. Pillar List */}
+      {/* 3. Pillérek listája */}
       <View style={styles.list}>
         {pillars.map((pillar) => (
           <RecoveryPillarItem

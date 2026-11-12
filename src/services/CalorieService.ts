@@ -1,15 +1,7 @@
 import { Exercise, PlanService } from './PlanService';
 
-/**
- * CalorieService
- *
- * OOP domain service providing scientific calorie expenditure calculations
- * based on the Metabolic Equivalent of Task (MET) standard and biomechanical work:
- * kcal = Base Metabolic Cost (MET × Body Weight × Time) + Mechanical Work (Load × Reps) + EPOC
- *
- * Factors in eccentric/concentric muscular work duration, structured set counts,
- * reps, external lifted weights (kg), rest intervals, and exercise movement complexity.
- */
+// Kalóriaégetést becslő szolgáltatás MET értékek, testsúly, sorozatok,
+// ismétlések és a végzett gyakorlatok típusa alapján.
 export class CalorieService {
   private static instance: CalorieService;
 
@@ -22,10 +14,7 @@ export class CalorieService {
     return CalorieService.instance;
   }
 
-  /**
-   * Exercise name pattern to MET multiplier mapping.
-   * Compounded multi-joint movements burn more energy than isolated ones.
-   */
+  // MET szorzók kulcsszavak alapján
   private readonly MET_PATTERNS: Array<{ pattern: RegExp; met: number }> = [
     { pattern: /burpee|thruster|clean|snatch|deadlift/i, met: 8.0 },
     { pattern: /squat|guggolás|lunge|kitörés|leg press/i, met: 7.0 },
@@ -37,11 +26,7 @@ export class CalorieService {
     { pattern: /mountain climber|high knee|jump/i, met: 7.5 },
   ];
 
-  /**
-   * Resolves the Metabolic Equivalent of Task (MET) for an exercise.
-   * If exercise.met is populated from the database (e.g. from backend RepDB catalogue),
-   * it uses the exact database value. Otherwise it falls back to pattern matching.
-   */
+  // MET érték meghatározása az adatbázisból vagy mintaillesztéssel
   public getMetForExercise(exercise: Exercise | string): number {
     if (typeof exercise !== 'string' && exercise.met && exercise.met > 0) {
       return exercise.met;
@@ -56,9 +41,7 @@ export class CalorieService {
     return 5.0; // Default moderate strength training MET
   }
 
-  /**
-   * Parses fallback sets, reps, and rest duration from details string (e.g. "4 × 8 · 90s rest")
-   */
+  // Sorozatok, ismétlések és pihenőidő kinyerése a formázott szövegből
   public parseExerciseVolume(details?: string): { sets: number; reps: number; restSeconds: number } {
     if (!details) {
       return { sets: 3, reps: 10, restSeconds: 60 };
@@ -84,10 +67,7 @@ export class CalorieService {
     return { sets, reps, restSeconds };
   }
 
-  /**
-   * Calculates the estimated duration of an exercise in minutes,
-   * factoring in sets, reps (3.8s per rep time under tension), and inter-set rest intervals.
-   */
+  // Gyakorlat becsült időtartama percekben (sorozatok, ismétlések és pihenők alapján)
   public calculateExerciseDuration(exercise: Exercise): number {
     const setsList = PlanService.ensureExerciseSets(exercise);
     const setCount = Math.max(1, setsList.length);
@@ -99,10 +79,7 @@ export class CalorieService {
     return Math.max(3, Math.round((workSeconds + restSecondsTotal) / 60));
   }
 
-  /**
-   * Calculates the total duration for an entire workout routine in minutes,
-   * factoring in exercise execution, rest periods, and equipment transitions.
-   */
+  // Teljes edzés becsült időtartama percekben
   public calculateRoutineDuration(
     exercises: Exercise[],
     completedMap?: Record<string, boolean>
@@ -115,28 +92,14 @@ export class CalorieService {
     for (const ex of activeList) {
       totalMinutes += this.calculateExerciseDuration(ex);
     }
-    // Add realistic 1-2 min setup / transition buffer between different exercises
+    // Kisebb pufferidő a gyakorlatok közötti váltásokra
     if (activeList.length > 1) {
       totalMinutes += Math.round((activeList.length - 1) * 1.5);
     }
     return Math.max(totalMinutes, 10);
   }
 
-  /**
-   * Calculates the estimated calories burned for a single exercise prescription.
-   *
-   * Accurately reflects exercise biomechanics:
-   *  1. Active lifting bodily movement (MET × body weight × work time)
-   *  2. Mechanical work against external lifted load:
-   *     Each kg lifted vertically burns energy based on physiological efficiency (~22%).
-   *     Total Volume (kg × reps) directly scales the energy cost.
-   *  3. Elevated post-exercise recovery (EPOC): heavier sets demand higher oxygen repayment.
-   *  4. Systemic muscle recruitment (compound multi-joint vs isolated single-joint).
-   *
-   * @param exercise The domain exercise item
-   * @param userWeightKg User's body weight in kg (defaults to 75kg if unknown)
-   * @returns Calorie expenditure in kcal
-   */
+  // Gyakorlat kalóriaégetésének becslése (MET érték, testsúly és terhelés alapján)
   public calculateExerciseCalories(exercise: Exercise, userWeightKg: number = 75): number {
     const weight = userWeightKg > 30 && userWeightKg < 250 ? userWeightKg : 75;
     const met = this.getMetForExercise(exercise);
@@ -189,10 +152,7 @@ export class CalorieService {
     return Math.max(8, Math.round(total));
   }
 
-  /**
-   * Calculates total estimated calories for a list of exercises.
-   * If completedMap is provided, only completed exercises are summed.
-   */
+  // Edzés teljes becsült kalóriaégetése
   public calculateRoutineCalories(
     exercises: Exercise[],
     completedMap?: Record<string, boolean>,

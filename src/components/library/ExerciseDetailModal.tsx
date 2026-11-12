@@ -260,12 +260,12 @@ export const ExerciseDetailModal: React.FC<ExerciseDetailModalProps> = ({
             },
           ]}
         >
-          {/* Top Drag Handle with Pull-Down gesture */}
+          {/* Felső húzóka lehúzási gesztussal */}
           <View {...panResponder.panHandlers} style={styles.dragHandleWrapper}>
             <View style={styles.dragHandle} />
           </View>
 
-          {/* Header with Pull-Down gesture */}
+          {/* Fejléc lehúzási gesztussal */}
           <View {...panResponder.panHandlers} style={styles.headerRow}>
             <Text style={styles.headerTitle} numberOfLines={1}>
               {name}
@@ -280,7 +280,7 @@ export const ExerciseDetailModal: React.FC<ExerciseDetailModalProps> = ({
             contentContainerStyle={styles.scrollContent}
             showsVerticalScrollIndicator={false}
           >
-            {/* Hands-free Auto-alternating Motion Visualizer */}
+            {/* Gyakorlat mozgás animáció */}
             <ExercisePoseMotionPlayer
               startImageUrl={startImageUrl}
               peakImageUrl={peakImageUrl}
@@ -296,7 +296,7 @@ export const ExerciseDetailModal: React.FC<ExerciseDetailModalProps> = ({
               </View>
             ) : (
               <>
-                {/* Description Card */}
+                {/* Leírás kártya */}
                 {detail?.description && (
                   <View style={styles.infoCard}>
                     <Text style={styles.sectionHeading}>{t('library.detail.descriptionHeading')}</Text>
@@ -317,7 +317,7 @@ export const ExerciseDetailModal: React.FC<ExerciseDetailModalProps> = ({
                   </View>
                 )}
 
-                {/* Collapsible Exercise Details Card */}
+                {/* Lenyitható részletek kártya */}
                 <View style={styles.infoCard}>
                   <Pressable
                     style={styles.cardHeaderRow}
@@ -336,7 +336,7 @@ export const ExerciseDetailModal: React.FC<ExerciseDetailModalProps> = ({
 
                   {detailsExpanded && (
                     <View style={styles.metricsGrid}>
-                      {/* Row 1: Activity Type & Difficulty */}
+                      {/* 1. sor: Típus és nehézség */}
                       <View style={styles.metricCell}>
                         <Text style={styles.metricLabel}>{t('library.detail.activityType')}</Text>
                         <Text style={styles.metricValue}>
@@ -364,7 +364,7 @@ export const ExerciseDetailModal: React.FC<ExerciseDetailModalProps> = ({
                           {localizedDifficulty} ⓘ
                         </Text>
 
-                        {/* 4-Segment Difficulty Meter */}
+                        {/* Nehézségi szint jelző */}
                         <View style={styles.difficultyMeter}>
                           <View
                             style={[
@@ -413,7 +413,7 @@ export const ExerciseDetailModal: React.FC<ExerciseDetailModalProps> = ({
                         </View>
                       </View>
 
-                      {/* Row 2: Equipment & Muscles */}
+                      {/* 2. sor: Eszköz és izomcsoportok */}
                       <View style={styles.metricCell}>
                         <Text style={styles.metricLabel}>{t('library.detail.equipment')}</Text>
                         <Text style={styles.metricValue}>
@@ -428,7 +428,7 @@ export const ExerciseDetailModal: React.FC<ExerciseDetailModalProps> = ({
                         </Text>
                       </View>
 
-                      {/* Row 3: Duration & Rest Time */}
+                      {/* 3. sor: Időtartam és pihenőidő */}
                       <View style={styles.metricCell}>
                         <Text style={styles.metricLabel}>{t('library.detail.duration')}</Text>
                         <Text style={styles.metricValue}>{durationText}</Text>
@@ -442,7 +442,7 @@ export const ExerciseDetailModal: React.FC<ExerciseDetailModalProps> = ({
                   )}
                 </View>
 
-                {/* Step-by-step instructions if present */}
+                {/* Végrehajtási utasítások */}
                 {detail?.instructions && detail.instructions.length > 0 && (
                   <View style={styles.infoCard}>
                     <Text style={styles.sectionHeading}>{t('library.detail.instructionsHeading')}</Text>
@@ -457,7 +457,7 @@ export const ExerciseDetailModal: React.FC<ExerciseDetailModalProps> = ({
                   </View>
                 )}
 
-                {/* Personal Progress Chart */}
+                {/* Egyéni fejlődési diagram */}
                 {activeSummary?.slug ? (
                   <View style={styles.chartSectionContainer}>
                     <ExerciseProgressChart
@@ -470,7 +470,7 @@ export const ExerciseDetailModal: React.FC<ExerciseDetailModalProps> = ({
             )}
           </ScrollView>
 
-          {/* Bottom Action Button */}
+          {/* Alsó műveleti gomb */}
           <View style={styles.bottomBar}>
             <Pressable
               style={({ pressed }) => [

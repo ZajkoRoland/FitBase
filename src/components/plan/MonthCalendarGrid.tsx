@@ -149,7 +149,7 @@ export function MonthCalendarGrid({
 
   return (
     <View style={styles.container}>
-      {/* Weekday column headers (M..S or H..V) */}
+      {/* Hét napjai fejléc */}
       <View style={styles.weekdayRow}>
         {weekdayNames.map((name, index) => (
           <Text key={index} style={styles.weekdayText}>
@@ -158,7 +158,7 @@ export function MonthCalendarGrid({
         ))}
       </View>
 
-      {/* Days matrix */}
+      {/* Napok négyzethálója */}
       <View style={styles.matrix}>
         {gridCells.map((cell) => {
           const cellDate = cell.date;
@@ -208,7 +208,7 @@ export function MonthCalendarGrid({
                   {cell.dayNumber}
                 </Text>
 
-                {/* Status indicator: Blue for workout, Amber for rest */}
+                {/* Állapotjelző: kék edzésnapra, sárga pihenőnapra */}
                 <View
                   style={[
                     styles.dotContainer,

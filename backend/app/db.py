@@ -13,7 +13,7 @@ class Base(DeclarativeBase):
 engine = create_engine(
     get_settings().database_url,
     pool_pre_ping=True,
-    # Supabase's transaction pooler (port 6543) doesn't support prepared statements.
+    # A Supabase kapcsolatgyűjtője (6543-as port) nem támogatja az előkészített lekérdezéseket
     connect_args={"prepare_threshold": None},
 )
 SessionLocal = sessionmaker(bind=engine, autoflush=False, expire_on_commit=False)

@@ -113,12 +113,7 @@ const DIFFICULTY_LABEL_KEYS: Record<string, string> = {
   advanced: 'filter.difficulty.advanced',
 };
 
-/**
- * LibraryService
- *
- * Encapsulates the domain operations, categorizations, and multi-dimensional
- * filtering logic on top of ExerciseRepository.
- */
+// Gyakorlattár műveletek és szűrések kezelése
 export class LibraryService {
   private static instance: LibraryService;
   private cachedCatalog: ExerciseSummary[] | null = null;
@@ -209,9 +204,7 @@ export class LibraryService {
     return [...list, item];
   }
 
-  /**
-   * Maps high-level UI category tabs to the underlying backend anatomical body_part filter.
-   */
+  // UI kategória leképezése a backend testrész szűrőre
   public mapCategoryToBodyPart(category: string): BodyPart | undefined {
     switch (category.trim().toLowerCase()) {
       case 'chest':

@@ -29,10 +29,7 @@ interface ForgotPasswordModalProps {
 
 type ResetStep = 'email' | 'code';
 
-/**
- * ForgotPasswordModal
- * Isolated, two-stage modal component dedicated to account recovery via 6-digit email verification.
- */
+// Elfelejtett jelszó modálablak
 export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
   visible,
   onClose,
@@ -149,7 +146,7 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
         <Pressable style={StyleSheet.absoluteFill} onPress={handleResetAndClose} />
 
         <View style={[styles.card, { paddingBottom: isKeyboardVisible ? 20 : bottomInset }]}>
-          {/* Header */}
+          {/* Fejléc */}
           <View style={styles.header}>
             <View style={styles.headerTitleRow}>
               <View style={styles.iconCircle}>
@@ -171,14 +168,14 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
             keyboardShouldPersistTaps="handled"
             bounces={false}
           >
-            {/* Subtitle / Instructions */}
+            {/* Alcím és útmutató */}
             <Text style={styles.subtitle}>
               {step === 'email'
                 ? t('auth.forgotPasswordSubtitle')
                 : t('auth.codeSentSuccess')}
             </Text>
 
-            {/* Error banner */}
+            {/* Hibaüzenet sáv */}
             {errorMessage && (
               <View style={styles.errorBox}>
                 <Ionicons name="alert-circle-outline" size={16} color="#FF5252" />
@@ -186,7 +183,7 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
               </View>
             )}
 
-            {/* Stage 1: Email input */}
+            {/* 1. szakasz: E-mail megadása */}
             {step === 'email' && (
               <View style={styles.formSection}>
                 <Text style={styles.inputLabel}>{t('auth.emailLabel')}</Text>
@@ -234,7 +231,7 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
               </View>
             )}
 
-            {/* Stage 2: 6-digit Code + New Password */}
+            {/* 2. szakasz: Kód és új jelszó */}
             {step === 'code' && (
               <View style={styles.formSection}>
                 <Text style={styles.inputLabel}>{t('auth.codeLabel')}</Text>

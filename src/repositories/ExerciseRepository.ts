@@ -16,9 +16,7 @@ export class ExerciseRepository extends BaseRepository {
     return ExerciseRepository.instance;
   }
 
-  /**
-   * Fetches a paginated slice of exercises from the catalogue.
-   */
+  // Gyakorlatok lapozott lekérése szűrők alapján
   public async list(params: ExerciseQueryParams = {}): Promise<ExercisePage> {
     const query: Record<string, string> = {};
     if (params.q?.trim()) query.q = params.q.trim();
@@ -35,18 +33,14 @@ export class ExerciseRepository extends BaseRepository {
     return this.api.get<ExercisePage>('/exercises', { query });
   }
 
-  /**
-   * Fetches full metadata for a single exercise by slug.
-   */
+  // Egyetlen gyakorlat részletes adatainak lekérése slug alapján
   public async getBySlug(slug: string, lang = 'en'): Promise<ExerciseDetail> {
     return this.api.get<ExerciseDetail>(`/exercises/${encodeURIComponent(slug)}`, {
       query: { lang },
     });
   }
 
-  /**
-   * Fetches available vocabulary for filters (body parts, muscles, equipment).
-   */
+  // Elérhető szűrők (testrészek, eszközök, nehézség) lekérése
   public async getFilters(): Promise<ExerciseFilterOptions> {
     return this.api.get<ExerciseFilterOptions>('/exercises/filters');
   }

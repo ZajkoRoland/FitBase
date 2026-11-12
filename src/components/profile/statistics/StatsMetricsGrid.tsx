@@ -41,10 +41,7 @@ const MetricCard: React.FC<MetricItemProps> = ({ label, value, unit, icon, color
   );
 };
 
-/**
- * Formats training duration into a readable, localized string.
- * Handles sub-hour workouts (e.g. 45 perc / 45 min) as well as multi-hour sessions (e.g. 1 ó 15 p / 1h 15m).
- */
+// Edzésidő formázása (órák és percek)
 export function formatTrainedDuration(
   totalHours: number,
   totalMinutes?: number
@@ -78,11 +75,7 @@ export function formatTrainedDuration(
   };
 }
 
-/**
- * StatsMetricsGrid
- * Renders a spacious 2-column, 6-metric overview grid strictly from
- * the authenticated account's database metrics and live workout plan state.
- */
+// Statisztikai mérőszámok 2 oszlopos rácsa
 export const StatsMetricsGrid: React.FC = () => {
   const { t } = useLanguage();
   const { profile } = useProfile();

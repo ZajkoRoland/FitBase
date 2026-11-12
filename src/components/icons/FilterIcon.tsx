@@ -2,11 +2,7 @@ import React from 'react';
 import { Circle, Line } from 'react-native-svg';
 import { BaseIcon, IconProps } from './BaseIcon';
 
-/**
- * FilterIcon
- *
- * Implements the equalizer/filter slider icon used in the Exercise Library header.
- */
+// Szűrő ikon
 export class FilterIcon extends BaseIcon<IconProps> {
   protected override renderShape(color: string, strokeWidth: number): React.ReactNode {
     return (

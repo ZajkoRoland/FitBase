@@ -9,20 +9,16 @@ type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 interface RequestOptions {
   body?: unknown;
   query?: Record<string, string>;
-  /** Attach the access token (default true). */
+  // Csatolja az access tokent (alapból true)
   auth?: boolean;
 }
 
-/** Refresh a bit before the real expiry so in-flight requests don't race it. */
+// Kicsivel a lejárati idő előtt frissítünk, hogy a párhuzamos kérések ne fussanak hibára
 const EXPIRY_LEEWAY_MS = 30_000;
 
-/**
- * Single HTTP entry point for the FitBase backend.
- *
- * Owns the session: attaches the Bearer token, refreshes it when it is about to
- * expire or the server answers 401, and notifies subscribers (AuthProvider)
- * whenever the session changes, similar to supabase.auth.onAuthStateChange.
- */
+// Központi HTTP kliens a backend API eléréséhez.
+// Kezeli a Bearer tokent, automatikusan frissíti a lejárt sessiont,
+// és értesíti az AuthProvidert a bejelentkezési állapot változásakor.
 export class ApiClient {
   private static instance: ApiClient;
 
@@ -55,7 +51,7 @@ export class ApiClient {
     };
   }
 
-  /** Loads the persisted session on app start. Expired tokens are refreshed lazily. */
+  // Elmentett session betöltése indításkor
   public async restoreSession(): Promise<AuthSession | null> {
     this.session = await this.storage.load();
     return this.session;
@@ -115,7 +111,7 @@ export class ApiClient {
     let token = await this.getFreshAccessToken();
     let response = await this.send(method, path, options, token);
 
-    // Token may have been revoked or the clock skewed: refresh once and retry.
+    // Ha 401 jön (lejárt token vagy eltérés), egyszer megpróbáljuk frissíteni
     if (response.status === 401) {
       token = (await this.refresh())?.accessToken ?? null;
       response = await this.send(method, path, options, token);
@@ -132,10 +128,7 @@ export class ApiClient {
     return (await this.refresh())?.accessToken ?? null;
   }
 
-  /**
-   * Refresh tokens are single-use on the backend, so concurrent callers must
-   * share one refresh request instead of each sending the same token.
-   */
+  // A refresh token egyszer használatos, ezért a kérések egy közös frissítést használnak
   private refresh(): Promise<AuthSession | null> {
     if (!this.refreshInFlight) {
       this.refreshInFlight = this.performRefresh().finally(() => {
@@ -149,7 +142,7 @@ export class ApiClient {
     const refreshToken = this.session?.refreshToken;
     if (!refreshToken) return null;
 
-    // Network errors propagate and keep the session, so going offline doesn't log the user out.
+    // Hálózati hiba esetén megtartjuk a sessiont, hogy kapcsolat nélkül ne léptessen ki
     const response = await this.send('POST', '/auth/refresh', { body: { refresh_token: refreshToken } });
 
     if (response.status === 401) {

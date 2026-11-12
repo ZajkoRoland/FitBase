@@ -10,11 +10,7 @@ import { StyleSheet, Text, View } from 'react-native';
 const MAX_SCALE = 7;
 const BAR_MAX_HEIGHT = 96;
 
-/**
- * ActivityVolumeChart
- * Renders the authenticated user's real 5-week activity histogram from the database
- * with an accurately positioned target reference line reactive to `plannedWorkoutDays`.
- */
+// Heti aktivitási oszlopdiagram
 export const ActivityVolumeChart: React.FC = () => {
   const { t } = useLanguage();
   const { profile } = useProfile();
@@ -39,7 +35,7 @@ export const ActivityVolumeChart: React.FC = () => {
 
       <View style={styles.card}>
         <View style={styles.chartContainer}>
-          {/* Target Reference Line - Positioned at exact weekly target threshold */}
+          {/* Heti célérték referencia vonal */}
           <View
             style={[styles.targetLineContainer, { bottom: targetLineBottom + 26 }]}
             pointerEvents="none"
@@ -50,7 +46,7 @@ export const ActivityVolumeChart: React.FC = () => {
             <View style={styles.targetDottedLine} />
           </View>
 
-          {/* Bar Columns */}
+          {/* Oszlopok */}
           <View style={styles.barsRow}>
             {weeks.map((w) => {
               const isGoalMet = w.count >= targetWorkouts;

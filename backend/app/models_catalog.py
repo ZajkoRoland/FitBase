@@ -1,15 +1,4 @@
-"""ORM models for the exercise catalogue (RepDB free dataset, 650 exercises).
-
-Layout in short:
-  * small fixed vocabularies (difficulty, category, ...) are native Postgres enums
-  * open vocabularies (muscles, equipment, tags) are lookup tables
-  * everything that is text in a human language lives in exercise_translations,
-    so a Hungarian row can be added later without touching the schema
-  * many-to-many links that carry extra data (muscle role, image kind) are
-    modelled as association objects, plain links use a bare association table
-
-The Alembic migrations stay the source of truth for the schema.
-"""
+# Gyakorlatkatalógus adatbázis modelljei (izmok, eszközök, gyakorlatok és fordítások)
 
 from datetime import datetime
 from decimal import Decimal
@@ -38,7 +27,7 @@ from sqlalchemy.orm.collections import attribute_keyed_dict
 from app.db import Base
 
 
-# ---------- Enumerations ----------
+# Enum típusok (kategóriák, nehézség, testrészek)
 
 
 class Category(StrEnum):
@@ -87,7 +76,7 @@ class MuscleRole(StrEnum):
 class ImageKind(StrEnum):
     START = "start"
     PEAK = "peak"
-    MAIN = "main"  # stretches and holds only have a single pose
+    MAIN = "main"  # Nyújtásoknál és tartásoknál egyetlen fázis van
 
 
 class Goal(StrEnum):
@@ -101,11 +90,11 @@ class Goal(StrEnum):
 
 
 def pg_enum(enum_cls: type[StrEnum], name: str) -> Enum:
-    """Postgres enum that stores the member *values* ('upper_legs'), not the names."""
+    # A postgres enum értékek szerinti leképezése
     return Enum(enum_cls, name=name, values_callable=lambda cls: [m.value for m in cls])
 
 
-# ---------- Lookup tables ----------
+# Törzsadattáblák (izmok, eszközök, címkék)
 
 
 class Muscle(Base):
@@ -133,7 +122,7 @@ class Tag(Base):
     slug: Mapped[str] = mapped_column(String(40), nullable=False, unique=True)
 
 
-# Plain many-to-many: an exercise either has a tag or it doesn't, nothing else to store.
+# Gyakorlatok és címkék több-a-többhöz kapcsolata
 exercise_tags = Table(
     "exercise_tags",
     Base.metadata,
@@ -142,7 +131,7 @@ exercise_tags = Table(
 )
 
 
-# ---------- Exercises ----------
+# Gyakorlatok és kapcsolódó táblák
 
 
 class Exercise(Base):
@@ -150,7 +139,7 @@ class Exercise(Base):
     __table_args__ = (CheckConstraint("met > 0", name="exercises_met_positive"),)
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    # URL-safe id from the dataset ('bulgarian-split-squat'); other tables reference the integer id.
+    # Egyedi szöveges azonosító (slug)
     slug: Mapped[str] = mapped_column(String(64), nullable=False, unique=True)
 
     category: Mapped[Category] = mapped_column(pg_enum(Category, "exercise_category"), index=True)
@@ -159,15 +148,15 @@ class Exercise(Base):
     difficulty: Mapped[Difficulty] = mapped_column(pg_enum(Difficulty, "difficulty"), index=True)
     body_part: Mapped[BodyPart] = mapped_column(pg_enum(BodyPart, "body_part"), index=True)
 
-    # NULL = no equipment needed (197 of the 650 exercises).
+    # NULL érték esetén nem szükséges hozzá felszerelés
     equipment_id: Mapped[int | None] = mapped_column(
         ForeignKey("equipment.id", ondelete="RESTRICT"), index=True
     )
     is_unilateral: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     is_bodyweight: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
-    # Metabolic equivalent, used for calorie estimates: kcal = MET * kg * hours.
+    # MET érték a kalóriaszámításhoz (kcal = MET * testsúly * óra)
     met: Mapped[Decimal] = mapped_column(Numeric(3, 1), nullable=False)
-    # Groups close variants together ('squat', 'row', ...); NULL for stand-alone moves.
+    # Variációk csoportosítása (pl. guggolások, fekvenyomások)
     variation_group: Mapped[str | None] = mapped_column(String(40), index=True)
 
     created_at: Mapped[datetime] = mapped_column(
@@ -203,7 +192,7 @@ class ExerciseTranslation(Base):
     lang: Mapped[str] = mapped_column(String(2), primary_key=True)
     name: Mapped[str] = mapped_column(Text, nullable=False)
     description: Mapped[str | None] = mapped_column(Text)
-    # Ordered lists of short strings; a native array is simpler than a steps table here.
+    # Lépések és edzési tippek listája
     instructions: Mapped[list[str]] = mapped_column(ARRAY(Text), nullable=False, default=list)
     tips: Mapped[list[str]] = mapped_column(ARRAY(Text), nullable=False, default=list)
 
@@ -211,8 +200,7 @@ class ExerciseTranslation(Base):
 
 
 class ExerciseMuscle(Base):
-    """Association object: which muscle an exercise works, and how much."""
-
+    # Gyakorlat és megdolgozott izomcsoport kapcsolata
     __tablename__ = "exercise_muscles"
 
     exercise_id: Mapped[int] = mapped_column(
@@ -234,7 +222,7 @@ class ExerciseImage(Base):
         ForeignKey("exercises.id", ondelete="CASCADE"), primary_key=True
     )
     kind: Mapped[ImageKind] = mapped_column(pg_enum(ImageKind, "image_kind"), primary_key=True)
-    # Relative path inside the dataset folder. Near-identical variants share files on purpose.
+    # Képfájl relatív elérési útja
     path: Mapped[str] = mapped_column(Text, nullable=False)
 
     exercise: Mapped[Exercise] = relationship(back_populates="images")

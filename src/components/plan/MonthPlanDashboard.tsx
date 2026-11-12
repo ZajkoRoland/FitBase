@@ -49,7 +49,7 @@ export function MonthPlanDashboard({
     setSelectedDay((prev) => (prev === d ? prev : d));
   }, [currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate()]);
 
-  // Aggregate monthly stats based on 4-week cycle
+  // Havi statisztikák összegzése a 4 hetes ciklus alapján
   const { totalMonthWorkouts, totalMonthRest } = useMemo(() => {
     const weeklyWorkoutCount = weekPlan.filter((d) => d.type === 'workout').length;
     const weeklyRestCount = weekPlan.filter((d) => d.type === 'rest').length;
@@ -76,7 +76,7 @@ export function MonthPlanDashboard({
     [totalWeeks, currentWeekIndex, setCurrentWeekIndex, setActiveDayIndex, onDateChange]
   );
 
-  // Determine active day data based on selected day of week
+  // Aktív nap adatainak meghatározása a kiválasztott hét napja alapján
   const selectedDayOfWeekIndex = helper.getDayOfWeekIndex(selectedDay);
   const activeDay = weekPlan[selectedDayOfWeekIndex] || weekPlan[0];
   const isRest = activeDay.type === 'rest';
@@ -161,7 +161,7 @@ export function MonthPlanDashboard({
 
   return (
     <View style={styles.container}>
-      {/* 1. Month Overview Banner */}
+      {/* 1. Havi áttekintő fejléc */}
       <View style={styles.monthHeader}>
         <View>
           <Text style={styles.monthLabel}>{t('plan.month.overviewEyebrow')}</Text>
@@ -170,7 +170,7 @@ export function MonthPlanDashboard({
           </Text>
         </View>
 
-        {/* Aggregate KPI chips */}
+        {/* Összesített mutatók */}
         <View style={styles.kpiRow}>
           <View style={styles.kpiChip}>
             <Text style={[styles.kpiNumber, { color: Colors.accent.blue }]}>
@@ -187,7 +187,7 @@ export function MonthPlanDashboard({
         </View>
       </View>
 
-      {/* 2. Calendar Matrix Heatmap Grid */}
+      {/* 2. Naptár nézet */}
       <View style={styles.gridWrapper}>
         <MonthCalendarGrid
           weekPlan={weekPlan}
@@ -198,7 +198,7 @@ export function MonthPlanDashboard({
         />
       </View>
 
-      {/* 3. Dynamic Selected Day Details: Workout Exercises OR Rest Day */}
+      {/* 3. Kiválasztott nap részletei */}
       <View style={styles.selectedDayContainer}>
         {isPastDay ? (
           pastSession ? (

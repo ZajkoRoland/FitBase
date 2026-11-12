@@ -21,12 +21,7 @@ export interface FitbaseCustomDialogProps {
   readonly onClose: () => void;
 }
 
-/**
- * FitbaseCustomDialog
- *
- * Isolated, reusable presentation modal replacing default OS Alert.alert.
- * Adheres strictly to FitBase dark cyberpunk/neon palette (#0D1528, #152038, #4AB8F8).
- */
+// Egyedi felugró dialógusablak
 export const FitbaseCustomDialog: React.FC<FitbaseCustomDialogProps> = ({
   config,
   visible,
@@ -109,7 +104,7 @@ export const FitbaseCustomDialog: React.FC<FitbaseCustomDialogProps> = ({
       onRequestClose={() => handleDismiss(config.onSecondaryPress)}
     >
       <View style={styles.overlay}>
-        {/* Animated backdrop */}
+        {/* Animált háttér */}
         <Animated.View style={[styles.backdrop, { opacity: backdropOpacity }]}>
           <Pressable
             style={StyleSheet.absoluteFill}
@@ -117,7 +112,7 @@ export const FitbaseCustomDialog: React.FC<FitbaseCustomDialogProps> = ({
           />
         </Animated.View>
 
-        {/* Dialog card */}
+        {/* Dialógus kártya */}
         <Animated.View
           style={[
             styles.card,
@@ -127,7 +122,7 @@ export const FitbaseCustomDialog: React.FC<FitbaseCustomDialogProps> = ({
             },
           ]}
         >
-          {/* Header Icon Circle */}
+          {/* Fejléc ikon kör */}
           <View
             style={[
               styles.iconCircle,
@@ -145,7 +140,7 @@ export const FitbaseCustomDialog: React.FC<FitbaseCustomDialogProps> = ({
 
           <Text style={styles.message}>{config.message}</Text>
 
-          {/* Optional Action URL Pill (e.g. Email link) */}
+          {/* Hivatkozás gomb */}
           {config.actionUrl && (
             <TouchableOpacity
               activeOpacity={0.75}

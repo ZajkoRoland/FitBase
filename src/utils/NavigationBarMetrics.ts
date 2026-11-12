@@ -7,12 +7,7 @@ export interface TabBarDimensions {
   paddingTop: number;
 }
 
-/**
- * NavigationBarMetrics
- *
- * Android system navigation modes (3-button vs gesture navigation)
- * based on window insets, and dynamically computing pixel-perfect dimensions for the tab bar.
- */
+// Alsó navigációs sáv méretezése (gesztusvezérlés vs 3 gombos navigáció alapján)
 export class NavigationBarMetrics {
 
   public static getNavigationMode(bottomInset: number): NavigationMode {

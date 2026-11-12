@@ -29,11 +29,7 @@ interface EditTargetWeightModalProps {
   onShowDialog?: (config: FitbaseDialogConfig) => void;
 }
 
-/**
- * EditTargetWeightModal
- * Dedicated modal for setting and adjusting the user's target weight goal,
- * persisted directly to the account's database record (`user_stats.target_weight`).
- */
+// Cél testsúly beállítása modál
 export const EditTargetWeightModal: React.FC<EditTargetWeightModalProps> = ({
   visible,
   onClose,

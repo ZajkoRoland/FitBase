@@ -36,7 +36,7 @@ export interface Equipment {
   image_url: string | null;
 }
 
-/** Card representation in the 2-column exercise grid */
+// Gyakorlat kártya összefoglaló adatai
 export interface ExerciseSummary {
   slug: string;
   name: string;
@@ -49,7 +49,7 @@ export interface ExerciseSummary {
   image_url: string | null;
 }
 
-/** Full exercise specification for the detail sheet */
+// Gyakorlat részletes adatai és végrehajtási instrukciói
 export interface ExerciseDetail extends ExerciseSummary {
   language: string;
   description: string | null;

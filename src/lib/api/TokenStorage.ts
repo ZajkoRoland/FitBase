@@ -1,9 +1,6 @@
 import type { AuthSession } from './types';
 
-/**
- * Persists the auth session between app launches.
- * Platform-specific subclasses live in createTokenStorage(.web).ts.
- */
+// Session perzisztencia az alkalmazás indításai között
 export abstract class TokenStorage {
   protected static readonly KEY = 'fitbase.session';
 

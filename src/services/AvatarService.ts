@@ -5,10 +5,7 @@ import { i18n } from '@/services/LocalizationService';
 
 const STORAGE_AVATAR_PREFIX = '@fitbase_profile_avatar_uri';
 
-/**
- * AvatarService (OOP Service)
- * Encapsulates photo picker permissions, account-isolated storage persistence, and avatar lifecycle.
- */
+// Profilkép kiválasztása a telefon galériájából és elmentése a tárhelyre
 export class AvatarService {
   private static instance: AvatarService;
   private activeUserId: string | null = null;
@@ -32,9 +29,7 @@ export class AvatarService {
     return `${STORAGE_AVATAR_PREFIX}_${uid}`;
   }
 
-  /**
-   * Retrieves the account-scoped saved avatar image URI, if any.
-   */
+  // Profilkép URI lekérése a helyi tárolóból
   public async getAvatarUri(userId?: string | null): Promise<string | null> {
     try {
       const key = this.getKey(userId);
@@ -45,9 +40,7 @@ export class AvatarService {
     }
   }
 
-  /**
-   * Prompts the user to pick an image from their gallery, cropped as a square.
-   */
+  // Kép kiválasztása a galériából négyzetes vágással
   public async pickImageFromGallery(userId?: string | null): Promise<string | null> {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== 'granted') {
@@ -74,9 +67,7 @@ export class AvatarService {
     return uri;
   }
 
-  /**
-   * Persists the chosen avatar URI strictly for the active account.
-   */
+  // Profilkép URI mentése
   public async saveAvatarUri(uri: string, userId?: string | null): Promise<void> {
     try {
       const key = this.getKey(userId);
@@ -87,9 +78,7 @@ export class AvatarService {
     }
   }
 
-  /**
-   * Removes the custom avatar for the active account, reverting back to monogram initials.
-   */
+  // Egyedi profilkép törlése
   public async removeAvatar(userId?: string | null): Promise<void> {
     try {
       const key = this.getKey(userId);

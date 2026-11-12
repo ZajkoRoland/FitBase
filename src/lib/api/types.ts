@@ -12,7 +12,7 @@ export interface AuthSession {
   expiresAt: number;
 }
 
-/** Raw token payload returned by /auth/register, /auth/login and /auth/refresh. */
+// Token válasz az auth végpontokról (/auth/register, /auth/login, /auth/refresh)
 export interface TokenResponse {
   access_token: string;
   refresh_token: string;

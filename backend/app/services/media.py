@@ -1,14 +1,4 @@
-"""Exercise image URLs and the static file server behind them.
-
-The catalogue stores relative paths such as 'images/flat/plank-main.webp'. Where those
-files actually live (this server, a storage bucket, a CDN) is decided here, so moving
-them never requires a database change.
-
-Layout contract: <media base>/<relative path>. Served locally that is
-    http://host:8000/media/images/flat/plank-main.webp
-and a Supabase Storage bucket called 'media' holding an 'images' folder gives the same
-shape under .../storage/v1/object/public/media/.
-"""
+# Gyakorlat képek és statikus fájlkiszolgáló
 
 from fastapi import Request
 from starlette.staticfiles import StaticFiles
@@ -35,7 +25,7 @@ class MediaUrls:
 
 
 class CachedStaticFiles(StaticFiles):
-    """StaticFiles plus a Cache-Control header; the images never change for a given name."""
+    # Statikus fájlkiszolgáló Cache-Control fejléccel
 
     def file_response(self, full_path, stat_result, scope: Scope, status_code: int = 200):
         response = super().file_response(full_path, stat_result, scope, status_code)

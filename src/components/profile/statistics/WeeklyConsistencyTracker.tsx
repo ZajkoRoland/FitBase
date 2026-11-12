@@ -14,11 +14,7 @@ interface DayStatus {
   isToday: boolean;
 }
 
-/**
- * WeeklyConsistencyTracker
- * Elevates the weekly target into an interactive day-by-day rhythm tracker
- * bound dynamically to `usePlan()` (`weekPlan`, `plannedWorkoutDays`) and `useProfile()`.
- */
+// Heti edzéskövető naptár sáv
 export const WeeklyConsistencyTracker: React.FC = () => {
   const { language, t, i18n } = useLanguage();
   const { profile } = useProfile();

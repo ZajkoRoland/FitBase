@@ -18,7 +18,7 @@ export const PlanViewSwitcher: React.FC<PlanViewSwitcherProps> = ({ mode, onChan
 
   return (
     <View style={styles.container}>
-      {/* 1. Week Option */}
+      {/* 1. Heti nézet opció */}
       <TouchableOpacity
         style={[styles.segment, isWeek && styles.segmentActive]}
         onPress={() => onChange('week')}
@@ -42,7 +42,7 @@ export const PlanViewSwitcher: React.FC<PlanViewSwitcherProps> = ({ mode, onChan
         <Text style={[styles.text, isWeek && styles.textActive]}>{t('plan.viewWeek')}</Text>
       </TouchableOpacity>
 
-      {/* 2. Month Option */}
+      {/* 2. Havi nézet opció */}
       <TouchableOpacity
         style={[styles.segment, isMonth && styles.segmentActive]}
         onPress={() => onChange('month')}

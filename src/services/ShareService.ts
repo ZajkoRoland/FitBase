@@ -2,10 +2,7 @@ import { i18n } from '@/services/LocalizationService';
 import type { Profile } from '@/types/profile';
 import { Share } from 'react-native';
 
-/**
- * ShareService
- * Encapsulates formatted workout progress sharing via native platform share dialogs.
- */
+// Edzés előrehaladás megosztása a rendszer natív megosztó felületén keresztül
 export class ShareService {
   private static instance: ShareService;
 
@@ -18,9 +15,7 @@ export class ShareService {
     return ShareService.instance;
   }
 
-  /**
-   * Shares the user's athletic progress stats in the active language.
-   */
+  // Edzésstatisztikák megosztása az aktív nyelven
   public async shareProgress(profile: Profile | null): Promise<void> {
     const name = profile?.display_name || profile?.username || i18n.t('greeting.defaultAthlete');
     const streak = profile?.streak || 0;

@@ -13,11 +13,7 @@ export interface ProfileFeatureCardProps {
   badgeColor?: string;
 }
 
-/**
- * FitbaseAnalyticsIcon
- * Custom, high-tech athletic telemetry icon unique to FitBase.
- * Features rising futuristic neon analytics bars with an upward biometric vital vector and pulse node.
- */
+// Statisztika grafikon ikon
 export function FitbaseAnalyticsIcon(): React.JSX.Element {
   return (
     <View style={styles.analyticsIconBg}>
@@ -41,13 +37,13 @@ export function FitbaseAnalyticsIcon(): React.JSX.Element {
           </LinearGradient>
         </Defs>
 
-        {/* 4 Rising FitBase Telemetry Bars */}
+        {/* Diagram oszlopok */}
         <Rect x="5" y="19" width="4.5" height="11" rx="2.25" fill="url(#fbBarGrad1)" />
         <Rect x="12" y="13" width="4.5" height="17" rx="2.25" fill="url(#fbBarGrad2)" />
         <Rect x="19" y="8" width="4.5" height="22" rx="2.25" fill="url(#fbBarGrad3)" />
         <Rect x="26" y="14" width="4.5" height="16" rx="2.25" fill="url(#fbBarGrad4)" />
 
-        {/* Upward Biometric Pulse Wave Vector */}
+        {/* Emelkedő grafikon vonal */}
         <Path
           d="M3 24L7.5 24.5L14.2 16L19 20L28 9"
           stroke="#FFFFFF"
@@ -56,7 +52,7 @@ export function FitbaseAnalyticsIcon(): React.JSX.Element {
           strokeLinejoin="round"
         />
 
-        {/* Glowing Peak Vital Node */}
+        {/* Csúcspont jelző */}
         <Circle cx="28" cy="9" r="3.2" fill={Colors.accent.lime} />
         <Circle cx="28" cy="9" r="1.5" fill="#FFFFFF" />
       </Svg>
@@ -64,15 +60,10 @@ export function FitbaseAnalyticsIcon(): React.JSX.Element {
   );
 }
 
-/**
- * Backward compatibility alias
- */
+// Visszafelé kompatibilitási alias
 export const StatisticsActivityRingsIcon = FitbaseAnalyticsIcon;
 
-/**
- * AchievementsTrophyIcon
- * Renders an elevated circular icon with an amber/gold trophy.
- */
+// Kitüntetések trófea ikon
 export function AchievementsTrophyIcon(): React.JSX.Element {
   return (
     <View style={[styles.iconCircleBg, { backgroundColor: 'rgba(255, 179, 0, 0.14)' }]}>
@@ -81,11 +72,7 @@ export function AchievementsTrophyIcon(): React.JSX.Element {
   );
 }
 
-/**
- * ProfileFeatureCard
- * Prominent elevated feature banner for main profile navigation (Statistics & Achievements).
- * Matches the native card pattern from the design reference with high-contrast text and chevrons.
- */
+// Kiemelt funkciókártya (statisztika, kitüntetések)
 export const ProfileFeatureCard: React.FC<ProfileFeatureCardProps> = ({
   title,
   subtitle,

@@ -38,7 +38,7 @@ export function WeeklyDayCard({
       onPress={onPress}
       activeOpacity={0.7}
     >
-      {/* 1. Header: Day abbreviation + TODAY pill */}
+      {/* 1. Fejléc: nap rövidítése és mai nap jelzés */}
       <View style={styles.cardHeader}>
         <Text style={[styles.dayLetter, isSelected && styles.dayLetterSelected]}>
           {dayLetter}
@@ -52,12 +52,12 @@ export function WeeklyDayCard({
         )}
       </View>
 
-      {/* 2. Large Day Number */}
+      {/* 2. Nap száma */}
       <Text style={[styles.dayNumber, isSelected && styles.dayNumberSelected]}>
         {dayNum}
       </Text>
 
-      {/* 3. Bottom Content: Title on top, count/recovery below */}
+      {/* 3. Alsó információs rész */}
       <View style={styles.bottomContent}>
         <Text
           style={[

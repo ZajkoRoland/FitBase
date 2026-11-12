@@ -1,8 +1,4 @@
-"""OOP Domain Service for per-account achievement evaluation and database persistence.
-
-All achievement unlock states and progression values are bound strictly to `user_id`
-and persisted in the `user_achievements` table without any hardcoded user state.
-"""
+# Mérföldkövek és jelvények (badge-ek) kiszámítása és mentése a felhasználó edzései alapján.
 
 import uuid
 from dataclasses import dataclass
@@ -21,7 +17,7 @@ TierType = Literal["bronze", "silver", "gold", "diamond"]
 
 @dataclass(frozen=True)
 class AchievementBlueprint:
-    """Immutable specification of a single achievement rule."""
+    # Egy megszerezhető jelvény szabályai és feltételei
 
     key: str
     title: str
@@ -35,7 +31,7 @@ class AchievementBlueprint:
 
 
 class AchievementDomainService:
-    """Encapsulates achievement evaluation, DB persistence, and rank calculation per account."""
+    # Kitüntetések kiértékelése, mentése és rangszámítás
 
     BLUEPRINTS: tuple[AchievementBlueprint, ...] = (
         AchievementBlueprint(
@@ -152,7 +148,7 @@ class AchievementDomainService:
 
     @classmethod
     def _resolve_metric(cls, bp: AchievementBlueprint, stats: UserStats) -> tuple[int, int]:
-        """Returns (current_value, target_value) for the given blueprint and account stats."""
+        # Visszaadja az aktuális és célértéket a jelvény feltételei alapján
         total_workouts = max(stats.total_workouts or 0, stats.sessions_this_week or 0)
         best_streak = max(stats.best_streak or 0, stats.streak or 0)
         total_minutes = stats.total_minutes or ((stats.total_hours or 0) * 60)
@@ -177,11 +173,7 @@ class AchievementDomainService:
         user_id: uuid.UUID,
         stats: UserStats,
     ) -> tuple[list[AchievementOut], list[AchievementOut], PlayerRankOut]:
-        """Synchronizes and persists all achievements for `user_id` in the database.
-
-        Returns:
-            (all_achievements, newly_unlocked_achievements, player_rank)
-        """
+        # Szinkronizálja és elmenti a kitüntetéseket az adatbázisban
         existing_rows = {
             row.achievement_key: row
             for row in db.scalars(
@@ -261,7 +253,7 @@ class AchievementDomainService:
 
     @staticmethod
     def calculate_player_rank(achievements: list[AchievementOut]) -> PlayerRankOut:
-        """Calculates the user's fitness level and title from unlocked achievements."""
+        # Kiszámítja a felhasználó szintjét a feloldott jelvények alapján
         total_count = len(achievements)
         unlocked_count = sum(1 for a in achievements if a.is_unlocked)
         progress_percent = round((unlocked_count / total_count) * 100) if total_count > 0 else 0

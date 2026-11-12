@@ -24,12 +24,7 @@ export interface IFitbaseDialogConfig {
   onSecondaryPress?: () => void;
 }
 
-/**
- * FitbaseDialogConfig
- *
- * all configuration and state needed
- * to render rich, theme-compliant dialogs replacing native OS Alert.alert.
- */
+// Egyedi felugró ablakok konfigurációja
 export class FitbaseDialogConfig {
   public readonly title: string;
   public readonly message: string;
@@ -59,9 +54,7 @@ export class FitbaseDialogConfig {
     this.onSecondaryPress = config.onSecondaryPress;
   }
 
-  /**
-   * Helper factory for simple informational alerts
-   */
+  // Információs ablak létrehozása
   public static info(
     title: string,
     message: string,
@@ -81,9 +74,7 @@ export class FitbaseDialogConfig {
     });
   }
 
-  /**
-   * Helper factory for success alerts (green theme)
-   */
+  // Sikeres művelet ablak
   public static success(
     title: string,
     message: string,
@@ -101,9 +92,7 @@ export class FitbaseDialogConfig {
     });
   }
 
-  /**
-   * Helper factory for validation / warning alerts (amber theme)
-   */
+  // Figyelmeztető ablak
   public static warning(
     title: string,
     message: string,
@@ -121,9 +110,7 @@ export class FitbaseDialogConfig {
     });
   }
 
-  /**
-   * Helper factory for error alerts (red theme)
-   */
+  // Hibaüzenet ablak
   public static error(
     title: string,
     message: string,
@@ -141,9 +128,7 @@ export class FitbaseDialogConfig {
     });
   }
 
-  /**
-   * Helper factory for two-action confirmation dialogs (Logout, Remove)
-   */
+  // Megerősítő kérdés ablak (pl. kijelentkezés, törlés)
   public static confirm(
     title: string,
     message: string,

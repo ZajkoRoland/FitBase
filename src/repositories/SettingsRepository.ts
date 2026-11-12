@@ -2,11 +2,7 @@ import type { UserSettings, UserSettingsUpdate } from '@/types/profile';
 
 import { BaseRepository } from './BaseRepository';
 
-/**
- * SettingsRepository
- * Communicates with `/api/v1/settings` to read and persist account-isolated
- * notification preferences, sound toggles, and application settings.
- */
+// Beállítások (értesítések, hangok) mentése és lekérése az API-n keresztül
 export class SettingsRepository extends BaseRepository {
   private static instance: SettingsRepository;
 

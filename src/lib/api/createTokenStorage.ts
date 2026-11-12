@@ -2,7 +2,7 @@ import * as SecureStore from 'expo-secure-store';
 
 import { TokenStorage } from './TokenStorage';
 
-/** Android Keystore backed storage. */
+// Natív biztonságos tároló (SecureStore)
 class SecureTokenStorage extends TokenStorage {
   protected read() {
     return SecureStore.getItemAsync(TokenStorage.KEY);

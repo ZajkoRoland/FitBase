@@ -21,13 +21,7 @@ function formatExerciseSubjectHu(localizedName: string): string {
   return `${useAz ? 'Az' : 'A'} ${displayName}`;
 }
 
-/**
- * ExerciseLookupService
- *
- * Domain service implementing in-memory caching for resolving
- * exercise details, descriptions, execution instructions, and motion pose images
- * directly from the catalog database and RepDB REST API.
- */
+// Gyakorlatok részletes adatainak és leírásainak lekérése gyorsítótárral
 export class ExerciseLookupService {
   private static instance: ExerciseLookupService;
   private readonly cache: Map<string, ExerciseDetail> = new Map();
@@ -41,10 +35,7 @@ export class ExerciseLookupService {
     return ExerciseLookupService.instance;
   }
 
-  /**
-   * Localizes any ExerciseDetail object into Hungarian when Hungarian is active,
-   * ensuring no English descriptions or step instructions appear on the UI.
-   */
+  // Gyakorlat részleteinek magyarosítása
   public localizeDetail(detail: ExerciseDetail): ExerciseDetail {
     if (!i18n.isHungarian()) {
       return detail;
@@ -93,10 +84,7 @@ export class ExerciseLookupService {
     };
   }
 
-  /**
-   * Resolves the catalog slug from either the exercise's explicit slug or its title.
-   * Matches against the entire 650-exercise RepDB catalog via ExerciseHuCatalog.
-   */
+  // Gyakorlat azonosító (slug) feloldása
   public getSlug(exercise: Exercise): string {
     if (exercise.slug) return exercise.slug;
 
@@ -109,9 +97,7 @@ export class ExerciseLookupService {
     return normalizedTitle.replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
   }
 
-  /**
-   * Fetches or resolves full details for an exercise with multi-tier caching.
-   */
+  // Teljes gyakorlat-leírás lekérése gyorsítótárazással
   public async resolveExerciseDetails(exercise: Exercise): Promise<ExerciseDetail | null> {
     const slug = this.getSlug(exercise);
     const isHu = i18n.isHungarian();
@@ -139,12 +125,12 @@ export class ExerciseLookupService {
           return localized;
         }
       } catch {
-        // Fallback below
+        // Hiba esetén folytatjuk a helyi adatokkal
       }
     }
 
-    // If offline or remote fetch failed, but exercise has startImageUrl / peakImageUrl stored in plan,
-    // construct a minimal detail using the real exercise image URLs so the motion animation works!
+    // Ha offline vagy sikertelen a távoli elérés, de a terv tárolja a képeket,
+    // összeállítunk egy minimális adatstruktúrát, hogy az animáció működjön
     if (exercise.startImageUrl || exercise.peakImageUrl || exercise.description) {
       const localizedName = i18n.translateExerciseTitle(exercise.title, slug);
       const syntheticDetail: ExerciseDetail = {

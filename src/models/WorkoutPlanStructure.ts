@@ -1,13 +1,6 @@
 import { i18n } from '@/services/LocalizationService';
 
-/**
- * WorkoutPlanStructure
- *
- * workout plan periodization structures:
- * - 1-Week Split (7-day standard cycle)
- * - 2-Week Alternating Split (Week A / Week B wave)
- * - 4-Week Full Periodization (Foundational, Intensity, Peak Volume, Deload)
- */
+// Edzéstervek időtartamának típusai (1, 2 vagy 4 hetes ciklus)
 export type PlanDurationType = '1_week' | '2_week' | '4_week';
 
 export interface PlanStructureCategory {

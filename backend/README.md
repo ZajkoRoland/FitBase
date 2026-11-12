@@ -5,7 +5,7 @@
 ```powershell
 cd backend
 python -m venv .venv
-.\.venv\Scripts\python.exe -m pip install -r requirements-dev.txt
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
 copy .env.example .env   # then fill in DATABASE_URL and JWT_SECRET
 ```
 
@@ -21,7 +21,7 @@ copy .env.example .env   # then fill in DATABASE_URL and JWT_SECRET
 ## Test
 
 ```powershell
-.\.venv\Scripts\python.exe -m pytest -q
+python run_tests.py
 ```
 
 ## Endpoints (`/api/v1`)
@@ -67,13 +67,4 @@ is read from `DATABASE_URL` in `backend/.env`.
 .\.venv\Scripts\alembic.exe current                      # which revision is the DB on
 .\.venv\Scripts\alembic.exe revision -m "what changed"   # new empty revision
 ```
-
-An older database whose tables were created from `db/init/001_schema.sql` must be
-marked as being at the baseline once: `alembic stamp a1f3c9d27b40`.
-
-## Database cutover
-
-`supabase/migrations/0004_fastapi_auth.sql` copies `auth.users` into `public.users`
-(same ids, existing bcrypt passwords keep working) and re-points `profiles` to it.
-Run it only when the app is switched to this backend.
 

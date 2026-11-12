@@ -8,36 +8,25 @@ from alembic import context
 from app.config import get_settings
 from app.db import Base
 
-# Importing the model modules registers their tables on Base.metadata.
+# Modellek beimportálása, hogy a táblák rákerüljenek a Base.metadata-ra
 import app.models  # noqa: F401
 import app.models_catalog  # noqa: F401
 
 config = context.config
 
-# The URL lives in backend/.env (DATABASE_URL), not in alembic.ini.
-# '%' has to be doubled because ConfigParser treats it as interpolation.
+# Az adatbázis URL-t a backend/.env fájlból olvassuk be, nem az alembic.ini-ből
+# A % jeleket megduplázzuk a ConfigParser interpoláció miatt
 config.set_main_option("sqlalchemy.url", get_settings().database_url.replace("%", "%%"))
 
-# Setup Python logging from config file.
+# Naplózás inicializálása a konfigurációból
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
 target_metadata = Base.metadata
 
 
-
 def run_migrations_offline() -> None:
-    """Run migrations in 'offline' mode.
-
-    This configures the context with just a URL
-    and not an Engine, though an Engine is acceptable
-    here as well.  By skipping the Engine creation
-    we don't even need a DBAPI to be available.
-
-    Calls to context.execute() here emit the given string to the
-    script output.
-
-    """
+    # Offline futtatás (csak SQL szkript generálása élő kapcsolat nélkül)
     url = config.get_main_option("sqlalchemy.url")
     context.configure(
         url=url,
@@ -51,12 +40,7 @@ def run_migrations_offline() -> None:
 
 
 def run_migrations_online() -> None:
-    """Run migrations in 'online' mode.
-
-    In this scenario we need to create an Engine
-    and associate a connection with the context.
-
-    """
+    # Online futtatás (közvetlen kapcsolat a PostgreSQL adatbázissal)
     connectable = engine_from_config(
         config.get_section(config.config_ini_section, {}),
         prefix="sqlalchemy.",

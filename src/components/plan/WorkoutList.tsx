@@ -84,7 +84,7 @@ export const WorkoutList: React.FC<WorkoutListProps> = ({
 
   return (
     <View style={styles.container}>
-      {/* 1. Active Day Header */}
+      {/* 1. Aktív nap fejléce */}
       <View style={styles.header}>
         <View style={styles.eyebrowRow}>
           <Text style={styles.eyebrow}>{customEyebrow || t('plan.dailyWorkoutEyebrow')}</Text>
@@ -114,7 +114,7 @@ export const WorkoutList: React.FC<WorkoutListProps> = ({
         </View>
       </View>
 
-      {/* 2. Vertically Stacked Exercises */}
+      {/* 2. Gyakorlatok listája */}
       <View style={styles.list}>
         {exercises.map((exercise, index) => (
           <PlanExerciseCard
@@ -128,7 +128,7 @@ export const WorkoutList: React.FC<WorkoutListProps> = ({
           />
         ))}
 
-        {/* Add Exercise to Routine Button (hidden on historical past workouts) */}
+        {/* Gyakorlat hozzáadása gomb */}
         {!isHistorical && (
           <TouchableOpacity
             activeOpacity={0.8}
@@ -143,7 +143,7 @@ export const WorkoutList: React.FC<WorkoutListProps> = ({
         )}
       </View>
 
-      {/* Exercise removal confirmation modal */}
+      {/* Gyakorlat törlés megerősítő modál */}
       <ConfirmActionModal
         visible={Boolean(exerciseToDelete)}
         title={t('plan.removeExerciseTitle')}
@@ -160,7 +160,7 @@ export const WorkoutList: React.FC<WorkoutListProps> = ({
         onCancel={() => setExerciseToDelete(null)}
       />
 
-      {/* Rest day confirmation modal */}
+      {/* Pihenőnap megerősítő modál */}
       <ConfirmActionModal
         visible={showRestConfirm}
         title={t('plan.setRestModalTitle')}

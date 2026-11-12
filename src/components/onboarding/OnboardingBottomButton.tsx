@@ -11,12 +11,7 @@ interface OnboardingBottomButtonProps {
   variant?: 'primary' | 'final';
 }
 
-/**
- * OnboardingBottomButton
- * Full-width pill action button matching the FitBase onboarding design:
- * - Crisp pure white pill on intermediate steps (1–6)
- * - Vibrant emerald pill with inline forward arrow on the final step (7)
- */
+// Alsó tovább gomb az onboarding folyamatban
 export const OnboardingBottomButton: React.FC<OnboardingBottomButtonProps> = ({
   title,
   onPress,

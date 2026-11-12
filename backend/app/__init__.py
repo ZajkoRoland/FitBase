@@ -1,1 +1,1 @@
-"""FitBase FastAPI backend."""
+# FitBase FastAPI backend

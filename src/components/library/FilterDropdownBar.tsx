@@ -29,14 +29,7 @@ interface ChipConfig {
   activeLabel: string | null;
 }
 
-/**
- * FilterDropdownBar
- *
- * Implements the Spotify/Airbnb-style single-row dropdown filter chips:
- * - Direct, compact row under the search bar
- * - Displays active value inside the chip (e.g. "Equipment: Dumbbell")
- * - High-contrast white border when active, with ✕ quick-clear button
- */
+// Legördülő szűrősáv a gyakorlattárhoz
 export const FilterDropdownBar: React.FC<FilterDropdownBarProps> = ({
   filterState,
   onOpenPicker,

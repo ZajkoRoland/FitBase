@@ -14,10 +14,7 @@ logger = logging.getLogger(__name__)
 
 
 class GroqAIEngine(BaseAIEngine):
-    """Groq-powered implementation of the FitBase AI Engine.
-
-    Utilizes open-weights models running on Groq LPUs for sub-second responses.
-    """
+    # Groq LPU integráció nyílt forráskódú modellek (Qwen / Llama) gyors futtatásához
 
     def __init__(self, api_key: str | None = None, model: str | None = None) -> None:
         settings = get_settings()

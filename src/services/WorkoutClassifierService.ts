@@ -17,13 +17,8 @@ export interface WorkoutClassification {
   readonly zones: readonly BodyZone[];
 }
 
-/**
- * WorkoutClassifier
- *
- * analyzing the exercises assigned to a workout day
- * and dynamically computing the standard fitness naming ('Full Body', 'Upper Body',
- * 'Back & Shoulders', 'Chest & Triceps', 'Leg Day') along with a descriptive metadata summary.
- */
+// Az edzésnaphoz rendelt gyakorlatok elemzése és a nap nevének automatikus meghatározása
+// (pl. 'Teljes test', 'Felsőtest', 'Hát és váll', 'Mell és tricepsz', 'Lábnap')
 export class WorkoutClassifier {
   private static readonly UPPER_BODY_ZONES: readonly BodyZone[] = [
     'chest',
@@ -32,14 +27,12 @@ export class WorkoutClassifier {
     'arms',
   ];
 
-  /**
-   * Detects the anatomical body zone for an exercise based on its badgeText and title.
-   */
+  // Izomcsoport zóna (mell, hát, váll, stb.) meghatározása a gyakorlat címe vagy címkéje alapján
   public static detectZone(exercise: Exercise): BodyZone | null {
     const badge = (exercise.badgeText || '').toLowerCase().trim();
     const title = (exercise.title || '').toLowerCase().trim();
 
-    // 1. Direct Badge Detection
+    // 1. Zóna meghatározása a címke alapján
     if (badge.includes('chest') || badge.includes('mell')) return 'chest';
     if (badge.includes('back') || badge.includes('hát') || badge.includes('lats')) return 'back';
     if (badge.includes('shoulder') || badge.includes('váll') || badge.includes('delt')) return 'shoulders';
@@ -59,7 +52,7 @@ export class WorkoutClassifier {
     if (badge.includes('full') || badge.includes('teljes')) return 'full_body';
     if (badge.includes('cardio') || badge.includes('futás') || badge.includes('endurance')) return 'cardio';
 
-    // 2. Title Fallback Detection
+    // 2. Tartalék keresés a cím alapján
     if (
       title.includes('press') &&
       (title.includes('bench') || title.includes('chest') || title.includes('incline') || title.includes('push-up') || title.includes('pushup') || title.includes('dip'))
@@ -119,9 +112,7 @@ export class WorkoutClassifier {
     return null;
   }
 
-  /**
-   * Classifies a list of exercises and produces a dynamic workout title and metadata.
-   */
+  // Edzésnap címének és leírásának meghatározása a gyakorlatok alapján
   public static classify(
     exercises: Exercise[] = [],
     fallbackTitle?: string
@@ -135,7 +126,7 @@ export class WorkoutClassifier {
       };
     }
 
-    // Tally zones and count frequencies
+    // Zónák összegzése és gyakoriságuk számolása
     const zoneCounts = new Map<BodyZone, number>();
     for (const ex of exercises) {
       const zone = this.detectZone(ex);
@@ -152,7 +143,7 @@ export class WorkoutClassifier {
 
     const estimatedMinutes = Math.max(15, exercises.length * 8);
 
-    // Rule 1: Explicit Full Body exercise OR Upper Body + Lower Body together
+    // 1. szabály: Teljes testes edzés vagy alsó- és felsőtest vegyesen
     if (hasFullBodyExercise || (hasLegs && upperZones.length >= 1)) {
       const title = hasCore && exercises.length >= 4 ? 'Full Body & Core' : 'Full Body';
       const meta = `Compound · Full Body · ~${estimatedMinutes}min`;
@@ -164,7 +155,7 @@ export class WorkoutClassifier {
       };
     }
 
-    // Rule 2: Upper Body (3 or more distinct upper body zones)
+    // 2. szabály: Felsőtest (legalább 3 különböző felsőtest zóna)
     if (!hasLegs && upperZones.length >= 3) {
       const title = 'Upper Body';
       const meta = `${upperZones.map(this.formatZoneName).join(' · ')} · ~${estimatedMinutes}min`;
@@ -176,7 +167,7 @@ export class WorkoutClassifier {
       };
     }
 
-    // Rule 3: 2-Zone Combinations (e.g. Back & Shoulders, Chest & Triceps, Legs & Core)
+    // 3. szabály: Két zóna kombinációja (pl. hát és váll, mell és tricepsz)
     if (uniqueZones.length === 2) {
       const [z1, z2] = uniqueZones;
       const title = this.formatTwoZoneTitle(z1, z2, exercises);
@@ -189,7 +180,7 @@ export class WorkoutClassifier {
       };
     }
 
-    // Rule 4: Single Zone Dominance (or 1 zone + core)
+    // 4. szabály: Egyetlen domináns zóna
     if (uniqueZones.length === 1) {
       const [singleZone] = uniqueZones;
       const title = this.formatSingleZoneTitle(singleZone, exercises);
@@ -202,7 +193,7 @@ export class WorkoutClassifier {
       };
     }
 
-    // Rule 5: Multiple zones fallback — pick top 2 dominant zones by exercise count
+    // 5. szabály: A két leggyakoribb zóna kiválasztása
     const sortedZones = Array.from(zoneCounts.entries())
       .sort((a, b) => b[1] - a[1])
       .map(([z]) => z);
@@ -219,7 +210,7 @@ export class WorkoutClassifier {
       };
     }
 
-    // Default fallback
+    // Alapértelmezett edzéstípus, ha nem határozható meg domináns zóna
     return {
       title: fallbackTitle || 'Workout',
       meta: `${exercises.length} exercises · ~${estimatedMinutes}min`,
@@ -228,9 +219,7 @@ export class WorkoutClassifier {
     };
   }
 
-  /**
-   * Formats a 2-zone workout title (Back & Shoulders, Chest & Triceps).
-   */
+  // Két testzónás edzés címének formázása
   private static formatTwoZoneTitle(
     z1: BodyZone,
     z2: BodyZone,
@@ -242,7 +231,7 @@ export class WorkoutClassifier {
       return 'Back & Shoulders';
     }
     if (pair.has('chest') && pair.has('arms')) {
-      // Check if specific to triceps or biceps
+      // Tricepsz vagy kar specifikus megnevezés ellenőrzése
       const hasTriceps = exercises.some(
         (e) => (e.badgeText + e.title).toLowerCase().includes('tricep')
       );
@@ -273,9 +262,7 @@ export class WorkoutClassifier {
     return `${this.formatZoneName(z1)} & ${this.formatZoneName(z2)}`;
   }
 
-  /**
-   * Formats a single zone workout title.
-   */
+  // Egy testzónás edzés címének formázása
   private static formatSingleZoneTitle(zone: BodyZone, exercises: Exercise[]): string {
     switch (zone) {
       case 'chest':
@@ -308,9 +295,7 @@ export class WorkoutClassifier {
     }
   }
 
-  /**
-   * Human-readable label for individual body zones.
-   */
+  // Testzóna megnevezése
   private static formatZoneName(zone: BodyZone): string {
     switch (zone) {
       case 'chest':

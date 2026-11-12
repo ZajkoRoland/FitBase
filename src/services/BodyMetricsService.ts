@@ -28,14 +28,7 @@ export interface DemographicMetrics {
   readonly age?: number | null;
 }
 
-/**
- * BodyMetricsService
- *
- * Encapsulates anthropometric and fitness calculations:
- * - World Health Organization (WHO) BMI computation & categorization
- * - Target weight difference & progress calculation
- * - Account-isolated storage fallback for target fitness goals
- */
+// Testtömeg-index (BMI) és célsúly előrehaladás kiszámítása a testsúly és magasság alapján
 export class BodyMetricsService {
   private static instance: BodyMetricsService;
   private activeUserId: string | null = null;
@@ -59,10 +52,7 @@ export class BodyMetricsService {
     return `${STORAGE_TARGET_WEIGHT_PREFIX}_${uid}`;
   }
 
-  /**
-   * Calculates BMI and health category according to WHO standards.
-   * Formula: weight (kg) / [height (m)]^2
-   */
+  // BMI és kategória kiszámítása (WHO képlet: súly kg / [magasság m]^2)
   public calculateBmi(weightKg?: number | null, heightCm?: number | null): BmiResult | null {
     if (!weightKg || !heightCm || weightKg <= 0 || heightCm <= 0) {
       return null;
@@ -107,9 +97,7 @@ export class BodyMetricsService {
     }
   }
 
-  /**
-   * Calculates the difference and direction to target goal.
-   */
+  // Cél testsúlytól való eltérés és irány kiszámítása
   public calculateProgress(
     currentWeight?: number | null,
     targetWeight?: number | null
@@ -140,9 +128,7 @@ export class BodyMetricsService {
     };
   }
 
-  /**
-   * Retrieves account-scoped target weight from local cache.
-   */
+  // Cél testsúly lekérése a helyi tárolóból
   public async getTargetWeight(userId?: string | null): Promise<number | null> {
     try {
       const key = this.getStorageKey(userId);
@@ -158,9 +144,7 @@ export class BodyMetricsService {
     }
   }
 
-  /**
-   * Saves target weight into account-scoped local cache.
-   */
+  // Cél testsúly mentése a helyi tárolóba
   public async saveTargetWeight(targetWeight: number | null, userId?: string | null): Promise<void> {
     try {
       const key = this.getStorageKey(userId);

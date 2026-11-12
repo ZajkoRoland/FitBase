@@ -70,7 +70,7 @@ export class ProfileRepository extends BaseRepository {
     return hydrated;
   }
 
-  /** Profile + stats, flattened and scoped to the authenticated account by the backend. */
+  // Profil és statisztikák lekérése a bejelentkezett fiókhoz
   public async get(): Promise<Profile> {
     const profile = await this.api.get<Profile>('/profile');
     return this.hydrateLocalMetrics(profile);
@@ -95,8 +95,8 @@ export class ProfileRepository extends BaseRepository {
       const hasDemographicFields = 'gender' in changes || 'age' in changes;
       if (hasDemographicFields && (err?.status === 422 || err?.status === 400)) {
         const { gender, age, ...compatibleChanges } = changes;
-        // If ONLY gender/age were edited and cloud backend doesn't have those columns deployed yet,
-        // fetch current profile and merge the locally saved demographics cleanly.
+        // Ha csak a nem/kor mezőket módosították és a szerver még nem támogatja,
+        // összefésüljük a helyben elmentett értékekkel
         if (Object.keys(compatibleChanges).length === 0) {
           const current = await this.api.get<Profile>('/profile');
           return this.hydrateLocalMetrics({
@@ -116,7 +116,7 @@ export class ProfileRepository extends BaseRepository {
     }
   }
 
-  /** Persists a completed workout session to the database for the current account. */
+  // Befejezett edzés elmentése az adatbázisba
   public async completeWorkout(payload: WorkoutCompletePayload): Promise<WorkoutCompleteApiResponse> {
     const res = await this.api.post<WorkoutCompleteApiResponse>('/profile/workout-complete', payload);
     return {
@@ -125,18 +125,18 @@ export class ProfileRepository extends BaseRepository {
     };
   }
 
-  /** Resets workout progression counters for the current account in the database. */
+  // Edzés számlálók és statisztikák nullázása
   public async resetStats(): Promise<Profile> {
     const reset = await this.api.post<Profile>('/profile/reset-stats');
     return this.hydrateLocalMetrics(reset);
   }
 
-  /** Fetches the current account's 5-week workout activity history from the database. */
+  // Az elmúlt 5 hét aktivitásának lekérése
   public getActivityHistory(): Promise<ActivityWeek[]> {
     return this.api.get<ActivityWeek[]>('/profile/activity');
   }
 
-  /** Fetches the current account's historical workout sessions from the database. */
+  // Korábbi edzésnaplók lekérése
   public async getWorkoutSessions(limit: number = 60): Promise<WorkoutSessionItem[]> {
     try {
       return await this.api.get<WorkoutSessionItem[]>(`/profile/sessions?limit=${limit}`);

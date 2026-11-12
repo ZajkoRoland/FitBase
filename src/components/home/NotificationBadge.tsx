@@ -6,11 +6,7 @@ interface NotificationBadgeProps {
   count: number;
 }
 
-/**
- * NotificationBadge Component
- * A compact, isolated indicator showing the unread notification count
- * positioned cleanly at the top-right of the notification bell.
- */
+// Olvasatlan értesítéseket jelző jelvény
 export function NotificationBadge({ count }: NotificationBadgeProps): React.JSX.Element | null {
   if (count <= 0) {
     return null;

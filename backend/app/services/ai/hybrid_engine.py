@@ -11,12 +11,8 @@ logger = logging.getLogger(__name__)
 
 
 class HybridAIEngine(BaseAIEngine):
-    """Multi-Provider High-Availability AI Coach Engine (Adapter & Composite Pattern).
-
-    Uses Google Gemini Flash as primary intelligence engine (1,000,000 token context,
-    1,500 daily requests, native structured JSON), and automatically fails over to
-    Groq LPU (Qwen 27B / GPT-OSS) if the primary engine encounters network or rate limits.
-    """
+    # Kétlépcsős AI motor: elsődlegesen a Google Gemini Flash modellt kérdezi le,
+    # ha pedig hálózati hiba vagy kvótatúllépés történik, automatikusan átvált a Groq motorra.
 
     def __init__(self) -> None:
         settings = get_settings()

@@ -64,7 +64,7 @@ export function NotificationPopover({
             >
               <View style={popoverStyles.pointerArrow} />
 
-              {/* Header */}
+              {/* Fejléc */}
               <View style={popoverStyles.header}>
                 <View style={popoverStyles.titleRow}>
                   <Text style={popoverStyles.title}>{t('notifications.title')}</Text>
@@ -88,7 +88,7 @@ export function NotificationPopover({
                 )}
               </View>
 
-              {/* Scrollable notifications list */}
+              {/* Értesítések listája */}
               <ScrollView
                 style={popoverStyles.list}
                 contentContainerStyle={popoverStyles.listContent}

@@ -129,7 +129,7 @@ export const ProfileProvider = ({ children }: { children: React.ReactNode }) => 
       setError(null);
     } catch (err) {
       console.error("Error fetching account profile from database:", err);
-      // Account-scoped offline fallback only for the same userId
+      // Helyi gyorsítótár használata offline módban
       try {
         const cachedRaw = await AsyncStorage.getItem(getProfileCacheKey(userId));
         if (cachedRaw) {
@@ -156,7 +156,7 @@ export const ProfileProvider = ({ children }: { children: React.ReactNode }) => 
           }
         }
       } catch {
-        // Ignore offline fallback parse error
+        // Gyorsítótár olvasási hiba figyelmen kívül hagyása
       }
       setError(err instanceof Error ? err : new Error(String(err)));
     } finally {
@@ -230,7 +230,7 @@ export const ProfileProvider = ({ children }: { children: React.ReactNode }) => 
           JSON.stringify(result.profile)
         ).catch(() => {});
 
-        // Refresh achievements from database
+        // Jelvények és eredmények újratöltése az adatbázisból
         const syncedAch = await achievementsRepository.get().catch(() => null);
         if (syncedAch) {
           setDbAchievements(syncedAch.achievements);

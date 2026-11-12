@@ -27,7 +27,7 @@ _SETTINGS_FIELDS = {
 
 @router.get("", response_model=UserSettingsOut)
 def get_settings(user: CurrentUser, db: DbSession) -> UserSettingsOut:
-    """Fetches notification and application settings strictly for the current account."""
+    """Értesítési és alkalmazás-beállítások lekérése."""
     _, _, settings = AccountStateService.ensure_account_entities(db, user)
     db.commit()
     return UserSettingsOut.model_validate(settings)
@@ -37,7 +37,7 @@ def get_settings(user: CurrentUser, db: DbSession) -> UserSettingsOut:
 def update_settings(
     body: UserSettingsUpdate, user: CurrentUser, db: DbSession
 ) -> UserSettingsOut:
-    """Updates notification and application settings strictly for the current account."""
+    """Értesítési és alkalmazás-beállítások mentése."""
     _, _, settings = AccountStateService.ensure_account_entities(db, user)
     changes = body.model_dump(exclude_unset=True)
 

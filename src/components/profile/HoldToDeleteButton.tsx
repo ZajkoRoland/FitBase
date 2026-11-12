@@ -13,22 +13,14 @@ import {
 } from 'react-native';
 
 export interface HoldToDeleteButtonProps {
-  /** Callback fired ONLY after user holds continuously for the full duration */
   readonly onTriggerDelete: () => void | Promise<void>;
-  /** Loading state during network deletion call */
   readonly loading?: boolean;
-  /** Duration in milliseconds required to hold (default: 3000ms = 3 seconds) */
   readonly holdDurationMs?: number;
-  /** Disabled state */
   readonly disabled?: boolean;
 }
 
-/**
- * HoldToDeleteButton
- *
- * Senior React Native pattern for high-stakes, irreversible destructive actions.
- * Prevents accidental account deletions by requiring a continuous hold (3 seconds).
- */
+// 3 másodperces nyomva tartást igénylő törlés gomb,
+// hogy a felhasználó véletlenül se tudja egy mellékattintással törölni a fiókját.
 export const HoldToDeleteButton: React.FC<HoldToDeleteButtonProps> = ({
   onTriggerDelete,
   loading = false,
@@ -46,13 +38,13 @@ export const HoldToDeleteButton: React.FC<HoldToDeleteButtonProps> = ({
 
     setIsHolding(true);
 
-    // Subtle scale feedback on press
+    // Gomb enyhe lekicsinyítése lenyomáskor
     Animated.spring(scaleAnim, {
       toValue: 0.97,
       useNativeDriver: false,
     }).start();
 
-    // Start 3-second linear progress fill
+    // 3 másodperces folyamatjelző indítása
     progress.setValue(0);
     animRef.current = Animated.timing(progress, {
       toValue: 1,
@@ -74,19 +66,19 @@ export const HoldToDeleteButton: React.FC<HoldToDeleteButtonProps> = ({
 
     setIsHolding(false);
 
-    // Restore button scale
+    // Gomb eredeti méretének visszaállítása
     Animated.spring(scaleAnim, {
       toValue: 1,
       useNativeDriver: false,
     }).start();
 
-    // Abort active animation immediately
+    // Folyamatban lévő animáció leállítása felengedéskor
     if (animRef.current) {
       animRef.current.stop();
       animRef.current = null;
     }
 
-    // Quick snap-back reset to 0%
+    // Folyamatjelző gyors visszaállítása 0%-ra
     Animated.timing(progress, {
       toValue: 0,
       duration: 180,
@@ -111,10 +103,10 @@ export const HoldToDeleteButton: React.FC<HoldToDeleteButtonProps> = ({
         accessibilityLabel={t('profile.deleteAccount.holdA11yLabel')}
         accessibilityHint={t('profile.deleteAccount.holdA11yHint')}
       >
-        {/* Animated Fill Bar from Left to Right */}
+        {/* Animált kitöltő sáv */}
         <Animated.View style={[styles.progressFill, { width: fillWidth }]} />
 
-        {/* Foreground Content */}
+        {/* Előtér tartalom */}
         <View style={styles.contentRow}>
           {loading ? (
             <ActivityIndicator size="small" color="#FFFFFF" />

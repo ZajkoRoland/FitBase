@@ -9,10 +9,7 @@ interface ProfileMenuSectionProps {
   items: ProfileMenuItem[];
 }
 
-/**
- * ProfileMenuSection
- * Groups a collection of ProfileMenuItems inside a styled, elevated FitBase card.
- */
+// Menüszekció keret a profil oldalon
 export const ProfileMenuSection: React.FC<ProfileMenuSectionProps> = ({ title, items }) => {
   if (!items || items.length === 0) {
     return null;

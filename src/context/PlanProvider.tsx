@@ -136,12 +136,12 @@ export const PlanProvider = ({ children }: { children: React.ReactNode }) => {
   const totalWeeksRef = useRef(totalWeeks);
   totalWeeksRef.current = totalWeeks;
 
-  // Dynamically computed weekly workout target from the active 7-day plan
+  // Tervezett heti edzésnapok számának kiszámítása az aktív terv alapján
   const plannedWorkoutDays = useMemo(() => {
     return PlanService.computeWeeklyTarget(weekPlan, profile?.weekly_target ?? 7);
   }, [weekPlan, profile?.weekly_target]);
 
-  // Synchronize planStructure from account settings in the database
+  // Edzésterv szerkezetének szinkronizálása a beállításokból
   useEffect(() => {
     const struct = settings?.plan_structure;
     if (struct === '1_week' || struct === '2_week' || struct === '4_week') {
@@ -152,7 +152,7 @@ export const PlanProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }, [settings?.plan_structure]);
 
-  // Load account-isolated completed exercises and finalization status for today
+  // Mai elvégzett gyakorlatok és lezárási állapot betöltése
   useEffect(() => {
     if (!userId) {
       setCompletedExerciseIds({});
@@ -170,7 +170,7 @@ export const PlanProvider = ({ children }: { children: React.ReactNode }) => {
       return;
     }
 
-    // Account-scoped local cache fallback
+    // Helyi gyorsítótár tartalék (AsyncStorage)
     const completedKey = `@fitbase_completed_${userId}_${todayKey}`;
     const finalizedKey = `@fitbase_workout_finalized_${userId}_${todayKey}`;
 
@@ -187,7 +187,7 @@ export const PlanProvider = ({ children }: { children: React.ReactNode }) => {
       .catch(() => setIsTodayWorkoutFinalized(false));
   }, [userId, profile?.completed_exercises_today]);
 
-  // Update isTodayWorkoutCompleted when weekPlan or completedExerciseIds change
+  // Edzés teljesítettségének ellenőrzése, ha a terv vagy a pipák változnak
   useEffect(() => {
     const todayWorkout = weekPlan[todayIndex];
     const exercises = todayWorkout?.exercises ?? [];
@@ -199,11 +199,7 @@ export const PlanProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }, [weekPlan, completedExerciseIds, todayIndex]);
 
-  /**
-   * Central helper that normalizes the 7-day plan, updates React state & multi-week cache,
-   * persists the plan to the backend repository, and dynamically updates `profile.weekly_target`
-   * so all Home and Statistics components react immediately without requiring a reload.
-   */
+  // Heti edzésterv normalizálása, mentése és szinkronizálása a háttérrel
   const commitAndSyncWeekPlan = useCallback(
     async (
       nextPlan: WorkoutDay[],
@@ -271,7 +267,7 @@ export const PlanProvider = ({ children }: { children: React.ReactNode }) => {
         console.warn('Failed to save completed exercises to storage:', e)
       );
 
-      // Persist daily exercise state to the account's database record
+      // Napi gyakorlatállapot mentése az adatbázisba
       updateProfile({
         completed_exercises_today: {
           date: todayKey,
@@ -313,7 +309,7 @@ export const PlanProvider = ({ children }: { children: React.ReactNode }) => {
     setIsTodayWorkoutFinalized(true);
     await AsyncStorage.setItem(`@fitbase_workout_finalized_${userId}_${todayKey}`, 'true');
 
-    // Build structured exercise progress details with actual sets, reps, and weights
+    // Részletes edzésadatok összeállítása (szériák, ismétlések, súlyok)
     const exerciseDetails = todayExercises
       .filter((ex) => Boolean(completedExerciseIds[ex.id]))
       .map((ex) => {
@@ -338,7 +334,7 @@ export const PlanProvider = ({ children }: { children: React.ReactNode }) => {
         };
       });
 
-    // Persist completed workout session, streak, calories, duration, sets/weights, and achievements to backend DB
+    // Befejezett edzés, elégetett kalóriák és jelvények mentése az adatbázisba
     await recordWorkoutCompleted(caloriesBurned, durationMinutes, checkedCount, workoutTitle, exerciseDetails);
     analyticsService.clearCache();
 

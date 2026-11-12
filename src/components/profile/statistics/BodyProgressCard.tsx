@@ -6,10 +6,7 @@ import { Ionicons } from '@expo/vector-icons';
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
-/**
- * BodyProgressCard
- * Links account-isolated profile body metrics with target weight progression and WHO BMI classification.
- */
+// Testsúly és célsúly előrehaladás kártya
 export const BodyProgressCard: React.FC = () => {
   const { t, i18n } = useLanguage();
   const { profile } = useProfile();

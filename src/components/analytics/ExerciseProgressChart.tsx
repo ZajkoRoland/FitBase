@@ -110,7 +110,7 @@ export const ExerciseProgressChart: React.FC<ExerciseProgressChartProps> = ({
     const minVal = values.length > 0 ? Math.min(...values) : 0;
     const maxVal = values.length > 0 ? Math.max(...values) : 100;
 
-    // Buffer for top and bottom of chart
+    // Diagram alsó és felső margójának beállítása
     const safeMin = isFinite(minVal) ? minVal : 0;
     const safeMax = isFinite(maxVal) ? maxVal : 100;
     const range = Math.max(0, safeMax - safeMin);
@@ -158,7 +158,7 @@ export const ExerciseProgressChart: React.FC<ExerciseProgressChartProps> = ({
       };
     }
 
-    // Smooth Bézier curve calculation
+    // Bézier görbe számítása a pontok összekötéséhez
     let path = `M ${coords[0].x} ${coords[0].y}`;
     for (let i = 0; i < coords.length - 1; i++) {
       const curr = coords[i];
@@ -175,7 +175,7 @@ export const ExerciseProgressChart: React.FC<ExerciseProgressChartProps> = ({
     return { pathData: path, areaData: area, coordinates: coords };
   }, [points, chartWidth, minValue, maxValue]);
 
-  // Overall Progress comparison (first vs last)
+  // Teljes fejlődés összesítése (első vs utolsó mérés)
   const statsOverview = useMemo(() => {
     if (points.length === 0) return null;
     const first = points[0].val;
@@ -221,7 +221,7 @@ export const ExerciseProgressChart: React.FC<ExerciseProgressChartProps> = ({
 
   return (
     <View style={styles.wrapper}>
-      {/* 1. Metric Selector Tabs */}
+      {/* 1. Mérőszám választó fülek */}
       <View style={styles.tabsRow}>
         <TouchableOpacity
           style={[styles.tabBtn, selectedMetric === '1rm' && styles.tabBtnActive]}
@@ -264,7 +264,7 @@ export const ExerciseProgressChart: React.FC<ExerciseProgressChartProps> = ({
         )}
       </View>
 
-      {/* 1RM Educational Explanation Card */}
+      {/* 1RM információs kártya */}
       {selectedMetric === '1rm' && show1RMExplanation && (
         <View style={styles.infoExplainerCard}>
           <View style={styles.infoExplainerHeader}>
@@ -275,7 +275,7 @@ export const ExerciseProgressChart: React.FC<ExerciseProgressChartProps> = ({
         </View>
       )}
 
-      {/* 2. Key Stats Strip */}
+      {/* 2. Főbb statisztikák sávja */}
       {statsOverview && (
         <View style={styles.statsStrip}>
           <View style={styles.statCol}>
@@ -311,7 +311,7 @@ export const ExerciseProgressChart: React.FC<ExerciseProgressChartProps> = ({
         </View>
       )}
 
-      {/* 3. Selected Point Tooltip Callout */}
+      {/* 3. Kiválasztott pont részletei */}
       {selectedPoint && (
         <View style={styles.tooltipCard}>
           <View style={styles.tooltipLeft}>
@@ -325,7 +325,7 @@ export const ExerciseProgressChart: React.FC<ExerciseProgressChartProps> = ({
         </View>
       )}
 
-      {/* 4. Interactive SVG Graph */}
+      {/* 4. Interaktív diagram */}
       <View style={styles.svgContainer}>
         <Svg width={chartWidth} height={CHART_HEIGHT}>
           <Defs>
@@ -336,7 +336,7 @@ export const ExerciseProgressChart: React.FC<ExerciseProgressChartProps> = ({
             </LinearGradient>
           </Defs>
 
-          {/* Grid lines & Y Axis labels */}
+          {/* Rácsvonalak és Y tengely feliratok */}
           <Line
             x1={PADDING_LEFT}
             y1={PADDING_TOP}
@@ -393,10 +393,10 @@ export const ExerciseProgressChart: React.FC<ExerciseProgressChartProps> = ({
             {minValue}
           </SvgText>
 
-          {/* Gradient Fill under Curve */}
+          {/* Görbe alatti színátmenetes kitöltés */}
           {areaData !== '' && <Path d={areaData} fill="url(#gradientFill)" />}
 
-          {/* Main Curve */}
+          {/* Fő diagram görbe */}
           {pathData !== '' && (
             <Path
               d={pathData}
@@ -408,12 +408,12 @@ export const ExerciseProgressChart: React.FC<ExerciseProgressChartProps> = ({
             />
           )}
 
-          {/* Interactive Data Points (Circles) */}
+          {/* Adatpontok a grafikonon */}
           {coordinates.map((coord, idx) => {
             const isSelected = selectedPointIndex === idx;
             return (
               <React.Fragment key={idx}>
-                {/* Glow ring around selected dot */}
+                {/* Kijelölő gyűrű a kiválasztott pont körül */}
                 {isSelected && (
                   <Circle
                     cx={coord.x}
@@ -435,7 +435,7 @@ export const ExerciseProgressChart: React.FC<ExerciseProgressChartProps> = ({
             );
           })}
 
-          {/* X Axis Date labels (First and Last) */}
+          {/* Dátum címkék az X tengelyen */}
           {coordinates.length > 0 && (
             <>
               <SvgText

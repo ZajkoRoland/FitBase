@@ -104,12 +104,12 @@ export const BuildPlanModal: React.FC<BuildPlanModalProps> = ({
       onRequestClose={() => handleDismiss(onClose)}
     >
       <View style={styles.overlay}>
-        {/* Soft Dimmed Backdrop */}
+        {/* Sötétített háttér */}
         <Animated.View style={[styles.backdrop, { opacity: backdropOpacity }]}>
           <Pressable style={StyleSheet.absoluteFill} onPress={() => handleDismiss(onClose)} />
         </Animated.View>
 
-        {/* Builder Modal Card */}
+        {/* Edzésterv készítő kártya */}
         <Animated.View
           style={[
             styles.card,
@@ -119,7 +119,7 @@ export const BuildPlanModal: React.FC<BuildPlanModalProps> = ({
             },
           ]}
         >
-          {/* Header */}
+          {/* Fejléc */}
           <View style={styles.headerRow}>
             <View style={styles.headerTextCol}>
               <View style={styles.stepIndicatorRow}>
@@ -150,7 +150,7 @@ export const BuildPlanModal: React.FC<BuildPlanModalProps> = ({
             </TouchableOpacity>
           </View>
 
-          {/* STEP 1: Choose Duration */}
+          {/* 1. LÉPÉS: Időtartam kiválasztása */}
           {step === 1 && (
             <ScrollView style={styles.scrollArea} showsVerticalScrollIndicator={false}>
               <View style={styles.categoriesList}>
@@ -196,7 +196,7 @@ export const BuildPlanModal: React.FC<BuildPlanModalProps> = ({
                           </View>
                         </View>
 
-                        {/* Badge */}
+                        {/* Jelvény */}
                         <View
                           style={[
                             styles.badge,
@@ -222,11 +222,11 @@ export const BuildPlanModal: React.FC<BuildPlanModalProps> = ({
             </ScrollView>
           )}
 
-          {/* STEP 2: Choose Method (Custom vs AI) */}
+          {/* 2. LÉPÉS: Módszer kiválasztása */}
           {step === 2 && (
             <ScrollView style={styles.scrollArea} showsVerticalScrollIndicator={false}>
               <View style={styles.methodsList}>
-                {/* Method 1: Custom Plan */}
+                {/* 1. lehetőség: Egyedi edzésterv */}
                 <TouchableOpacity
                   activeOpacity={0.8}
                   style={[
@@ -270,7 +270,7 @@ export const BuildPlanModal: React.FC<BuildPlanModalProps> = ({
                   </Text>
                 </TouchableOpacity>
 
-                {/* Method 2: AI Generated Plan */}
+                {/* 2. lehetőség: AI által generált edzésterv */}
                 <TouchableOpacity
                   activeOpacity={0.8}
                   style={[
@@ -317,7 +317,7 @@ export const BuildPlanModal: React.FC<BuildPlanModalProps> = ({
             </ScrollView>
           )}
 
-          {/* Action Button Row */}
+          {/* Művelet gombok sora */}
           <View style={styles.buttonRow}>
             {step === 1 ? (
               <>

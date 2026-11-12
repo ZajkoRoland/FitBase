@@ -1,8 +1,4 @@
-"""Uniform error responses: {"code": "...", "message": "..."}.
-
-Codes intentionally match the Supabase error codes already handled by
-src/lib/authErrors.ts, so the app's error messages keep working.
-"""
+# Egységes hibaválaszok az API végpontokhoz: {"code": "...", "message": "..."}
 
 from fastapi import FastAPI, Request, status
 from fastapi.exceptions import RequestValidationError

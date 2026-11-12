@@ -22,8 +22,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    // Login, logout, token refresh and forced logout (expired refresh token)
-    // all flow through ApiClient, which pushes the new session here.
+    // A bejelentkezés, kijelentkezés és token frissítés az ApiClient-en keresztül fut,
+    // amely automatikusan átadja az új munkamenetet ennek a szolgáltatónak.
     const unsubscribe = apiClient.onSessionChange(setSession);
 
     const initializeSession = async () => {

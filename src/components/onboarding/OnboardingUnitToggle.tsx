@@ -8,10 +8,7 @@ interface OnboardingUnitToggleProps<T extends string> {
   accentColor?: string;
 }
 
-/**
- * OnboardingUnitToggle
- * Segmented capsule switcher (e.g. cm/ft, kg/lbs) matching the FitBase reference design.
- */
+// Mértékegység váltó kapcsoló (pl. cm/ft, kg/lbs)
 export function OnboardingUnitToggle<T extends string>({
   options,
   selected,

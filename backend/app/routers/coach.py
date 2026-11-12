@@ -30,8 +30,7 @@ logger = logging.getLogger(__name__)
 
 
 def _clean_str_field(val: Any, fallback: str | None = None) -> str | None:
-    """Coerces any string, dict, or list value into a clean, safe scalar string for VARCHAR/TEXT DB columns.
-    Prevents psycopg.ProgrammingError ('cannot adapt type dict using placeholder %s') when LLMs output objects."""
+    # Biztonságos szöveggé alakítás adatbázisba mentés előtt
     if val is None:
         return fallback
     if isinstance(val, str):
@@ -62,8 +61,7 @@ def _format_updated_details(
     reps: str | int | None = None,
     rest_seconds: int | None = None,
 ) -> str:
-    """Updates sets, reps, and/or rest seconds in an exercise details string,
-    preserving existing parameters when not specified."""
+    # Gyakorlat részletek frissítése sorozatokkal és pihenőidővel
     match = re.match(r"^(\d+)\s*x\s*([^·]+?)(?:\s*·\s*(\d+)s?\s*rest)?$", (old_details or "").strip(), re.IGNORECASE)
     if match:
         cur_sets, cur_reps, cur_rest = match.groups()
@@ -79,10 +77,7 @@ def _format_updated_details(
 
 
 def _sanitize_quick_replies(quick_replies: list[str] | None) -> list[str]:
-    """Ensures quick replies never use First Person Singular ('Részletezem...', 'Módosítsam...')
-    and are never phrased as coach-to-user directives ('Kérj...', 'Kérdezz...') or coach questions
-    ('Még valami módosítandó?'). They must strictly be the user's own requests/questions to the coach.
-    """
+    # Gyorsválasz gombok szövegezésének ellenőrzése
     if not quick_replies:
         return []
 
@@ -149,9 +144,7 @@ def _sanitize_quick_replies(quick_replies: list[str] | None) -> list[str]:
 
 
 def _clean_reply_text(text: str | None) -> str:
-    """The chat bubble renders plain text, so markdown markers would show up literally.
-    Strips bold/italic markers and heading hashes, normalises bullets and blank lines,
-    strips leaked 'Quick replies:' text blocks, trailing JSON leaks, and dangling orphan bullets."""
+    # Formázási hibák és felesleges jelölők eltávolítása a válaszból
     if not text:
         return ""
     # Strip any leaked Quick replies text block
@@ -187,7 +180,7 @@ def get_ai_user_context(
     current_user: CurrentUser,
     db: DbSession,
 ) -> AIUserContextOut:
-    """Returns the structured, relational account snapshot for AI pattern recognition."""
+    """Felhasználói állapot összefoglalása az AI számára."""
     context_out = AccountStateService.build_ai_user_context(db, current_user)
     db.commit()
     return context_out
