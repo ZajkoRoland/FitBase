@@ -42,13 +42,9 @@ python run_tests.py
 | GET | `/exercises/filters` | Bearer | Values for the filter chips |
 | GET | `/exercises/{slug}` | Bearer | Full exercise: steps, tips, muscles, images |
 
-## AI Coach Engine Architecture (Groq LPU)
+## AI Coach
 
-The AI coach utilizes a resilient multi-model failover architecture powered by Groq Cloud:
-- **Primary Model:** `openai/gpt-oss-120b` for deep contextual reasoning, structured workout generation, and science-grounded advice.
-- **Fallback Model:** `openai/gpt-oss-20b` for instant failover when the primary model experiences transient errors or 429 rate limits.
-- **Exponential Backoff:** Automatic 3-attempt retry loop with exponential backoff (`1.2s * attempt`) handling transient rate limits and network drops.
-- **Granular Database Modifications:** Surgical operations (`replace_exercise`, `add_exercise`, `remove_exercise`, `update_exercise_parameters`, `swap_days`, `set_rest_day`, `generate_full_plan`) validated against actual exercise library records with full rollback protection.
+The coach module uses Gemini and Groq API to generate workout plans and answer fitness-related questions.
 
 Images are public files under `/media/images/...`, served from `MEDIA_DIR`
 (default `../Gyakorlatok/images`). Set `MEDIA_BASE_URL` in `.env` (e.g. a public

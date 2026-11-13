@@ -1,6 +1,4 @@
-# Az AI edző válaszait feldolgozó segédfüggvények.
-# Javítja a levágott JSON válaszokat, kiszűri a szivárgó kódrészleteket, és kinyeri a gyorsválasz gombokat.
-
+# AI válaszok és JSON kimenet feldolgozása
 import json
 import logging
 import re

@@ -15,7 +15,7 @@ from app.services.ai.parser import (
 
 logger = logging.getLogger(__name__)
 
-# Parser segédfüggvények listája a visszafelé kompatibilitásért
+
 __all__ = [
     "BaseAIEngine",
     "auto_close_json",

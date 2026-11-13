@@ -35,7 +35,7 @@ class AccountStateService:
     def ensure_account_entities(
         cls, db: Session, user: User
     ) -> tuple[Profile, UserStats, UserSettings]:
-        # Gondoskodik arról, hogy a Profile, UserStats és UserSettings létezzen a felhasználóhoz
+        # Profil, statisztikák és beállítások inicializálása
         profile = db.get(Profile, user.id)
         if profile is None:
             fallback_name = user.email.split("@")[0] if user.email else "Athlete"
@@ -66,7 +66,7 @@ class AccountStateService:
     def ensure_weekly_plan_days(
         cls, db: Session, user_id: uuid.UUID
     ) -> list[WeeklyPlanDay]:
-        # Gondoskodik arról,, hogy a hét mind a 7 napja létezzen az edzéstervben
+        # Heti terv napjainak ellenőrzése
         existing = {
             row.day_of_week: row
             for row in db.scalars(
