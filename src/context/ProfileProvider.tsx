@@ -6,6 +6,7 @@ import { achievementsService } from "@/services/AchievementsService";
 import { avatarService } from "@/services/AvatarService";
 import { bodyMetricsService } from "@/services/BodyMetricsService";
 import { NotificationService } from "@/services/NotificationService";
+import { DateHelper } from "@/utils/DateHelper";
 import type {
   Profile,
   ProfileUpdate,
@@ -45,9 +46,52 @@ export interface ProfileContextType {
     durationMinutes?: number,
     exercisesCompleted?: number,
     workoutTitle?: string,
-    exerciseDetails?: Array<Record<string, unknown>>
+    exerciseDetails?: Array<Record<string, unknown>>,
+    sessionDate?: string
   ) => Promise<void>;
   resetProfileStats: () => Promise<void>;
+}
+
+function evaluateCachedStreak(
+  currentStreak: number,
+  lastWorkoutDate: string | null | undefined,
+  todayStr: string
+): number {
+  if (currentStreak <= 0 || !lastWorkoutDate) return 0;
+
+  const lastIso = lastWorkoutDate.slice(0, 10);
+  if (lastIso === todayStr) return currentStreak;
+
+  const diffDays = Math.round(
+    (new Date(todayStr).getTime() - new Date(lastIso).getTime()) / (1000 * 3600 * 24)
+  );
+
+  if (diffDays <= 0 || diffDays === 1) return currentStreak;
+  if (diffDays > 14) return 0;
+
+
+  const isRestDayMap: Record<number, boolean> = {
+    0: false,
+    1: false,
+    2: true,
+    3: false,
+    4: false,
+    5: true,
+    6: true,
+  };
+
+  for (let offset = 1; offset < diffDays; offset++) {
+    const checkDate = new Date(lastIso);
+    checkDate.setDate(checkDate.getDate() + offset);
+    const jsDay = checkDate.getDay();
+    const dayOfWeek = jsDay === 0 ? 6 : jsDay - 1;
+    const isRest = isRestDayMap[dayOfWeek] ?? false;
+    if (!isRest) {
+      return 0; // Tervezett edzésnap maradt ki, a széria megszakadt
+    }
+  }
+
+  return currentStreak;
 }
 
 const ProfileContext = createContext<ProfileContextType | null>(null);
@@ -136,14 +180,12 @@ export const ProfileProvider = ({ children }: { children: React.ReactNode }) => 
           const parsedProfile: Profile = JSON.parse(cachedRaw);
           if (parsedProfile.id === userId) {
             if (parsedProfile.last_workout_date) {
-              const todayIso = new Date().toISOString().slice(0, 10);
-              const lastIso = parsedProfile.last_workout_date.slice(0, 10);
-              const diffDays = Math.round(
-                (new Date(todayIso).getTime() - new Date(lastIso).getTime()) / (1000 * 3600 * 24)
+              const todayIso = DateHelper.getLocalDateString();
+              parsedProfile.streak = evaluateCachedStreak(
+                parsedProfile.streak || 0,
+                parsedProfile.last_workout_date,
+                todayIso
               );
-              if (diffDays > 2) {
-                parsedProfile.streak = 0;
-              }
             }
             setProfile(parsedProfile);
           }
@@ -208,12 +250,14 @@ export const ProfileProvider = ({ children }: { children: React.ReactNode }) => 
       durationMinutes?: number,
       exercisesCompleted?: number,
       workoutTitle?: string,
-      exerciseDetails?: Array<Record<string, unknown>>
+      exerciseDetails?: Array<Record<string, unknown>>,
+      sessionDate?: string
     ) => {
       if (!userId) return;
 
       const sessionMins = durationMinutes && durationMinutes > 0 ? durationMinutes : 45;
       const calBurned = caloriesBurned > 0 ? caloriesBurned : 250;
+      const resolvedSessionDate = sessionDate || DateHelper.getLocalDateString();
 
       try {
         const result = await profileRepository.completeWorkout({
@@ -222,6 +266,7 @@ export const ProfileProvider = ({ children }: { children: React.ReactNode }) => 
           exercises_completed: exercisesCompleted ?? 1,
           workout_title: workoutTitle ?? "Workout Session",
           exercise_details: exerciseDetails || [],
+          session_date: resolvedSessionDate,
         });
 
         setProfile(result.profile);
@@ -246,17 +291,15 @@ export const ProfileProvider = ({ children }: { children: React.ReactNode }) => 
         console.warn("Failed to record workout on server, updating account-scoped state:", err);
         setProfile((prev) => {
           if (!prev) return prev;
-          const todayIso = new Date().toISOString().slice(0, 10);
+          const todayIso = resolvedSessionDate;
           const lastDate = prev.last_workout_date ? prev.last_workout_date.slice(0, 10) : null;
           let newStreak = prev.streak || 0;
 
           if (lastDate === todayIso) {
             newStreak = Math.max(1, newStreak);
           } else if (lastDate) {
-            const diffDays = Math.round(
-              (new Date(todayIso).getTime() - new Date(lastDate).getTime()) / (1000 * 3600 * 24)
-            );
-            newStreak = diffDays <= 2 ? (prev.streak || 0) + 1 : 1;
+            const priorStreak = evaluateCachedStreak(prev.streak || 0, prev.last_workout_date, todayIso);
+            newStreak = priorStreak > 0 ? priorStreak + 1 : 1;
           } else {
             newStreak = 1;
           }

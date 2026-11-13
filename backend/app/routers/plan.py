@@ -18,7 +18,7 @@ def get_plan(user: CurrentUser, db: DbSession) -> list[WeeklyPlanDay]:
         .order_by(WeeklyPlanDay.day_of_week)
     )
     rows = list(db.scalars(stmt))
-    if 0 < len(rows) < 7:
+    if len(rows) < 7:
         rows = AccountStateService.ensure_weekly_plan_days(db, user.id)
         AccountStateService.sync_weekly_target_from_plan(db, user.id)
         db.commit()

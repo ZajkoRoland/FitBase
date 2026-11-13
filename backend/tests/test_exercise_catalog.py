@@ -1,7 +1,7 @@
-"""
-FitBase - Gyakorlat katalógus és kereső tesztek
-Ellenőrizzük a beégetett gyakorlatlistát, a slug álneveket és a kategóriák épségét.
-"""
+
+#FitBase - Gyakorlat katalógus és kereső tesztek
+#Ellenőrizzük a beégetett gyakorlatlistát, a slug álneveket és a kategóriák épségét.
+
 
 import unittest
 import os

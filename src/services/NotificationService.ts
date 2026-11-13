@@ -36,16 +36,16 @@ const MockNotifications = {
     MONTHLY: 'monthly',
     YEARLY: 'yearly',
   },
-  setNotificationHandler: () => {},
-  cancelAllScheduledNotificationsAsync: async () => {},
-  dismissAllNotificationsAsync: async () => {},
+  setNotificationHandler: () => { },
+  cancelAllScheduledNotificationsAsync: async () => { },
+  dismissAllNotificationsAsync: async () => { },
   getPresentedNotificationsAsync: async () => [],
   setNotificationChannelAsync: async () => null,
   getPermissionsAsync: async () => ({ status: 'granted' as const }),
   requestPermissionsAsync: async () => ({ status: 'granted' as const }),
   scheduleNotificationAsync: async () => 'mock-notification-id',
-  addNotificationReceivedListener: () => ({ remove: () => {} }),
-  addNotificationResponseReceivedListener: () => ({ remove: () => {} }),
+  addNotificationReceivedListener: () => ({ remove: () => { } }),
+  addNotificationResponseReceivedListener: () => ({ remove: () => { } }),
   getLastNotificationResponseAsync: async () => null,
 };
 
@@ -355,7 +355,7 @@ export class NotificationService {
       }
     }
 
-    // 1. Ütemezett értesítések ellenőrzése, amelyeknek lejárt az ideje
+    //Ütemezett értesítések ellenőrzése, amelyeknek lejárt az ideje
     const remainingScheduled: ScheduledNotificationRecord[] = [];
     for (const rec of this.scheduledRecords) {
       if (rec.userId !== this.activeUserId) continue;
@@ -379,7 +379,7 @@ export class NotificationService {
     }
     this.scheduledRecords = remainingScheduled;
 
-    // 2. Kézbesített értesítések ellenőrzése az értesítési sávban
+    //Kézbesített értesítések ellenőrzése az értesítési sávban
     try {
       const presented = await Notifications.getPresentedNotificationsAsync();
       for (const notif of presented) {
@@ -626,7 +626,8 @@ export class NotificationService {
         }
       }
 
-      if (this.activeStreak > 0 || todayExercises.length > 0) {
+      // Pihenőnapokon nem küldünk figyelmeztetést
+      if (!isRestDay && (this.activeStreak > 0 || todayExercises.length > 0)) {
         const streakId = `streak-${dateKey}`;
         if (!this.readIds.has(streakId) && !this.deletedIds.has(streakId)) {
           const { hour, minute, timeString } = NotificationService.calculateWindowTime(

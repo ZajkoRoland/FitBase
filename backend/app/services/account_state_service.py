@@ -77,13 +77,16 @@ class AccountStateService:
         for idx in range(7):
             row = existing.get(idx)
             if row is None:
+                # Alapértelmezett heti bontás: 4 edzésnap (H, K, Cs, P) és 3 pihenőnap (Sze, Szo, V)
+                is_rest = idx in (2, 5, 6)
+                day_type = "rest" if is_rest else "workout"
                 row = WeeklyPlanDay(
                     user_id=user_id,
                     day_of_week=idx,
                     day_name=cls.DAY_CODES[idx],
-                    type="workout",
-                    workout_title="Workout",
-                    workout_meta="0 exercises",
+                    type=day_type,
+                    workout_title=None if is_rest else "Workout",
+                    workout_meta=None if is_rest else "0 exercises",
                     exercises=[],
                 )
                 db.add(row)
@@ -124,10 +127,16 @@ class AccountStateService:
 
     @classmethod
     def compute_5_week_activity(
-        cls, db: Session, user_id: uuid.UUID, stats: UserStats
+        cls,
+        db: Session,
+        user_id: uuid.UUID,
+        stats: UserStats,
+        current_date: date | None = None,
     ) -> list[ActivityWeekOut]:
         # Kiszámítja az elmúlt 5 hét edzésaktivitását a naplóbol
-        today = datetime.now(UTC).date()
+        if current_date is None:
+            current_date = datetime.now(UTC).date()
+        today = current_date
         current_monday = today - timedelta(days=today.weekday())
         weekly_target = max(stats.weekly_target or 4, 1)
 
@@ -208,8 +217,17 @@ class AccountStateService:
             return 0
 
         if not stats.last_workout_date:
-            stats.streak = 0
-            return 0
+            latest_session_date = db.scalar(
+                select(WorkoutSession.session_date)
+                .where(WorkoutSession.user_id == user_id)
+                .order_by(WorkoutSession.session_date.desc(), WorkoutSession.completed_at.desc())
+                .limit(1)
+            )
+            if latest_session_date:
+                stats.last_workout_date = latest_session_date[:10]
+            else:
+                stats.streak = 0
+                return 0
 
         try:
             last_date = date.fromisoformat(stats.last_workout_date[:10])
@@ -219,20 +237,17 @@ class AccountStateService:
 
         days_diff = (current_date - last_date).days
 
-        # Ma volt edzés (vagy a kliens órája előrébb jár)
         if days_diff <= 0:
             return current_streak
 
-        # Tegnap volt edzés -> a széria még él (a mai nap még tart)
         if days_diff == 1:
             return current_streak
 
-        # Vesztett széria mindenképp
-        if days_diff > 7:
+        if days_diff > 14:
             stats.streak = 0
             return 0
 
-        # A köztes naptári napok ellenőrzése az utolsó edzés és a mai nap között
+        # Köztes napok ellenőrzése
         plan_days = cls.ensure_weekly_plan_days(db, user_id)
         plan_by_weekday = {d.day_of_week: d.type for d in plan_days}
 
@@ -244,8 +259,6 @@ class AccountStateService:
                 # Tervezett edzésnap maradt ki, a széria megszakadt
                 stats.streak = 0
                 return 0
-
-        # Minden köztes nap pihenőnap volt a terv szerint -> a széria megmaradt!
         return current_streak
 
     @classmethod
@@ -287,11 +300,19 @@ class AccountStateService:
 
     @classmethod
     def to_profile_out(
-        cls, db: Session, profile: Profile, stats: UserStats
+        cls,
+        db: Session,
+        profile: Profile,
+        stats: UserStats,
+        current_date: date | None = None,
     ) -> ProfileOut:
         # Összefésüli a profil és statisztika adatokat a kimeneti modellbe
-        cls.evaluate_active_streak(db, profile.id, stats)
-        activity_5_weeks = cls.compute_5_week_activity(db, profile.id, stats)
+        if current_date is None:
+            current_date = datetime.now(UTC).date()
+        cls.evaluate_active_streak(db, profile.id, stats, current_date=current_date)
+        activity_5_weeks = cls.compute_5_week_activity(
+            db, profile.id, stats, current_date=current_date
+        )
         stats.activity_history = [item.model_dump() for item in activity_5_weeks]
 
         streak = stats.streak or 0

@@ -68,14 +68,29 @@ export class PlanService {
     };
   }
 
-  // Új üres heti edzésterv generálása mind a 7 napra
-  public static createEmptyWeekPlan(): WorkoutDay[] {
-    return PlanService.DAY_NAMES.map((dayName) =>
-      PlanService.createEmptyWorkoutDay(dayName)
-    );
+  // Új pihenőnap 
+  public static createRestDay(dayName: string): WorkoutDay {
+    return {
+      day: dayName,
+      type: 'rest',
+      subtitle: 'REST',
+      workoutTitle: undefined,
+      workoutMeta: undefined,
+      exercises: [],
+    };
   }
 
-  // Heti edzésterv normalizálása és másolása a hét napjaira
+  // Új heti edzésterv 
+  public static createEmptyWeekPlan(): WorkoutDay[] {
+    return PlanService.DAY_NAMES.map((dayName, idx) => {
+      const isRest = idx === 2 || idx === 5 || idx === 6;
+      return isRest
+        ? PlanService.createRestDay(dayName)
+        : PlanService.createEmptyWorkoutDay(dayName);
+    });
+  }
+
+  // Heti edzésterv normalizálása és másolása 
   public static normalizeWeekPlan(days?: WorkoutDay[] | null): WorkoutDay[] {
     if (!days || days.length === 0) {
       return PlanService.createEmptyWeekPlan();
@@ -88,7 +103,10 @@ export class PlanService {
           : days.find((d) => d.day === dayName) ?? days[idx];
 
       if (!matched) {
-        return PlanService.createEmptyWorkoutDay(dayName);
+        const isRest = idx === 2 || idx === 5 || idx === 6;
+        return isRest
+          ? PlanService.createRestDay(dayName)
+          : PlanService.createEmptyWorkoutDay(dayName);
       }
 
       const exercises = Array.isArray(matched.exercises)
@@ -112,7 +130,7 @@ export class PlanService {
   }
 
   // Heti célzott edzésnapok számának kiszámítása a tervből
-  public static computeWeeklyTarget(days?: WorkoutDay[] | null, fallback = 7): number {
+  public static computeWeeklyTarget(days?: WorkoutDay[] | null, fallback = 4): number {
     if (!days || days.length === 0) {
       return Math.max(1, fallback);
     }

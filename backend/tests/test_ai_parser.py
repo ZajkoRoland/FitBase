@@ -1,8 +1,5 @@
-"""
-FitBase - AI válasz feldolgozó és formátum javító tesztek
-Teszteljük a modellből érkező JSON javítását, a gyorsválaszok kinyerését és az edző logikát.
-"""
-
+#FitBase - AI válasz feldolgozó és formátum javító tesztek
+#Teszteljük a modellből érkező JSON javítását, a gyorsválaszok kinyerését és az edző logikát.
 import unittest
 import os
 import sys

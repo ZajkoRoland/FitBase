@@ -335,7 +335,7 @@ export const PlanProvider = ({ children }: { children: React.ReactNode }) => {
       });
 
     // Befejezett edzés, elégetett kalóriák és jelvények mentése az adatbázisba
-    await recordWorkoutCompleted(caloriesBurned, durationMinutes, checkedCount, workoutTitle, exerciseDetails);
+    await recordWorkoutCompleted(caloriesBurned, durationMinutes, checkedCount, workoutTitle, exerciseDetails, todayKey);
     analyticsService.clearCache();
 
     setHistoricalSessions((prev) => ({
